@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CiriqueERP", "CiriqueERP.csproj", "{92507DFE-8613-47AB-B492-90B7070A3423}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOffice", "..\BackOffice\BackOffice.csproj", "{A6634DEB-1F85-4746-A3D5-4D9301C3B2E8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92507DFE-8613-47AB-B492-90B7070A3423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92507DFE-8613-47AB-B492-90B7070A3423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92507DFE-8613-47AB-B492-90B7070A3423}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92507DFE-8613-47AB-B492-90B7070A3423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6634DEB-1F85-4746-A3D5-4D9301C3B2E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6634DEB-1F85-4746-A3D5-4D9301C3B2E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6634DEB-1F85-4746-A3D5-4D9301C3B2E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6634DEB-1F85-4746-A3D5-4D9301C3B2E8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2D0C595-7D0A-449A-AC41-20023846DFCE}
+	EndGlobalSection
+EndGlobal

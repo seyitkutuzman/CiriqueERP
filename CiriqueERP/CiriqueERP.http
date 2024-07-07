@@ -1,0 +1,6 @@
+@CiriqueERP_HostAddress = http://localhost:5141
+
+GET {{CiriqueERP_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
