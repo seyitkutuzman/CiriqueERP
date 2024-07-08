@@ -3,9 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CiriqueERP", "CiriqueERP.csproj", "{92507DFE-8613-47AB-B492-90B7070A3423}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CiriqueERP", "CiriqueERP.csproj", "{92507DFE-8613-47AB-B492-90B7070A3423}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOffice", "..\BackOffice\BackOffice.csproj", "{A6634DEB-1F85-4746-A3D5-4D9301C3B2E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackOffice", "..\BackOffice\BackOffice.csproj", "{A6634DEB-1F85-4746-A3D5-4D9301C3B2E8}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP-BackOffice", "..\ERP-BackOffice\", "{B0E2CE64-D897-411F-AA25-C454377DC1F2}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_61454"
+		Debug.AspNetCompiler.PhysicalPath = "..\ERP-BackOffice\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61454\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_61454"
+		Release.AspNetCompiler.PhysicalPath = "..\ERP-BackOffice\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61454\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "61454"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +41,10 @@ Global
 		{A6634DEB-1F85-4746-A3D5-4D9301C3B2E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6634DEB-1F85-4746-A3D5-4D9301C3B2E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6634DEB-1F85-4746-A3D5-4D9301C3B2E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0E2CE64-D897-411F-AA25-C454377DC1F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0E2CE64-D897-411F-AA25-C454377DC1F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0E2CE64-D897-411F-AA25-C454377DC1F2}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0E2CE64-D897-411F-AA25-C454377DC1F2}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
