@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackOffice.Data;
-using BackOffice.BoModels;
+using BackOffice.Models;
 using System.Threading.Tasks;
 
 [Route("api/[controller]")]
@@ -15,18 +15,19 @@ public class AuthenticationController : ControllerBase
         _context = context;
     }
 
-    [HttpPost("loginBO")]
-    public async Task<IActionResult> Login([FromBody] LoginModel login)
+    [HttpPost("auth/login")]
+    public IActionResult Login([FromBody] LoginModel model)
     {
-        var user = await _context.Users
-            .SingleOrDefaultAsync(u => u.userCode == login.Username && u.userPass == login.Password);
+        var user = _context.Users
+            .FirstOrDefault(u => u.UserCode == model.Username && u.UserPass == model.Password);
 
         if (user == null)
         {
-            return Unauthorized();
+            return Unauthorized(new { message = "User code or password is incorrect" });
         }
 
-        return Ok(new { Success = true, Username = user.userCode });
+        // Giriş başarılı olduğunda token veya başka bir cevap döndürün
+        return Ok(new { message = "Login successful" });
     }
 }
 
@@ -36,9 +37,4 @@ public class LoginModel
     public string Password { get; set; }
 }
 
-namespace BackOffice.Controllers
-{
-    public class AuthenticationController
-    {
-    }
-}
+
