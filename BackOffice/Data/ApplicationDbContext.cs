@@ -10,23 +10,39 @@ namespace BackOffice.Data
         {
         }
 
-        public DbSet<BackOfficeUser> Users { get; set; }
+        public DbSet<BackOfficeUsers> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // Fluent API kullanarak model konfigürasyonu yapabilirsiniz
-            modelBuilder.Entity<BackOfficeUser>(entity =>
+            modelBuilder.Entity<BackOfficeUsers>(entity =>
             {
-                entity.HasKey(e => e.Id); // Primary key
-                entity.Property(e => e.UserCode).HasMaxLength(100);
-                entity.Property(e => e.UserPass).HasMaxLength(100);
-                entity.Property(e => e.Name).HasMaxLength(100);
-                entity.Property(e => e.Surname).HasMaxLength(100);
-                entity.Property(e=> e.CreateDate).HasMaxLength(100);
-                entity.Property(e => e.ModifyDate).HasMaxLength(100);
-                entity.Property(e=>e.Department).HasMaxLength(100);
+                entity.HasKey(e => e.Id).HasName("PK__backOffi__3214EC2744D8EDE9");
+
+                entity.ToTable("backOfficeUsers");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.createDate).HasColumnName("createDate");
+                entity.Property(e => e.department).HasColumnName("department");
+                entity.Property(e => e.modifyDate).HasColumnName("modifyDate");
+                entity.Property(e => e.name)
+                    .HasMaxLength(25)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+                entity.Property(e => e.surname)
+                    .HasMaxLength(25)
+                    .IsUnicode(false)
+                    .HasColumnName("surname");
+                entity.Property(e => e.userCode)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("userCode");
+                entity.Property(e => e.userPass)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("userPass");
             });
 
             // Diğer tablolar için konfigürasyonlar

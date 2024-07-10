@@ -13,9 +13,14 @@ export class boUserService {
 
   constructor(private http: HttpClient) { }
 
+
+
+
   login(userCode: string, userPass: string): Observable<any> {
-    const loginData = { userCode, userPass };
-    return this.http.post<any>(`${this.apiUrl}/auth/login`, loginData);
+    const loginData = { Username: userCode, Password: userPass }; // API'nin beklediği alan adlarını kullanın
+    return this.http.post<any>(`${this.apiUrl}/auth/login`, loginData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   getUsers(): Observable<boUserModel[]> {

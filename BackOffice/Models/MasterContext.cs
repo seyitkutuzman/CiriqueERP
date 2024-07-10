@@ -15,7 +15,7 @@ public partial class MasterContext : DbContext
     {
     }
 
-    public virtual DbSet<BackOfficeUser> BackOfficeUsers { get; set; }
+    public virtual DbSet<BackOfficeUsers> BackOfficeUsers { get; set; }
 
     public virtual DbSet<Company> Companies { get; set; }
 
@@ -40,41 +40,36 @@ public partial class MasterContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("data source=Seyit-Laptop\\SEYIT;initial catalog=master;;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<BackOfficeUser>(entity =>
+        modelBuilder.Entity<BackOfficeUsers>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__backOffi__3214EC2744D8EDE9");
 
             entity.ToTable("backOfficeUsers");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CreateDate).HasColumnName("createDate");
-            entity.Property(e => e.Department).HasColumnName("department");
-            entity.Property(e => e.ModifyDate).HasColumnName("modifyDate");
-            entity.Property(e => e.Name)
+            entity.Property(e => e.createDate).HasColumnName("createDate");
+            entity.Property(e => e.department).HasColumnName("department");
+            entity.Property(e => e.modifyDate).HasColumnName("modifyDate");
+            entity.Property(e => e.name)
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("name");
-            entity.Property(e => e.Surname)
+            entity.Property(e => e.surname)
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("surname");
-            entity.Property(e => e.UserCode)
+            entity.Property(e => e.userCode)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("userCode");
-            entity.Property(e => e.UserPass)
+            entity.Property(e => e.userPass)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("userPass");
-
-            entity.HasOne(d => d.DepartmentNavigation).WithMany(p => p.BackOfficeUsers)
-                .HasForeignKey(d => d.Department)
-                .HasConstraintName("FK__backOffic__depar__01342732");
         });
 
         modelBuilder.Entity<Company>(entity =>

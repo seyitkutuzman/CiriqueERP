@@ -4,7 +4,7 @@ using BackOffice.Data;
 using BackOffice.Models;
 using System.Threading.Tasks;
 
-[Route("api/[controller]")]
+[Route("api/auth")]
 [ApiController]
 public class AuthenticationController : ControllerBase
 {
@@ -15,11 +15,11 @@ public class AuthenticationController : ControllerBase
         _context = context;
     }
 
-    [HttpPost("auth/login")]
+    [HttpPost("login")]
     public IActionResult Login([FromBody] LoginModel model)
     {
         var user = _context.Users
-            .FirstOrDefault(u => u.UserCode == model.Username && u.UserPass == model.Password);
+            .FirstOrDefault(u => u.userCode == model.Username && u.userPass == model.Password);
 
         if (user == null)
         {

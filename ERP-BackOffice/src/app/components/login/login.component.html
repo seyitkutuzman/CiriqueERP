@@ -8,32 +8,30 @@
         <div class="card-body">
           <p class="login-box-msg">Sign in to BackOffice</p>
     
-          <form id="login-form">
-            <div class="input-group mb-3">
-              <input id="username" type="username" (ngModel)="loginData.userCode" class="form-control" placeholder="Username" autocomplete="username">
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-envelope"></span>
-                </div>
+          <div class="input-group mb-3">
+            <input id="username" type="username" [(ngModel)]="loginData.userCode" class="form-control" placeholder="Username" required>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
               </div>
             </div>
-            <div class="input-group mb-3">
-              <input id="password" type="password"  (ngModel)="loginData.userPass" class="form-control" placeholder="Password">
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-lock"></span>
-                </div>
+          </div>
+          <div class="input-group mb-3">
+            <input id="password" type="password"  [(ngModel)]="loginData.userPass" class="form-control" placeholder="Password" required>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
               </div>
             </div>
-            <div class="row">
-              <!-- /.col -->
-              <div class="col-4">
-                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-              </div>
-              <!-- /.col -->
-               
+          </div>
+          <div class="row">
+            <!-- /.col -->
+            <div class="col-4">
+              <button (click)="onSubmit()" type="button" class="btn btn-primary btn-block">Sign In</button>
             </div>
-          </form>
+            <!-- /.col -->
+             
+          </div>
           <p class="mb-1">
             <a href="forgot-password.html">I forgot my password</a>
           </p>

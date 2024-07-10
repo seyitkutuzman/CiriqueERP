@@ -11,7 +11,7 @@ public partial class Department
 
     public int? DepartmentRoles { get; set; }
 
-    public virtual ICollection<BackOfficeUser> BackOfficeUsers { get; set; } = new List<BackOfficeUser>();
+    public virtual ICollection<BackOfficeUsers> BackOfficeUsers { get; set; } = new List<BackOfficeUsers>();
 
     public virtual ICollection<Crew> Crews { get; set; } = new List<Crew>();
 
