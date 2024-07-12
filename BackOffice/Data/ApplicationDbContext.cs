@@ -12,6 +12,8 @@ namespace BackOffice.Data
 
         public DbSet<BackOfficeUsers> Users { get; set; }
 
+        public DbSet<Users> CompanyUser { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -45,6 +47,37 @@ namespace BackOffice.Data
                     .HasColumnName("userPass");
             });
 
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Users__3214EC27C1ECF451");
+
+                entity.HasIndex(e => e.UserNo, "UQ__Users__CB9A040D0F6F8D90").IsUnique();
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.CompNo).HasColumnName("compNo");
+                entity.Property(e => e.CreateDate).HasColumnName("createDate");
+                entity.Property(e => e.Departmant).HasColumnName("departmant");
+                entity.Property(e => e.IsActive)
+                    .HasMaxLength(1)
+                    .HasDefaultValueSql("((0))")
+                    .IsFixedLength()
+                    .HasColumnName("isActive");
+                entity.Property(e => e.ModifyDate).HasColumnName("modifyDate");
+                entity.Property(e => e.UserNo).HasColumnName("userNo");
+                entity.Property(e => e.UserPass)
+                    .HasMaxLength(25)
+                    .IsUnicode(false)
+                    .HasColumnName("userPass");
+
+                entity.HasOne(d => d.CompNoNavigation).WithMany(p => p.Users)
+                    .HasPrincipalKey(p => p.CompNo)
+                    .HasForeignKey(d => d.CompNo)
+                    .HasConstraintName("FK__Users__compNo__6C390A4C");
+
+                entity.HasOne(d => d.DepartmantNavigation).WithMany(p => p.Users)
+                    .HasForeignKey(d => d.Departmant)
+                    .HasConstraintName("FK__Users__departman__6D2D2E85");
+            });
             // Diğer tablolar için konfigürasyonlar
             // modelBuilder.Entity<Department>(entity =>
             // {

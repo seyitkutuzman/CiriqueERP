@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BackOffice.Models;
+namespace CiriqueERP.Models;
 
 public partial class Company
 {

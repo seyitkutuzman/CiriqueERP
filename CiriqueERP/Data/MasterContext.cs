@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using CiriqueERP.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackOffice.Models;
+namespace CiriqueERP.Data;
 
 public partial class MasterContext : DbContext
 {
@@ -35,7 +36,7 @@ public partial class MasterContext : DbContext
 
     public virtual DbSet<SparePart> SpareParts { get; set; }
 
-    public virtual DbSet<Task> Tasks { get; set; }
+    public virtual DbSet<CiriqueERP.Models.Task> Tasks { get; set; }
 
     public virtual DbSet<Users> Users { get; set; }
 
@@ -297,7 +298,7 @@ public partial class MasterContext : DbContext
                 .HasColumnName("name");
         });
 
-        modelBuilder.Entity<Task>(entity =>
+        modelBuilder.Entity<CiriqueERP.Models.Task>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Tasks__3214EC2742F526C9");
 
