@@ -1,0 +1,47 @@
+<body class="hold-transition login-page">
+    <div class="login-box">
+      <!-- /.login-logo -->
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+          <a><b>Cirique</b>ERP</a>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">Sign in to BackOffice</p>
+    
+          <div class="input-group mb-3">
+            <input id="username" type="username" [(ngModel)]="loginData.userCode" class="form-control" placeholder="Username" required>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <input id="password" type="password"  [(ngModel)]="loginData.userPass" class="form-control" placeholder="Password" required>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- /.col -->
+            <div class="col-4">
+              <button (click)="onSubmit()" type="button" class="btn btn-primary btn-block">Sign In</button>
+            </div>
+            <!-- /.col -->
+             
+          </div>
+          <p class="mb-1">
+            <a href="forgot-password.html">I forgot my password</a>
+          </p>
+          <p class="mb-0">
+            <a href="register.html" class="text-center">Register a new membership</a>
+          </p>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+    </body>
+    
