@@ -21,6 +21,10 @@ public partial class Users
 
     public byte[]? IsActive { get; set; }
 
+    public string name { get; set; }
+
+    public string surname { get; set; }
+
     public virtual Company? CompNoNavigation { get; set; }
 
     public virtual Department? DepartmantNavigation { get; set; }

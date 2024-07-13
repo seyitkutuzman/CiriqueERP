@@ -7,9 +7,6 @@ namespace CiriqueERP.Data;
 
 public partial class MasterContext : DbContext
 {
-    public MasterContext()
-    {
-    }
 
     public MasterContext(DbContextOptions<MasterContext> options)
         : base(options)
@@ -350,6 +347,14 @@ public partial class MasterContext : DbContext
             entity.HasOne(d => d.DepartmantNavigation).WithMany(p => p.Users)
                 .HasForeignKey(d => d.Departmant)
                 .HasConstraintName("FK__Users__departman__6D2D2E85");
+            entity.Property(e => e.name)
+                .HasMaxLength(25)
+                .IsUnicode(false)
+                .HasColumnName("name");
+            entity.Property(e => e.surname)
+                .HasMaxLength(25)
+                .IsUnicode(false)
+                .HasColumnName("surname");
         });
 
         OnModelCreatingPartial(modelBuilder);

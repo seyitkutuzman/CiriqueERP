@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
 import { HomeComponent } from '../home/home.component';
 import { FormsModule, NgModel } from '@angular/forms';
 import { HttpService } from '../../service/http.service';
+import { userInfoService } from '../../service/userInfo.service';
 
 @Component({
   selector: 'app-login',
@@ -17,19 +18,21 @@ import { HttpService } from '../../service/http.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  loginData = { userCode: '', userPass: '' };
+  loginData = { compNo:'', userCode: '', userPass: '' };
 
   constructor(private userService: boUserService,
     private swal: SwalService,
     private router: Router,
-    private http: HttpService
+    private http: HttpService,
+    private userInfo: userInfoService
   ) {}
 
   onSubmit() {
     
-    this.userService.login(this.loginData.userCode, this.loginData.userPass).subscribe(response => 
+    this.userService.login(this.loginData.compNo ,this.loginData.userCode, this.loginData.userPass).subscribe(response => 
     {
       this.swal.callToast('Giriş Başarılı','Giriş Başarılı',3000,false)
+      this.userInfo.setUser(response)
       this.router.navigate([''])
       console.log('Login successful:', response);
     }, error => {

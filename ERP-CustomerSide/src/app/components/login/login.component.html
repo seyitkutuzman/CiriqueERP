@@ -9,6 +9,14 @@
           <p class="login-box-msg">Sign in to BackOffice</p>
     
           <div class="input-group mb-3">
+            <input id="username" type="username" [(ngModel)]="loginData.compNo" class="form-control" placeholder="Username" required>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
             <input id="username" type="username" [(ngModel)]="loginData.userCode" class="form-control" placeholder="Username" required>
             <div class="input-group-append">
               <div class="input-group-text">

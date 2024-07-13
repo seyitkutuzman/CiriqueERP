@@ -1,12 +1,16 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Web;
+using Microsoft.EntityFrameworkCore;
+using CiriqueERP.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
+builder.Services.AddDbContext<MasterContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // Configure CORS policy
 builder.Services.AddCors(options =>
 {

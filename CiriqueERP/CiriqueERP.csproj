@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <InvariantGlobalization>false</InvariantGlobalization>
     <UserSecretsId>aspnet-CiriqueERP-a29cbf33-a030-41b8-ae25-a4a4f0c7019d</UserSecretsId>
   </PropertyGroup>
 

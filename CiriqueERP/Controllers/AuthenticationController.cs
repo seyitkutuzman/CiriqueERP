@@ -19,17 +19,30 @@ public class AuthenticationController : ControllerBase
     public IActionResult Login([FromBody] LoginModel model)
     {
         var user = _context.Users
-            .FirstOrDefault(u => u.UserNo == model.userNo && u.UserPass == model.userPass);
+            .Where(u => u.CompNo == model.compNo && u.UserNo == model.userNo && u.UserPass == model.userPass)
+            .Select(u => new
+            {
+                u.CompNo,
+                u.UserNo,
+                u.UserPass,
+                u.Departmant,
+                u.CreateDate,
+                u.ModifyDate,
+                u.IsActive,
+                u.name,
+                u.surname
+            })
+            .FirstOrDefault();
 
         if (user == null)
         {
             return Unauthorized(new { message = "User code or password is incorrect" });
         }
 
-        // Giriş başarılı olduğunda token veya başka bir cevap döndürün
-        return Ok(new { message = "Login successful" });
+        return Ok(user);
     }
 }
+
 
 public class LoginModel
 {
