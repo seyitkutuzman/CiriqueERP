@@ -33,6 +33,12 @@ export class LoginComponent {
     {
       this.swal.callToast('Giriş Başarılı','Giriş Başarılı',3000,false)
       this.userInfo.setUser(response)
+
+      const decodedUser = this.userService.decodeToken(response.accessToken);
+      this.userInfo.setUser(decodedUser); 
+      localStorage.setItem('accessToken', response.accessToken); 
+      localStorage.setItem('refreshToken', response.refreshToken); 
+
       this.router.navigate([''])
       console.log('Login successful:', response);
     }, error => {

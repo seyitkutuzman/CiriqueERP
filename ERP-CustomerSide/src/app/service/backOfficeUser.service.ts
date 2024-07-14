@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { boUserModel } from '../models/backofficeUser.model';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,16 @@ export class boUserService {
   login(compNo: string, userCode: string, userPass: string): Observable<any> {
     const loginData = {compNo: compNo, userNo: userCode, userPass: userPass };
     return this.http.post<any>(`${this.apiUrl}/auth/login`, loginData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  decodeToken(token: string): any {
+    return jwtDecode(token);
+  }
+
+  refreshToken(refreshToken: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/refresh`, { refreshToken: refreshToken }, {
       headers: { 'Content-Type': 'application/json' }
     });
   }
