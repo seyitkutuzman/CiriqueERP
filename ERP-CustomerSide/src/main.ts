@@ -1,6 +1,18 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
+import { provideRouter } from '@angular/router';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { routes } from './app/app-routing.module'; // routes dizisini import ediyoruz
+import { JwtInterceptor } from './app/service/jwt.interceptor';
+import { importProvidersFrom } from '@angular/core';
+import { boUserService } from './app/service/backOfficeUser.service';
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter(routes), // routes dizisini kullanıyoruz
+    importProvidersFrom(HttpClientModule, FormsModule),
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    boUserService
+  ]
+}).catch(err => console.error(err));

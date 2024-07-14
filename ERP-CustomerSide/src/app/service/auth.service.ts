@@ -30,12 +30,12 @@ export class AuthService {
   refreshToken() {
     const refreshToken = localStorage.getItem('refreshToken');
     if (refreshToken) {
-      this.userService.refreshToken(refreshToken).subscribe(response => {
+      this.userService.refreshToken().subscribe(response => {
         localStorage.setItem('accessToken', response.accessToken); // Yeni access token'ı sakla
         localStorage.setItem('refreshToken', response.refreshToken); // Yeni refresh token'ı sakla
       }, error => {
         console.error('Refresh token failed:', error);
-        // Hata durumunda uygun işlemleri yapın
+        this.router.navigate(['/login'])
       });
     }
   }

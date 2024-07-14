@@ -15,6 +15,7 @@ public class AuthenticationController : ControllerBase
 {
     private readonly MasterContext _context;
     private readonly IConfiguration _configuration;
+
     public AuthenticationController(MasterContext context, IConfiguration configuration)
     {
         _context = context;
@@ -44,7 +45,21 @@ public class AuthenticationController : ControllerBase
         {
             return Unauthorized(new { message = "User code or password is incorrect" });
         }
-        var accessToken = GenerateAccessToken(user);
+
+        var claims = new List<Claim>
+        {
+            new Claim("CompNo", user.CompNo.ToString()),
+            new Claim("UserNo", user.UserNo.ToString()),
+            new Claim("UserPass", user.UserPass),
+            new Claim("Departmant", user.Departmant.ToString()),
+            new Claim("CreateDate", user.CreateDate.ToString()),
+            new Claim("ModifyDate", user.ModifyDate.ToString()),
+            new Claim("IsActive", Convert.ToBase64String(user.IsActive)),
+            new Claim("name", user.name),
+            new Claim("surname", user.surname)
+        };
+
+        var accessToken = GenerateAccessToken(claims);
         var refreshToken = GenerateRefreshToken();
 
         return Ok(new
@@ -54,56 +69,19 @@ public class AuthenticationController : ControllerBase
         });
     }
 
-    private string GenerateAccessToken(dynamic user)
+    private string GenerateAccessToken(IEnumerable<Claim> claims)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-        if (key == null || key.Length == 0)
-        {
-            throw new ArgumentNullException(nameof(key), "JWT key is not configured");
-        }
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var claims = new List<Claim>
-    {
-        new Claim("CompNo", user.CompNo.ToString() ?? string.Empty),
-        new Claim("UserNo", user.UserNo.ToString() ?? string.Empty),
-        new Claim("UserPass", user.UserPass.ToString() ?? string.Empty),
-        new Claim("Departmant", user.Departmant.ToString() ?? string.Empty)
-    };
+        var token = new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddSeconds(20),
+            signingCredentials: creds);
 
-        // Optional fields with null checks
-        if (user.CreateDate != null)
-        {
-            claims.Add(new Claim("CreateDate", user.CreateDate.ToString()));
-        }
-        if (user.ModifyDate != null)
-        {
-            claims.Add(new Claim("ModifyDate", user.ModifyDate.ToString()));
-        }
-        if (user.IsActive != null)
-        {
-            claims.Add(new Claim("IsActive", user.IsActive.ToString()));
-        }
-        if (user.name != null)
-        {
-            claims.Add(new Claim("name", user.name.ToString()));
-        }
-        if (user.name != null)
-        {
-            claims.Add(new Claim("surname", user.surname.ToString()));
-        }
-
-
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(2), // Access token süresi
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
-
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
     private string GenerateRefreshToken()
@@ -119,8 +97,16 @@ public class AuthenticationController : ControllerBase
     [HttpPost("refresh")]
     public IActionResult Refresh([FromBody] TokenModel tokenModel)
     {
+        if (tokenModel == null || string.IsNullOrEmpty(tokenModel.AccessToken) || string.IsNullOrEmpty(tokenModel.RefreshToken))
+        {
+            return BadRequest(new { message = "Invalid token model" });
+        }
+
         var principal = GetPrincipalFromExpiredToken(tokenModel.AccessToken);
-        var username = principal.Identity.Name; // Bu örnek için username'i aldık
+        if (principal == null)
+        {
+            return BadRequest(new { message = "Invalid access token" });
+        }
 
         var newAccessToken = GenerateAccessToken(principal.Claims);
         var newRefreshToken = GenerateRefreshToken();
@@ -136,16 +122,19 @@ public class AuthenticationController : ControllerBase
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
-            ValidateAudience = false, 
-            ValidateIssuer = false, 
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
-            ValidateLifetime = false 
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = _configuration["Jwt:Issuer"],
+            ValidAudience = _configuration["Jwt:Audience"],
+            ValidateLifetime = true // Süresi dolmuş tokenları doğrulamak için bu ayarı false yapıyoruz
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
         var jwtSecurityToken = securityToken as JwtSecurityToken;
+
         if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
         {
             throw new SecurityTokenException("Invalid token");
@@ -153,10 +142,7 @@ public class AuthenticationController : ControllerBase
 
         return principal;
     }
-
 }
-
-
 
 public class LoginModel
 {
@@ -164,9 +150,9 @@ public class LoginModel
     public int userNo { get; set; }
     public string userPass { get; set; }
 }
+
 public class TokenModel
 {
     public string AccessToken { get; set; }
     public string RefreshToken { get; set; }
 }
-

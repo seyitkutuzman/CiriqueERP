@@ -9,13 +9,15 @@ import { userInfoService } from './service/userInfo.service';
   standalone: true,
   imports: [RouterOutlet],
   template: `<router-outlet></router-outlet>`
-  
-  
 })
 export class AppComponent implements OnInit {
   title = 'ERP-BackOffice';
 
-  constructor(private authService: AuthService, private userService: boUserService, private userInfo: userInfoService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: boUserService,
+    private userInfo: userInfoService
+  ) {}
 
   ngOnInit() {
     const accessToken = localStorage.getItem('accessToken');
