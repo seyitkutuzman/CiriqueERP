@@ -40,7 +40,7 @@ export class LoginComponent {
         console.log('Login successful:', response);
       },
       error => {
-        this.swal.callToast('Giriş Başarısız', error.error.toString(), 3000, false);
+        this.swal.callToast('Giriş Başarısız', error.error.toString(), 3000, false,'error');
         console.error('Login failed:', error);
       }
     );

@@ -74,11 +74,13 @@ public class AuthenticationController : ControllerBase
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+        var expires = DateTime.Now.AddSeconds(20);
+
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddSeconds(20),
+            expires: expires,
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
@@ -108,6 +110,16 @@ public class AuthenticationController : ControllerBase
             return BadRequest(new { message = "Invalid access token" });
         }
 
+        var expirationClaim = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp);
+        if (expirationClaim != null && long.TryParse(expirationClaim.Value, out long exp))
+        {
+            var expirationDate = DateTimeOffset.FromUnixTimeSeconds(exp).UtcDateTime;
+            if (expirationDate < DateTime.UtcNow)
+            {
+                return BadRequest(new { message = "Security Token Expired" });
+            }
+        }
+
         var newAccessToken = GenerateAccessToken(principal.Claims);
         var newRefreshToken = GenerateRefreshToken();
 
@@ -128,19 +140,24 @@ public class AuthenticationController : ControllerBase
             ValidateAudience = true,
             ValidIssuer = _configuration["Jwt:Issuer"],
             ValidAudience = _configuration["Jwt:Audience"],
-            ValidateLifetime = true // Süresi dolmuş tokenları doğrulamak için bu ayarı false yapıyoruz
+            ValidateLifetime = false // Süresi dolmuş tokenları doğrulamak için bu ayarı false yapıyoruz
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
-        var jwtSecurityToken = securityToken as JwtSecurityToken;
-
-        if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+        try
+        {
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
+            return principal;
+        }
+        catch
         {
             throw new SecurityTokenException("Invalid token");
         }
-
-        return principal;
     }
 }
 

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { boUserService } from './backOfficeUser.service';
+import { SwalService } from './swal.service';
+import { empty, isEmpty } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,21 +13,9 @@ export class AuthService {
   token:string = "";
   constructor(
     private router: Router,
-    private userService: boUserService
+    private userService: boUserService,
+    private swal: SwalService
   ) { }
-
-  isAuthenticated(){
-    this.token = localStorage.getItem("token") ?? "";
-    const decode = jwtDecode(this.token);
-    const exp = decode.exp ?? 0 ;
-    const now = new Date().getTime() / 1000;
-
-    if(now > exp){
-      this.router.navigateByUrl("/login");
-      return false;
-    }
-    return true;
-  }
 
   refreshToken() {
     const refreshToken = localStorage.getItem('refreshToken');
@@ -33,8 +23,13 @@ export class AuthService {
       this.userService.refreshToken().subscribe(response => {
         localStorage.setItem('accessToken', response.accessToken); // Yeni access token'ı sakla
         localStorage.setItem('refreshToken', response.refreshToken); // Yeni refresh token'ı sakla
-      }, error => {
+      }, error => {        
         console.error('Refresh token failed:', error);
+        if(refreshToken){
+          this.swal.callToast('Oturum Süresi Zaman Aşımına Uğramıştır.','',3000,false,'error','top')
+          localStorage.removeItem('accessToken'); // Yeni access token'ı sakla
+          localStorage.removeItem('refreshToken');
+        }
         this.router.navigate(['/login'])
       });
     }

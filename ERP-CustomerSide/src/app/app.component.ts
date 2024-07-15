@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
     }
 
     if (refreshToken) {
-      this.authService.refreshToken(); // Token'ı yenile
+      this.authService.refreshToken(); 
     }
   }
 }
