@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackOffice.Models;
+using System;
 using System.Collections.Generic;
 
 namespace BackOffice.Models;
@@ -20,6 +21,10 @@ public partial class Users
     public DateOnly? ModifyDate { get; set; }
 
     public byte[]? IsActive { get; set; }
+
+    public string name { get; set; }
+
+    public string surname { get; set; }
 
     public virtual Company? CompNoNavigation { get; set; }
 

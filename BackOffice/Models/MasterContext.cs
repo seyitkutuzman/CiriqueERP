@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BackOffice.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackOffice.Models;
