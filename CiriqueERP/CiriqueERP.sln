@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackOffice", "..\BackOffice
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP-BackOffice", "..\ERP-BackOffice\", "{B0E2CE64-D897-411F-AA25-C454377DC1F2}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_61454"
 		Debug.AspNetCompiler.PhysicalPath = "..\ERP-BackOffice\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61454\"
@@ -30,7 +30,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP-BackOffice", "..\ERP-Ba
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP-CustomerSide", "..\ERP-CustomerSide\", "{B2ED9F0A-9618-42CE-BB0D-AB5D244056BB}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51023"
 		Debug.AspNetCompiler.PhysicalPath = "..\ERP-CustomerSide\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51023\"

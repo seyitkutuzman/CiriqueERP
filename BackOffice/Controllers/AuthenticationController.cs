@@ -25,17 +25,17 @@ public class AuthenticationController : ControllerBase
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginModel model)
     {
-        var user = _context.Users
-            .Where(u => u.CompNo == model.compNo && u.UserNo == model.userNo && u.UserPass == model.userPass)
+        var user = _context.BackOfficeUsers
+            .Where(u => u.userCode == model.userNo && u.userPass == model.userPass)
             .Select(u => new
             {
-                u.CompNo,
-                u.UserNo,
-                u.UserPass,
-                u.Departmant,
-                u.CreateDate,
-                u.ModifyDate,
-                u.IsActive,
+                
+                u.userCode,
+                u.userPass,
+                u.department,
+                u.createDate,
+                u.modifyDate,
+                
                 u.name,
                 u.surname
             })
@@ -48,13 +48,12 @@ public class AuthenticationController : ControllerBase
 
         var claims = new List<Claim>
         {
-            new Claim("CompNo", user.CompNo.ToString()),
-            new Claim("UserNo", user.UserNo.ToString()),
-            new Claim("UserPass", user.UserPass),
-            new Claim("Departmant", user.Departmant.ToString()),
-            new Claim("CreateDate", user.CreateDate.ToString()),
-            new Claim("ModifyDate", user.ModifyDate.ToString()),
-            new Claim("IsActive", Convert.ToBase64String(user.IsActive)),
+            
+            new Claim("userCode", user.userCode.ToString()),
+            new Claim("userPass", user.userPass),
+            new Claim("department", user.department.ToString()),
+            new Claim("createDate", user.createDate.ToString()),
+            new Claim("modifyDate", user.modifyDate.ToString()),
             new Claim("name", user.name),
             new Claim("surname", user.surname)
         };
@@ -163,8 +162,8 @@ public class AuthenticationController : ControllerBase
 
 public class LoginModel
 {
-    public int compNo { get; set; }
-    public int userNo { get; set; }
+    
+    public string userNo { get; set; }
     public string userPass { get; set; }
 }
 
