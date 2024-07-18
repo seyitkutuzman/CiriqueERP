@@ -9,7 +9,7 @@ import { boUserModel } from '../models/backofficeUser.model';
   providedIn: 'root'
 })
 export class boUserService {
-  private apiUrl = 'https://localhost:7270/api';
+  private apiUrl = 'http://localhost:5274/api';
 
   constructor(private http: HttpClient) { }
 
@@ -17,7 +17,7 @@ export class boUserService {
 
 
   login(userCode: string, userPass: string): Observable<any> {
-    const loginData = { Username: userCode, Password: userPass }; // API'nin beklediği alan adlarını kullanın
+    const loginData = { userNo: userCode, userPass: userPass }; // API'nin beklediği alan adlarını kullanın
     return this.http.post<any>(`${this.apiUrl}/auth/login`, loginData, {
       headers: { 'Content-Type': 'application/json' }
     });
