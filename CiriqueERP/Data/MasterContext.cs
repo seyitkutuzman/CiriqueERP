@@ -38,7 +38,7 @@ public partial class MasterContext : DbContext
     public virtual DbSet<Users> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("data source=Seyit-Laptop\\SEYIT;initial catalog=master;;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=cirique-erp.database.windows.net;Initial Catalog=master;Persist Security Info=True;User ID=catalcali;password=Seyit2346;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
