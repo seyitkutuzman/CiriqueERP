@@ -7,6 +7,7 @@ namespace BackOffice.Models;
 
 public partial class MasterContext : DbContext
 {
+    private readonly IConfiguration _configuration;
     public MasterContext()
     {
     }
@@ -41,7 +42,7 @@ public partial class MasterContext : DbContext
     public virtual DbSet<Users> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Data Source=cirique-erp.database.windows.net;Initial Catalog=CiriqueERP;Persist Security Info=True;User ID=catalcali;password=Seyit2346;Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer(this._configuration.GetConnectionString("DefaultConnection"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

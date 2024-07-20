@@ -5,14 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CiriqueERP.Data;
 
+
 public partial class MasterContext : DbContext
 {
-
+    private readonly IConfiguration configuration;
     public MasterContext(DbContextOptions<MasterContext> options)
         : base(options)
     {
     }
 
+    
     public virtual DbSet<BackOfficeUsers> BackOfficeUsers { get; set; }
 
     public virtual DbSet<Company> Companies { get; set; }
@@ -38,7 +40,7 @@ public partial class MasterContext : DbContext
     public virtual DbSet<Users> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Data Source=cirique-erp.database.windows.net;Initial Catalog=CiriqueERP;Persist Security Info=True;User ID=catalcali;password=Seyit2346;Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer(this.configuration.GetConnectionString("DefaultConnection"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
