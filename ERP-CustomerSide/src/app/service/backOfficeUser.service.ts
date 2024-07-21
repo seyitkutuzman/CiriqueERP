@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { boUserModel } from '../models/backofficeUser.model';
 import {jwtDecode} from 'jwt-decode';
 import { map, catchError } from 'rxjs/operators';
+import { vesselModel } from '../models/vesselModel';
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +77,11 @@ export class boUserService {
     );
   }
 
+  getVessels(): Observable<vesselModel> {
+    return this.http.get<vesselModel>(`${this.apiUrl}/auth/vessels`).pipe(
+      catchError(this.handleError)
+    );
+  }
   getUserById(id: number): Observable<boUserModel> {
     return this.http.get<boUserModel>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)

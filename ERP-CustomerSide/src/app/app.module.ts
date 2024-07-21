@@ -11,20 +11,22 @@ import { boUserService } from './service/backOfficeUser.service';
 import { CocMowComponent } from './components/coc-mow/coc-mow.component';
 
 @NgModule({
+  declarations: [
+  ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     RouterModule,
     AppRoutingModule,
-    AppComponent, // Standalone bileşen olarak ekliyoruz
-    LoginComponent, // Standalone bileşen olarak ekliyoruz
+    AppComponent,
+    LoginComponent, 
     CocMowComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     boUserService
   ],
-  bootstrap: [] // Burada da standalone bileşeni belirtiyoruz
+  bootstrap: []
 })
 export class AppModule { }

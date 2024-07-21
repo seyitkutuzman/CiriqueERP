@@ -7,11 +7,9 @@ public partial class Module
 {
     public int Id { get; set; }
 
-    public string? ModuleName { get; set; }
+    public string ModuleName { get; set; } = null!;
 
-    public int? Price { get; set; }
+    public string Description { get; set; } = null!;
 
-    public string? Description { get; set; }
-
-    public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
+    public int Price { get; set; }
 }

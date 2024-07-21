@@ -7,17 +7,17 @@ public partial class Task
 {
     public int Id { get; set; }
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
-    public string? Description { get; set; }
+    public string Description { get; set; } = null!;
 
-    public byte[]? IsDone { get; set; }
+    public DateOnly CreateDate { get; set; }
 
-    public int? Rating { get; set; }
+    public DateOnly ModifyDate { get; set; }
 
-    public int? Checker { get; set; }
+    public int Rating { get; set; }
 
-    public DateOnly? CreateDate { get; set; }
+    public byte[] IsDone { get; set; } = null!;
 
-    public DateOnly? ModifyDate { get; set; }
+    public int Checker { get; set; }
 }

@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using CiriqueERP.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CiriqueERP.Data;
+namespace CiriqueERP.Models;
 
-
-public partial class MasterContext : DbContext
+public partial class CiriqueErpContext : DbContext
 {
-    private readonly IConfiguration configuration;
-    public MasterContext(DbContextOptions<MasterContext> options)
+    public CiriqueErpContext()
+    {
+    }
+
+    public CiriqueErpContext(DbContextOptions<CiriqueErpContext> options)
         : base(options)
     {
     }
 
-    
-    public virtual DbSet<BackOfficeUsers> BackOfficeUsers { get; set; }
+    public virtual DbSet<BackOfficeUser> BackOfficeUsers { get; set; }
 
     public virtual DbSet<Company> Companies { get; set; }
 
@@ -35,39 +35,39 @@ public partial class MasterContext : DbContext
 
     public virtual DbSet<SparePart> SpareParts { get; set; }
 
-    public virtual DbSet<CiriqueERP.Models.Task> Tasks { get; set; }
+    public virtual DbSet<Task> Tasks { get; set; }
 
-    public virtual DbSet<Users> Users { get; set; }
-    public virtual DbSet<VesselList> VesselList { get; set;}
+    public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<VesselList> VesselLists { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
         => optionsBuilder.UseSqlServer("Data Source=cirique-erp.database.windows.net;Initial Catalog=CiriqueERP;Persist Security Info=True;User ID=catalcali;password=Seyit2346;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<BackOfficeUsers>(entity =>
+        modelBuilder.Entity<BackOfficeUser>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__backOffi__3214EC2744D8EDE9");
-
             entity.ToTable("backOfficeUsers");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.createDate).HasColumnName("createDate");
-            entity.Property(e => e.department).HasColumnName("department");
-            entity.Property(e => e.modifyDate).HasColumnName("modifyDate");
-            entity.Property(e => e.name)
+            entity.Property(e => e.CreateDate).HasColumnName("createDate");
+            entity.Property(e => e.Department).HasColumnName("department");
+            entity.Property(e => e.ModifyDate).HasColumnName("modifyDate");
+            entity.Property(e => e.Name)
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("name");
-            entity.Property(e => e.surname)
+            entity.Property(e => e.Surname)
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("surname");
-            entity.Property(e => e.userCode)
+            entity.Property(e => e.UserCode)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("userCode");
-            entity.Property(e => e.userPass)
+            entity.Property(e => e.UserPass)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("userPass");
@@ -75,20 +75,14 @@ public partial class MasterContext : DbContext
 
         modelBuilder.Entity<Company>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Company__3214EC27CC81B651");
-
             entity.ToTable("Company");
-
-            entity.HasIndex(e => e.CompNo, "UQ__Company__5E452BB77CBDC631").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Adress)
                 .HasMaxLength(250)
                 .IsUnicode(false)
                 .HasColumnName("adress");
-            entity.Property(e => e.CompNo)
-                .IsRequired()
-                .HasColumnName("compNo");
+            entity.Property(e => e.CompNo).HasColumnName("compNo");
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.IsActive)
                 .HasMaxLength(1)
@@ -96,18 +90,15 @@ public partial class MasterContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("isActive");
             entity.Property(e => e.ModifyDate).HasColumnName("modifyDate");
-            entity.Property(e => e.Module).HasColumnName("moduleID");
+            entity.Property(e => e.ModuleId).HasColumnName("moduleID");
             entity.Property(e => e.TaxNumber)
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("taxNumber");
-
         });
 
         modelBuilder.Entity<Crew>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__crew__3214EC27066CEE70");
-
             entity.ToTable("crew");
 
             entity.Property(e => e.Id).HasColumnName("ID");
@@ -156,32 +147,20 @@ public partial class MasterContext : DbContext
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("ship");
-
-            entity.HasOne(d => d.Department).WithMany(p => p.Crews)
-                .HasForeignKey(d => d.DepartmentId)
-                .HasConstraintName("FK__crew__department__789EE131");
         });
 
         modelBuilder.Entity<Department>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Departme__3214EC275FC47A94");
-
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.DepartmantName)
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("departmantName");
             entity.Property(e => e.DepartmentRoles).HasColumnName("departmentRoles");
-
-            entity.HasOne(d => d.DepartmentRolesNavigation).WithMany(p => p.Departments)
-                .HasForeignKey(d => d.DepartmentRoles)
-                .HasConstraintName("FK__Departmen__depar__68687968");
         });
 
         modelBuilder.Entity<Manual>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__manuals__3214EC2706BF9063");
-
             entity.ToTable("manuals");
 
             entity.Property(e => e.Id).HasColumnName("ID");
@@ -197,8 +176,6 @@ public partial class MasterContext : DbContext
 
         modelBuilder.Entity<Module>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Modules__3214EC27C497A850");
-
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description)
                 .HasMaxLength(500)
@@ -213,8 +190,6 @@ public partial class MasterContext : DbContext
 
         modelBuilder.Entity<Part>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Parts__3214EC2737EA87AA");
-
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.Description)
@@ -223,13 +198,16 @@ public partial class MasterContext : DbContext
                 .HasColumnName("description");
             entity.Property(e => e.IsAnnual)
                 .HasMaxLength(1)
-                .IsFixedLength();
+                .IsFixedLength()
+                .HasColumnName("isAnnual");
             entity.Property(e => e.IsMonthly)
                 .HasMaxLength(1)
-                .IsFixedLength();
+                .IsFixedLength()
+                .HasColumnName("isMonthly");
             entity.Property(e => e.IsWeekly)
                 .HasMaxLength(1)
-                .IsFixedLength();
+                .IsFixedLength()
+                .HasColumnName("isWeekly");
             entity.Property(e => e.LastMaintenance).HasColumnName("lastMaintenance");
             entity.Property(e => e.ModifyDate).HasColumnName("modifyDate");
             entity.Property(e => e.Name)
@@ -241,8 +219,6 @@ public partial class MasterContext : DbContext
 
         modelBuilder.Entity<Resource>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Resource__3214EC2781164E20");
-
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.IsActive)
@@ -263,8 +239,6 @@ public partial class MasterContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC2707272060");
-
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description)
                 .HasMaxLength(500)
@@ -278,8 +252,6 @@ public partial class MasterContext : DbContext
 
         modelBuilder.Entity<SparePart>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__sparePar__3214EC274E298C0B");
-
             entity.ToTable("spareParts");
 
             entity.Property(e => e.Id).HasColumnName("ID");
@@ -295,10 +267,8 @@ public partial class MasterContext : DbContext
                 .HasColumnName("name");
         });
 
-        modelBuilder.Entity<CiriqueERP.Models.Task>(entity =>
+        modelBuilder.Entity<Task>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Tasks__3214EC2742F526C9");
-
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Checker).HasColumnName("checker");
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
@@ -308,7 +278,8 @@ public partial class MasterContext : DbContext
                 .HasColumnName("description");
             entity.Property(e => e.IsDone)
                 .HasMaxLength(1)
-                .IsFixedLength();
+                .IsFixedLength()
+                .HasColumnName("isDone");
             entity.Property(e => e.ModifyDate).HasColumnName("modifyDate");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
@@ -317,12 +288,8 @@ public partial class MasterContext : DbContext
             entity.Property(e => e.Rating).HasColumnName("rating");
         });
 
-        modelBuilder.Entity<Users>(entity =>
+        modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC27C1ECF451");
-
-            entity.HasIndex(e => e.UserNo, "UQ__Users__CB9A040D0F6F8D90").IsUnique();
-
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CompNo).HasColumnName("compNo");
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
@@ -333,29 +300,21 @@ public partial class MasterContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("isActive");
             entity.Property(e => e.ModifyDate).HasColumnName("modifyDate");
+            entity.Property(e => e.Name)
+                .HasMaxLength(25)
+                .IsUnicode(false)
+                .HasColumnName("name");
+            entity.Property(e => e.Surname)
+                .HasMaxLength(25)
+                .IsUnicode(false)
+                .HasColumnName("surname");
             entity.Property(e => e.UserNo).HasColumnName("userNo");
             entity.Property(e => e.UserPass)
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("userPass");
-
-            entity.HasOne(d => d.CompNoNavigation).WithMany(p => p.Users)
-                .HasPrincipalKey(p => p.CompNo)
-                .HasForeignKey(d => d.CompNo)
-                .HasConstraintName("FK__Users__compNo__6C390A4C");
-
-            entity.HasOne(d => d.DepartmantNavigation).WithMany(p => p.Users)
-                .HasForeignKey(d => d.Departmant)
-                .HasConstraintName("FK__Users__departman__6D2D2E85");
-            entity.Property(e => e.name)
-                .HasMaxLength(25)
-                .IsUnicode(false)
-                .HasColumnName("name");
-            entity.Property(e => e.surname)
-                .HasMaxLength(25)
-                .IsUnicode(false)
-                .HasColumnName("surname");
         });
+
         modelBuilder.Entity<VesselList>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__vesselLi__3214EC272BA1935D");
@@ -371,6 +330,7 @@ public partial class MasterContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("vesselName");
         });
+
         OnModelCreatingPartial(modelBuilder);
     }
 

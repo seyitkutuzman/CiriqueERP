@@ -7,21 +7,21 @@ public partial class Part
 {
     public int Id { get; set; }
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
-    public string? Description { get; set; }
+    public string Description { get; set; } = null!;
 
-    public byte[]? IsAnnual { get; set; }
+    public DateOnly LastMaintenance { get; set; }
 
-    public byte[]? IsMonthly { get; set; }
+    public DateOnly CreateDate { get; set; }
 
-    public byte[]? IsWeekly { get; set; }
+    public DateOnly ModifyDate { get; set; }
 
-    public int? Period { get; set; }
+    public int Period { get; set; }
 
-    public DateOnly? LastMaintenance { get; set; }
+    public byte[] IsAnnual { get; set; } = null!;
 
-    public DateOnly? CreateDate { get; set; }
+    public byte[] IsMonthly { get; set; } = null!;
 
-    public DateOnly? ModifyDate { get; set; }
+    public byte[] IsWeekly { get; set; } = null!;
 }

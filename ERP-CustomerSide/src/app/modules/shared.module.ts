@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { BlankComponent } from '../components/blank/blank.component';
 import { SectionComponent } from '../components/section/section.component';
 import { FormsModule } from '@angular/forms';
+import { MainSidebarComponent } from '../components/layouts/main-sidebar/main-sidebar.component';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -12,13 +14,17 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     BlankComponent,
     SectionComponent,
-    FormsModule
+    FormsModule,
+    MainSidebarComponent,
+    RouterModule
   ],
   exports: [
     CommonModule,
     BlankComponent,
     SectionComponent,
-    FormsModule
+    FormsModule,
+    MainSidebarComponent,
+    RouterModule
   ]
 })
 export class SharedModule { }

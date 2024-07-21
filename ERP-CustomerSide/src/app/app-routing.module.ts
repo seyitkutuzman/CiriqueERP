@@ -7,17 +7,12 @@ import { CocMowComponent } from './components/coc-mow/coc-mow.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'home', component: LayoutsComponent, children: [
-    {
-        path: '',
-        component: HomeComponent
-    }] },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: '**', redirectTo: '/home', pathMatch: 'full' },
-  {path: 'coc-mow', component: CocMowComponent}
+  { path: '', component: LayoutsComponent, children: [
+    { path: '', component: HomeComponent },
+    { path: 'coc-mow', component: CocMowComponent }
+  ] },
+  { path: '**', redirectTo: '' }
 ];
-
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

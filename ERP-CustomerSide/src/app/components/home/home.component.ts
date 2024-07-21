@@ -6,11 +6,13 @@ import { AuthService } from '../../service/auth.service';
 import { boUserService } from '../../service/backOfficeUser.service';
 import { userInfoService } from '../../service/userInfo.service';
 import { Router } from '@angular/router';
+import { CocMowComponent } from "../coc-mow/coc-mow.component";
+import { MainSidebarComponent } from '../layouts/main-sidebar/main-sidebar.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [SharedModule, LoginComponent],
+  imports: [SharedModule, LoginComponent, CocMowComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -21,6 +23,7 @@ export class HomeComponent implements OnInit {
     private userInfo: userInfoService,
     private router: Router
   ) {}
+
   ngOnInit(): void {
     const accessToken = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
