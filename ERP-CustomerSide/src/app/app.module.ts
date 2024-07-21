@@ -8,6 +8,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AppRoutingModule } from './app-routing.module';
 import { JwtInterceptor } from './service/jwt.interceptor';
 import { boUserService } from './service/backOfficeUser.service';
+import { CocMowComponent } from './components/coc-mow/coc-mow.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { boUserService } from './service/backOfficeUser.service';
     RouterModule,
     AppRoutingModule,
     AppComponent, // Standalone bileşen olarak ekliyoruz
-    LoginComponent // Standalone bileşen olarak ekliyoruz
+    LoginComponent, // Standalone bileşen olarak ekliyoruz
+    CocMowComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
