@@ -1,11 +1,18 @@
-export class vesselModel {
-    ID: number;
-    vesselName: string;
+export interface vesselModel {
+
     compNo: number;
 
-    constructor() {
-        this.ID = 0;
-        this.vesselName = '';
-        this.compNo = 0;
-    }
+    vesselName: string;
+
+    description: string;
+
+    tasks: number;
+
+    openedDate: string;
+
+    status: number;
+
+    docNo: string;
+
 }
+  

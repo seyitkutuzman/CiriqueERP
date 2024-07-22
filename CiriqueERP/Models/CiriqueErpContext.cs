@@ -90,7 +90,7 @@ public partial class CiriqueErpContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("isActive");
             entity.Property(e => e.ModifyDate).HasColumnName("modifyDate");
-            entity.Property(e => e.ModuleId).HasColumnName("moduleID");
+            entity.Property(e => e.Module).HasColumnName("moduleID");
             entity.Property(e => e.TaxNumber)
                 .HasMaxLength(500)
                 .IsUnicode(false)
@@ -108,7 +108,7 @@ public partial class CiriqueErpContext : DbContext
                 .HasColumnName("adress");
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.DateOfBirth).HasColumnName("dateOfBirth");
-            entity.Property(e => e.DepartmentId).HasColumnName("departmentID");
+            entity.Property(e => e.DepartmentID).HasColumnName("departmentID");
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .IsUnicode(false)

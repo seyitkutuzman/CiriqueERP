@@ -27,7 +27,7 @@ export class boUserService {
 
   login(compNo: string, userCode: string, userPass: string): Observable<any> {
     const loginData = { compNo: compNo, userNo: userCode, userPass: userPass };
-    return this.http.post<any>(`${this.apiUrl}/auth/login`, loginData, {
+    return this.http.post<any>(`${this.apiUrl}/controller/login`, loginData, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
       map(user => {
@@ -54,7 +54,7 @@ export class boUserService {
   refreshToken(): Observable<any> {
     const currentUser = this.currentUserValue;
     if (currentUser && currentUser.refreshToken) {
-      return this.http.post<any>(`${this.apiUrl}/auth/refresh`, {
+      return this.http.post<any>(`${this.apiUrl}/controller/refresh`, {
         accessToken: currentUser.accessToken,
         refreshToken: currentUser.refreshToken
       }).pipe(
@@ -78,7 +78,18 @@ export class boUserService {
   }
 
   getVessels(): Observable<vesselModel> {
-    return this.http.get<vesselModel>(`${this.apiUrl}/auth/vessels`).pipe(
+    const currentUser = this.currentUserValue;
+    const decodedToken = this.decodeToken(currentUser?.accessToken);
+    const compNo = decodedToken?.CompNo;
+
+    if (!compNo) {
+      return throwError("Invalid company number");
+    }
+
+    console.log('API Call with Company Number:', compNo);
+    return this.http.post<vesselModel>(`${this.apiUrl}/controller/vessels`, { CompNo: compNo }, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
       catchError(this.handleError)
     );
   }

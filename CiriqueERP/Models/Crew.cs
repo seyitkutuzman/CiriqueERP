@@ -27,7 +27,7 @@ public partial class Crew
 
     public string Ship { get; set; } = null!;
 
-    public int DepartmentId { get; set; }
+    public int DepartmentID { get; set; }
 
     public DateOnly CreateDate { get; set; }
 

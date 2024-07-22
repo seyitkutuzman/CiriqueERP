@@ -14,17 +14,19 @@
           </div>
           <div class="card-body">
             <div class="form-group">
-              <label for="inputName">Project Name</label>
+              <label for="inputName">Vessel Name</label>
               <select id="inputName" class="form-control">
-                <option *ngFor="let vessel of vesselModel">{{ vessel }}</option>
+                <option *ngFor="let vessel of vesselData.vesselName">{{ vessel }}</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="inputDescription">Project Description</label>
-              <textarea id="inputDescription" class="form-control" rows="4"></textarea>
+              <label for="inputDescription">Description</label>
+              <textarea id="inputDescription" class="form-control" rows="4">
+                vessel.description
+              </textarea>
             </div>
             <div class="form-group">
-              <label for="inputStatus">Status</label>
+              <label for="inputStatus"></label>
               <select id="inputStatus" class="form-control custom-select">
                 <option selected disabled>Select one</option>
                 <option>On Hold</option>

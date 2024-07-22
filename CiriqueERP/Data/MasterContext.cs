@@ -39,6 +39,8 @@ public partial class MasterContext : DbContext
 
     public virtual DbSet<Users> Users { get; set; }
     public virtual DbSet<VesselList> VesselList { get; set;}
+    public virtual DbSet<CoClass> CoClass { get; set;}
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Data Source=cirique-erp.database.windows.net;Initial Catalog=CiriqueERP;Persist Security Info=True;User ID=catalcali;password=Seyit2346;Trust Server Certificate=True");
@@ -117,7 +119,7 @@ public partial class MasterContext : DbContext
                 .HasColumnName("adress");
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.DateOfBirth).HasColumnName("dateOfBirth");
-            entity.Property(e => e.DepartmentId).HasColumnName("departmentID");
+            entity.Property(e => e.DepartmentID).HasColumnName("departmentID");
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -156,10 +158,6 @@ public partial class MasterContext : DbContext
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("ship");
-
-            entity.HasOne(d => d.Department).WithMany(p => p.Crews)
-                .HasForeignKey(d => d.DepartmentId)
-                .HasConstraintName("FK__crew__department__789EE131");
         });
 
         modelBuilder.Entity<Department>(entity =>
@@ -173,9 +171,6 @@ public partial class MasterContext : DbContext
                 .HasColumnName("departmantName");
             entity.Property(e => e.DepartmentRoles).HasColumnName("departmentRoles");
 
-            entity.HasOne(d => d.DepartmentRolesNavigation).WithMany(p => p.Departments)
-                .HasForeignKey(d => d.DepartmentRoles)
-                .HasConstraintName("FK__Departmen__depar__68687968");
         });
 
         modelBuilder.Entity<Manual>(entity =>
@@ -338,15 +333,6 @@ public partial class MasterContext : DbContext
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("userPass");
-
-            entity.HasOne(d => d.CompNoNavigation).WithMany(p => p.Users)
-                .HasPrincipalKey(p => p.CompNo)
-                .HasForeignKey(d => d.CompNo)
-                .HasConstraintName("FK__Users__compNo__6C390A4C");
-
-            entity.HasOne(d => d.DepartmantNavigation).WithMany(p => p.Users)
-                .HasForeignKey(d => d.Departmant)
-                .HasConstraintName("FK__Users__departman__6D2D2E85");
             entity.Property(e => e.name)
                 .HasMaxLength(25)
                 .IsUnicode(false)
@@ -370,6 +356,33 @@ public partial class MasterContext : DbContext
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("vesselName");
+        });
+
+        modelBuilder.Entity<CoClass>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__CoClass__3213E83F51DF2E7C");
+
+            entity.ToTable("CoClass");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Description)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("description");
+            entity.Property(e => e.DocNo)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("docNo");
+            entity.Property(e => e.OpenedDate).HasColumnName("openedDate");
+            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Tasks).HasColumnName("tasks");
+            entity.Property(e => e.VesselName)
+                .HasMaxLength(25)
+                .IsUnicode(false)
+                .HasColumnName("vesselName");
+            entity.Property(e => e.CompNo).HasColumnName("compNo");
         });
         OnModelCreatingPartial(modelBuilder);
     }

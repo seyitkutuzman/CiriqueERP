@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-[Route("api/auth")]
+[Route("api/controller")]
 [ApiController]
 public class AuthenticationController : ControllerBase
 {

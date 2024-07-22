@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedModule } from '../../modules/shared.module';
-import { BlankComponent } from '../blank/blank.component';
-import { MainSidebarComponent } from '../layouts/main-sidebar/main-sidebar.component';
 import { vesselModel } from '../../models/vesselModel';
-import { api } from '../../constants';
 import { boUserService } from '../../service/backOfficeUser.service';
 
 @Component({
@@ -13,26 +10,29 @@ import { boUserService } from '../../service/backOfficeUser.service';
   templateUrl: './coc-mow.component.html',
   styleUrls: ['./coc-mow.component.css']
 })
-
 export class CocMowComponent implements OnInit {
-  constructor(private vessels: vesselModel,
-              private userService: boUserService
+  vesselData = {compNo: 0, vesselName: '', description: '', tasks: 0, openedDate: '',status: 0, docNo: ''}
+  compNo: number = 0;
+
+  constructor(
+    private userService: boUserService
   ) {}
 
-  
-  vesselModel: string[] = [];
-
   ngOnInit(): void {
-    this.userService.getVessels().subscribe(
-      (response: vesselModel) => { 
-        for (const vesselName of response.vesselName) {
-          this.vesselModel.push(vesselName);
-        }
-      },
-      (error: any) => {
-        console.log(error);
+    this.userService.currentUser.subscribe(user => {
+      console.log('Current User:', user); // Log the user object
+      if (user) {
+        this.userService.getVessels().subscribe({
+          next: (response: vesselModel) => {
+            if (response) {
+              this.vesselData = response; // Correctly assign the array
+            }
+          },
+          error: (error: any) => {
+            console.log(error);
+          }
+        });
       }
-    );
+    });
   }
 }
-
