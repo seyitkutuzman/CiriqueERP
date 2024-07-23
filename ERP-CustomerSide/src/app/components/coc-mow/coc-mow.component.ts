@@ -1,38 +1,76 @@
-import { Component, OnInit } from '@angular/core';
-import { SharedModule } from '../../modules/shared.module';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { vesselModel } from '../../models/vesselModel';
 import { boUserService } from '../../service/backOfficeUser.service';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { BlankComponent } from '../blank/blank.component';
+import { SectionComponent } from '../section/section.component';
 
 @Component({
   selector: 'app-coc-mow',
   standalone: true,
-  imports: [SharedModule],
+  imports: [CommonModule, FormsModule, RouterOutlet, BlankComponent, SectionComponent, ReactiveFormsModule],
   templateUrl: './coc-mow.component.html',
   styleUrls: ['./coc-mow.component.css']
 })
 export class CocMowComponent implements OnInit {
-  vesselData = {compNo: 0, vesselName: '', description: '', tasks: 0, openedDate: '',status: 0, docNo: ''}
-  compNo: number = 0;
+  @ViewChild('modalContent') modalContent: any;
+  vessels: vesselModel[] = [];
+  selectedVessel: vesselModel | null = null;
+  vesselForm: FormGroup;
 
   constructor(
-    private userService: boUserService
-  ) {}
+    private userService: boUserService,
+    private fb: FormBuilder,
+    private modalService: NgbModal
+  ) {
+    this.vesselForm = this.fb.group({
+      vesselName: [''],
+      description: [''],
+      status: [0],
+      docNo: [''],
+      tasks: [0],
+      openedDate: ['']
+    });
+  }
 
   ngOnInit(): void {
-    this.userService.currentUser.subscribe(user => {
-      console.log('Current User:', user); // Log the user object
-      if (user) {
-        this.userService.getVessels().subscribe({
-          next: (response: vesselModel) => {
-            if (response) {
-              this.vesselData = response; // Correctly assign the array
-            }
-          },
-          error: (error: any) => {
-            console.log(error);
-          }
-        });
-      }
+    this.userService.getVessels().subscribe((response: vesselModel[]) => {
+      this.vessels = response;
+      console.log('Vessels:', this.vessels);
     });
+  }
+
+  openModal() {
+    this.modalService.open(this.modalContent, { size: 'lg' });
+  }
+
+  closeModal() {
+    this.modalService.dismissAll();
+  }
+
+  onSubmit() {
+    if (this.vesselForm.valid) {
+      // Tarih alanını kontrol edip varsayılan bir değer atayın
+      if (!this.vesselForm.value.openedDate) {
+        this.vesselForm.patchValue({ openedDate: new Date().toISOString() });
+      }
+      this.userService.createVessel(this.vesselForm.value).subscribe({
+        next: (response) => {
+          console.log('Vessel created successfully:', response);
+          this.vessels.push(response);
+          this.closeModal();
+        },
+        error: (error) => {
+          console.error('Error creating vessel:', error);
+        }
+      });
+    }
+  }
+  onVesselChange(vessel: vesselModel | null) {
+    this.selectedVessel = vessel;
+    console.log('Selected Vessel:', this.selectedVessel);
   }
 }

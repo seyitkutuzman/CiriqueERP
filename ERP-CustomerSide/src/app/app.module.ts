@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // ReactiveFormsModule'ü ekleyin
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
@@ -11,16 +11,15 @@ import { boUserService } from './service/backOfficeUser.service';
 import { CocMowComponent } from './components/coc-mow/coc-mow.component';
 
 @NgModule({
-  declarations: [
-  ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule, // ReactiveFormsModule'ü burada ekleyin
     HttpClientModule,
     RouterModule,
     AppRoutingModule,
     AppComponent,
-    LoginComponent, 
+    LoginComponent,
     CocMowComponent
   ],
   providers: [

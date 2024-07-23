@@ -1,87 +1,73 @@
 <app-blank>
   <app-section sectionTitle="Condition of Class">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">General</h3>
+    <div class="vessel-grid-container">
+      <div class="form-group">
+        <label for="vesselSelect">Select a Vessel</label>
+        <select id="vesselSelect" class="form-control" [(ngModel)]="selectedVessel" (ngModelChange)="onVesselChange($event)">
+          <option [ngValue]="null">All</option>
+          <option *ngFor="let vessel of vessels" [ngValue]="vessel">{{ vessel.vesselName }}</option>
+        </select>
+      </div>
 
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                <i class="fas fa-minus"></i>
-              </button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="form-group">
-              <label for="inputName">Vessel Name</label>
-              <select id="inputName" class="form-control">
-                <option *ngFor="let vessel of vesselData.vesselName">{{ vessel }}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inputDescription">Description</label>
-              <textarea id="inputDescription" class="form-control" rows="4">
-                vessel.description
-              </textarea>
-            </div>
-            <div class="form-group">
-              <label for="inputStatus"></label>
-              <select id="inputStatus" class="form-control custom-select">
-                <option selected disabled>Select one</option>
-                <option>On Hold</option>
-                <option>Canceled</option>
-                <option>Success</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inputClientCompany">Client Company</label>
-              <input type="text" id="inputClientCompany" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputProjectLeader">Project Leader</label>
-              <input type="text" id="inputProjectLeader" class="form-control">
-            </div>
-          </div>
-          <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-      </div>
-      <div class="col-md-6">
-        <div class="card card-secondary">
-          <div class="card-header">
-            <h3 class="card-title">Budget</h3>
-
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                <i class="fas fa-minus"></i>
-              </button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="form-group">
-              <label for="inputEstimatedBudget">Estimated budget</label>
-              <input type="number" id="inputEstimatedBudget" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputSpentBudget">Total amount spent</label>
-              <input type="number" id="inputSpentBudget" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputEstimatedDuration">Estimated project duration</label>
-              <input type="number" id="inputEstimatedDuration" class="form-control">
-            </div>
-          </div>
-          <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Vessel Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Doc No</th>
+            <th>Task No</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vessel of vessels">
+            <td>{{ vessel.vesselName }}</td>
+            <td>{{ vessel.description }}</td>
+            <td>{{ vessel.status }}</td>
+            <td>{{ vessel.docNo }}</td>
+            <td>{{ vessel.tasks }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="row">
-      <div class="col-12">
-        <a href="#" class="btn btn-secondary">Cancel</a>
-        <input type="submit" value="Create new Project" class="btn btn-success float-right">
-      </div>
-    </div>
-</app-section>
+    <button class="btn btn-primary" style="position: absolute; top: 0; right: 0;" (click)="openModal()">Ekle</button>
+  </app-section>
 </app-blank>
+
+<!-- Modal İçeriği -->
+<ng-template #modalContent>
+  <div class="modal-header">
+    <h5 class="modal-title">Add New Vessel</h5>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="vesselForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="vesselName">Vessel Name</label>
+        <input type="text" id="vesselName" formControlName="vesselName" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" class="form-control" rows="4"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="status">Status</label>
+        <input type="number" id="status" formControlName="status" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="docNo">Doc No</label>
+        <input type="text" id="docNo" formControlName="docNo" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="tasks">Task No</label>
+        <input type="number" id="tasks" formControlName="tasks" class="form-control">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

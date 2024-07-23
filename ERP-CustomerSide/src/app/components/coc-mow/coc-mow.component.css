@@ -1,0 +1,46 @@
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .vessel-select {
+    width: 200px;
+  }
+  
+  .add-button {
+    margin-right: 10px;
+  }
+  
+  .modal-lg {
+    max-width: 800px;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-horizontal .form-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: end;
+  }
+  
+  .col-form-label {
+    text-align: right;
+  }
+  
+  .text-right {
+    text-align: right;
+  }
+  
+  .modal-footer .btn + .btn {
+    margin-left: 10px;
+  }
+  

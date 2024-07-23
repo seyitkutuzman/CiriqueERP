@@ -77,7 +77,7 @@ export class boUserService {
     );
   }
 
-  getVessels(): Observable<vesselModel> {
+  getVessels(): Observable<vesselModel[]> {
     const currentUser = this.currentUserValue;
     const decodedToken = this.decodeToken(currentUser?.accessToken);
     const compNo = decodedToken?.CompNo;
@@ -87,12 +87,20 @@ export class boUserService {
     }
 
     console.log('API Call with Company Number:', compNo);
-    return this.http.post<vesselModel>(`${this.apiUrl}/controller/vessels`, { CompNo: compNo }, {
+    return this.http.post<vesselModel[]>(`${this.apiUrl}/controller/vessels`, { CompNo: compNo }, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
       catchError(this.handleError)
     );
   }
+  createVessel(vessel: vesselModel): Observable<vesselModel> {
+    return this.http.post<vesselModel>(`${this.apiUrl}/controller/addvessel`, vessel, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
   getUserById(id: number): Observable<boUserModel> {
     return this.http.get<boUserModel>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)

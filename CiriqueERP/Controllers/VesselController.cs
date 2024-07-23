@@ -1,5 +1,7 @@
 ﻿using CiriqueERP.Data;
+using CiriqueERP.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace CiriqueERP.Controllers
 {
@@ -46,10 +48,51 @@ namespace CiriqueERP.Controllers
 
             return Ok(vessels);
         }
+        [HttpPost("addvessel")]
+        public IActionResult AddVessel([FromBody] AddVesselModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            DateTime openedDate;
+            if (!DateTime.TryParse(model.OpenedDate, out openedDate))
+            {
+                // Varsayılan bir tarih atayın (örneğin: bugünün tarihi)
+                openedDate = DateTime.Now;
+            }
+
+            var newVessel = new CoClass
+            {
+                VesselName = model.VesselName,
+                CompNo = model.CompNo,
+                OpenedDate = openedDate, // Dönüştürülmüş tarih değeri kullanılır
+                Status = model.Status,
+                Description = model.Description,
+                DocNo = model.DocNo,
+                Tasks = model.Tasks
+            };
+
+            _context.CoClass.Add(newVessel);
+            _context.SaveChanges();
+
+            return Ok(new { Message = "Vessel added successfully" });
+        }
     }
 
     public class VesselModel
     {
         public int CompNo { get; set; }
+    }
+    public class AddVesselModel
+    {
+        public string VesselName { get; set; }
+        public int CompNo { get; set; }
+        public string OpenedDate { get; set; }
+        public int Status { get; set; }
+        public string Description { get; set; }
+        public string DocNo { get; set; }
+        public int Tasks { get; set; }
     }
 }

@@ -13,7 +13,7 @@ public partial class CoClass
 
     public string? Description { get; set; }
 
-    public DateOnly? OpenedDate { get; set; }
+    public DateTime OpenedDate { get; set; }
 
     public int? Status { get; set; }
 
