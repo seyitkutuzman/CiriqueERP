@@ -5,7 +5,7 @@ namespace CiriqueERP.Models;
 
 public partial class CoClass
 {
-    public int Id { get; set; }
+    public int ID { get; set; }
 
     public string? VesselName { get; set; }
 

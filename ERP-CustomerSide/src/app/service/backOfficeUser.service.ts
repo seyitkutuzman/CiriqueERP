@@ -8,7 +8,7 @@ import { map, catchError } from 'rxjs/operators';
 import { vesselModel } from '../models/vesselModel';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class boUserService {
   private apiUrl = 'https://localhost:7071/api';

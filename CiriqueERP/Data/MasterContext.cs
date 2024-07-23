@@ -360,12 +360,11 @@ public partial class MasterContext : DbContext
 
         modelBuilder.Entity<CoClass>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__CoClass__3213E83F51DF2E7C");
+            entity.HasKey(e => e.ID).HasName("PK__CoClass__3213E83FF541A79F");
 
             entity.ToTable("CoClass");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+            entity.Property(e => e.ID)
                 .HasColumnName("id");
             entity.Property(e => e.Description)
                 .HasMaxLength(1000)

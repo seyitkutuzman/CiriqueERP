@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { BlankComponent } from '../blank/blank.component';
 import { SectionComponent } from '../section/section.component';
+import {  } from '../../service/backOfficeUser.service';
 
 @Component({
   selector: 'app-coc-mow',
@@ -26,8 +27,12 @@ export class CocMowComponent implements OnInit {
     private fb: FormBuilder,
     private modalService: NgbModal
   ) {
+    const currentUser = this.userService.currentUserValue;
+    const decodedToken = this.userService.decodeToken(currentUser?.accessToken);
+    const compNo = decodedToken?.CompNo;
     this.vesselForm = this.fb.group({
       vesselName: [''],
+      compNo: [compNo],
       description: [''],
       status: [0],
       docNo: [''],
