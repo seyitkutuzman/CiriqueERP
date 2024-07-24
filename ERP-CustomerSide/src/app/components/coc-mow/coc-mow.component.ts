@@ -18,8 +18,13 @@ import { SectionComponent } from '../section/section.component';
 export class CocMowComponent implements OnInit {
   @ViewChild('modalContent') modalContent: any;
   vessels: vesselModel[] = [];
+  allVessels: vesselModel[] = []; // For the popup
+  filteredVessels: vesselModel[] = [];
   selectedVessel: vesselModel | null = null;
   vesselForm: FormGroup;
+  id: number = 0;
+  startDate: string | null = null;
+  endDate: string | null = null;
 
   constructor(
     private userService: boUserService,
@@ -27,18 +32,34 @@ export class CocMowComponent implements OnInit {
     private modalService: NgbModal
   ) {
     this.vesselForm = this.fb.group({
+      vesselId: [null],
       vesselName: [''],
-      description: [''],
-      status: [0],
+      compNo: [0],
       docNo: [''],
-      tasks: [0],
-      openedDate: [''] // Tarih alanı eklenir
+      description: [''],
+      human: [false],
+      system: [false],
+      material: [false],
+      subject: [''],
+      openedDate: [''],
+      dueDate: [''],
+      extendedDate: [''],
+      closedDate: [''],
+      remarks: [''],
+      status: [0],
+      tasks: [0]
     });
   }
 
   ngOnInit(): void {
     this.userService.getVessels().subscribe((response: vesselModel[]) => {
       this.vessels = response;
+      this.filteredVessels = response;
+    });
+
+    this.userService.getAllVessels().subscribe((response: vesselModel[]) => {
+      this.allVessels = response;
+      console.log('All Vessels Response:', response);
     });
   }
 
@@ -52,14 +73,23 @@ export class CocMowComponent implements OnInit {
 
   onSubmit() {
     if (this.vesselForm.valid) {
-      // Tarih alanını kontrol edip varsayılan bir değer atayın
-      if (!this.vesselForm.value.openedDate) {
-        this.vesselForm.patchValue({ openedDate: new Date().toISOString() });
+      const currentUser = this.userService.currentUserValue;
+      const decodedToken = this.userService.decodeToken(currentUser?.accessToken);
+      const compNo = decodedToken?.CompNo;
+
+      this.vesselForm.patchValue({ compNo: compNo }); // compNo'yu ayarla
+
+      const selectedVessel = this.allVessels.find(v => v.vesselName === this.vesselForm.value.vesselName);
+      if (selectedVessel) {
+        this.vesselForm.patchValue({ vesselName: selectedVessel.vesselName });
       }
+
+      console.log('Form Values:', this.vesselForm.value); // Form değerlerini kontrol edin
+
       this.userService.createVessel(this.vesselForm.value).subscribe({
         next: (response) => {
-          console.log('Vessel created successfully:', response);
           this.vessels.push(response);
+          this.filteredVessels.push(response);
           this.closeModal();
         },
         error: (error) => {
@@ -69,13 +99,19 @@ export class CocMowComponent implements OnInit {
     }
   }
 
-
   deleteVessel(id: number) {
-    console.log('Deleting vessel with ID:', id);
+    console.log('Deleting vessel with ID:', id);  // ID'nin doğru geçtiğini kontrol edin
+
+    if (id === undefined || id === null) {
+      console.error('Vessel ID is undefined or null');
+      return;
+    }
+
     this.userService.deleteVessel(id).subscribe({
       next: () => {
         this.vessels = this.vessels.filter(v => v.id !== id);
-        window.location.reload();
+        this.filteredVessels = this.filteredVessels.filter(v => v.id !== id);
+        console.log('Vessel deleted successfully');
       },
       error: (error) => {
         console.error('Error deleting vessel:', error);
@@ -83,10 +119,53 @@ export class CocMowComponent implements OnInit {
     });
   }
 
-  get filteredVessels() {
-    if (this.selectedVessel === null || this.selectedVessel.vesselName === 'All') {
-      return this.vessels;
+  getStatusText(status: number): string {
+    switch (status) {
+      case 0:
+        return 'Opened';
+      case 1:
+        return 'Closed';
+      case 2:
+        return 'Expired';
+      default:
+        return 'Unknown';
     }
-    return this.vessels.filter(v => v.vesselName === this.selectedVessel?.vesselName);
+  }
+
+  onVesselChange() {
+    if (this.selectedVessel) {
+      this.filteredVessels = this.vessels.filter(v => v.vesselName === this.selectedVessel?.vesselName);
+    } else {
+      this.filteredVessels = this.vessels;
+    }
+    this.applyDateFilter();
+  }
+
+  onDateChange() {
+    this.applyDateFilter();
+  }
+
+  applyDateFilter() {
+    if (this.startDate && this.endDate) {
+      const startDate = new Date(this.startDate);
+      const endDate = new Date(this.endDate);
+
+      this.filteredVessels = this.vessels.filter(v => {
+        const openedDate = new Date(v.openedDate);
+        return openedDate >= startDate && openedDate <= endDate;
+      });
+    } else {
+      this.filteredVessels = this.vessels;
+    }
+  }
+
+  goBack() {
+    console.log('Go back clicked');
+    // Geri gitme işlemini burada gerçekleştirin
+  }
+
+  delete() {
+    console.log('Delete clicked');
+    // Silme işlemini burada gerçekleştirin
   }
 }

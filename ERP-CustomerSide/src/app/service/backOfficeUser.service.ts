@@ -81,19 +81,36 @@ export class boUserService {
     const currentUser = this.currentUserValue;
     const decodedToken = this.decodeToken(currentUser?.accessToken);
     const compNo = decodedToken?.CompNo;
-
+  
     if (!compNo) {
       return throwError("Invalid company number");
     }
-
-    console.log('API Call with Company Number:', compNo);
+  
+    console.log('API Call with Company Number:', compNo);  // Şirket numarasını kontrol edin.
     return this.http.post<vesselModel[]>(`${this.apiUrl}/controller/vessels`, { CompNo: compNo }, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
       catchError(this.handleError)
     );
   }
-
+  
+  
+  getAllVessels(): Observable<vesselModel[]> {
+    const currentUser = this.currentUserValue;
+    const decodedToken = this.decodeToken(currentUser?.accessToken);
+    const compNo = decodedToken?.CompNo;
+  
+    if (!compNo) {
+      return throwError("Invalid company number");
+    }
+  
+    console.log('API Call with Company Number:', compNo);  // Şirket numarasını kontrol edin.
+    return this.http.post<vesselModel[]>(`${this.apiUrl}/controller/ownedVessels`, { CompNo: compNo }, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
   createVessel(vessel: vesselModel): Observable<vesselModel> {
     return this.http.post<vesselModel>(`${this.apiUrl}/controller/addVessel`, vessel, {
       headers: { 'Content-Type': 'application/json' }
@@ -101,7 +118,7 @@ export class boUserService {
       catchError(this.handleError)
     );
   }
-
+  
   deleteVessel(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/controller/deleteVessel/${id}`, {
       headers: { 'Content-Type': 'application/json' }
@@ -109,6 +126,7 @@ export class boUserService {
       catchError(this.handleError)
     );
   }
+  
 
   getUserById(id: number): Observable<boUserModel> {
     return this.http.get<boUserModel>(`${this.apiUrl}/${id}`).pipe(

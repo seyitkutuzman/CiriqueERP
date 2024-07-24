@@ -16,6 +16,11 @@
             <div class="info">
                 <a href="#" class="d-block">{{userName}}</a>
             </div>
+            <div class="button">
+                <button class="btn btn-warning logout-button" (click)="logout()">
+                    logout
+                </button>
+            </div>
         </div>
   
         <!-- SidebarSearch Form -->
@@ -35,7 +40,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <i class="far fa-circle nav-icon"></i>
                         <p>
                             User Management
                             <i class="right fas fa-angle-left"></i>
@@ -58,7 +63,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <i class="far fa-circle nav-icon"></i>
                         <p>
                             Condition of Class/
                             Memoranda of Owner
@@ -68,7 +73,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a [routerLink]="['/coc-mow']" class="nav-link">
-                              <i class="nav-icon fas fa-tachometer-alt"></i>
+                              <i class="far fa-circle nav-icon"></i>
                               <p>Condition of Class</p>
                             </a>
                           </li>
@@ -79,8 +84,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/assets/index2.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                            <a class="nav-link">
+                                <i class="far fa-circle nav-icon me"></i>
                                 <p>Regulatory Information</p>
                             </a>
                         </li>

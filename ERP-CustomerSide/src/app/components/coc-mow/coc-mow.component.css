@@ -17,3 +17,17 @@
 .delete-button {
   padding: 0.25rem 0.5rem;
 }
+.modal-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+}
+

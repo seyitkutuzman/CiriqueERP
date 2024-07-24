@@ -4,10 +4,18 @@
       <div class="vessel-header">
         <div class="form-group">
           <label for="vesselSelect">Select a Vessel</label>
-          <select id="vesselSelect" class="form-control vessel-select" [(ngModel)]="selectedVessel">
+          <select id="vesselSelect" class="form-control vessel-select" [(ngModel)]="selectedVessel" (change)="onVesselChange()">
             <option [ngValue]="null">All</option>
             <option *ngFor="let vessel of vessels" [ngValue]="vessel">{{ vessel.vesselName }}</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate" (change)="onDateChange()">
+        </div>
+        <div class="form-group">
+          <label for="endDate">End Date</label>
+          <input type="date" id="endDate" class="form-control" [(ngModel)]="endDate" (change)="onDateChange()">
         </div>
         <button class="btn btn-primary add-button" (click)="openModal()">+</button>
       </div>
@@ -20,6 +28,7 @@
             <th>Status</th>
             <th>Doc No</th>
             <th>Task No</th>
+            <th>Opened Date</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -27,9 +36,10 @@
           <tr *ngFor="let vessel of filteredVessels">
             <td>{{ vessel.vesselName }}</td>
             <td>{{ vessel.description }}</td>
-            <td>{{ vessel.status }}</td>
+            <td>{{ getStatusText(vessel.status) }}</td>
             <td>{{ vessel.docNo }}</td>
             <td>{{ vessel.tasks }}</td>
+            <td>{{ vessel.openedDate }}</td>
             <td style="text-align: right;">
               <button class="btn btn-danger btn-sm delete-button" (click)="deleteVessel(vessel.id)">
                 <i class="fas fa-trash-alt"></i>
@@ -53,28 +63,56 @@
   <div class="modal-body">
     <form [formGroup]="vesselForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label for="vesselName">Vessel Name</label>
-        <input type="text" id="vesselName" formControlName="vesselName" class="form-control">
+        <label for="vesselId">Select Vessel</label>
+        <select id="vesselId" formControlName="vesselName" class="form-control">
+          <option *ngFor="let vessel of allVessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="docNo">Document No</label>
+        <input type="text" id="docNo" formControlName="docNo" class="form-control">
       </div>
       <div class="form-group">
         <label for="description">Description</label>
         <textarea id="description" formControlName="description" class="form-control" rows="4"></textarea>
       </div>
       <div class="form-group">
-        <label for="status">Status</label>
-        <input type="number" id="status" formControlName="status" class="form-control">
+        <label for="analysis">Analysis</label>
+        <div>
+          <input type="checkbox" formControlName="human"> Human
+          <input type="checkbox" formControlName="system"> System
+          <input type="checkbox" formControlName="material"> Material
+        </div>
       </div>
       <div class="form-group">
-        <label for="docNo">Doc No</label>
-        <input type="text" id="docNo" formControlName="docNo" class="form-control">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" formControlName="subject" class="form-control">
       </div>
       <div class="form-group">
-        <label for="tasks">Task No</label>
-        <input type="number" id="tasks" formControlName="tasks" class="form-control">
+        <label for="openedDate">Open Date</label>
+        <input type="date" id="openedDate" formControlName="openedDate" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="dueDate">Due Date</label>
+        <input type="date" id="dueDate" formControlName="dueDate" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="extendedDate">Extended Date</label>
+        <input type="date" id="extendedDate" formControlName="extendedDate" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="closedDate">Closed Date</label>
+        <input type="date" id="closedDate" formControlName="closedDate" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="remarks">Remarks</label>
+        <textarea id="remarks" formControlName="remarks" class="form-control" rows="4"></textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">Save & Exit</button>
+        <button type="button" class="btn btn-warning" (click)="goBack()">Go Back</button>
+        <button type="button" class="btn btn-danger" (click)="delete()">Delete</button>
       </div>
     </form>
   </div>

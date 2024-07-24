@@ -1,7 +1,6 @@
 ﻿using CiriqueERP.Data;
 using CiriqueERP.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace CiriqueERP.Controllers
 {
@@ -26,6 +25,8 @@ namespace CiriqueERP.Controllers
                 return BadRequest("Invalid company number");
             }
 
+            Console.WriteLine($"Received API call with Company Number: {model.CompNo}");
+
             var vessels = _context.CoClass
                 .Where(u => u.CompNo == model.CompNo)
                 .Select(u => new
@@ -49,7 +50,7 @@ namespace CiriqueERP.Controllers
             return Ok(vessels);
         }
 
-        [HttpPost("addvessel")]
+        [HttpPost("addVessel")]
         public IActionResult AddVessel([FromBody] AddVesselModel model)
         {
             if (!ModelState.IsValid)
@@ -58,7 +59,7 @@ namespace CiriqueERP.Controllers
             }
 
             DateTime openedDate;
-            if (!DateTime.TryParse(model.OpenedDate, out openedDate))
+            if (!DateTime.TryParse( model.OpenedDate, out openedDate))
             {
                 // Varsayılan bir tarih atayın (örneğin: bugünün tarihi)
                 openedDate = DateTime.Now;
@@ -95,8 +96,33 @@ namespace CiriqueERP.Controllers
             return Ok();
         }
 
-    }
+        [HttpPost("ownedVessels")]
+        public IActionResult GetAllVessels([FromBody] VesselModel model)
+        {
+            if (model.CompNo == 0)
+            {
+                return BadRequest("Invalid company number");
+            }
 
+            Console.WriteLine($"Received API call with Company Number: {model.CompNo}");
+
+            var vessels = _context.VesselList
+                .Where(u => u.CompNo == model.CompNo)
+                .Select(u => new
+                {
+                    u.VesselName,
+                    u.CompNo
+                })
+                .ToList();
+
+            if (!vessels.Any())
+            {
+                return NotFound("No vessels found for the given company number");
+            }
+
+            return Ok(vessels);
+        }
+    }
 
     public class VesselModel
     {

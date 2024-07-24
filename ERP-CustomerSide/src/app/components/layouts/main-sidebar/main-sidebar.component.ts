@@ -28,4 +28,8 @@ export class MainSidebarComponent implements OnInit {
       }
     });
   }
+  logout(){
+    this.boUserService.logout();
+  }
+  
 }
