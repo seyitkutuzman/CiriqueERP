@@ -1,13 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { vesselModel } from '../../models/vesselModel';
 import { boUserService } from '../../service/backOfficeUser.service';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { BlankComponent } from '../blank/blank.component';
 import { SectionComponent } from '../section/section.component';
-import {  } from '../../service/backOfficeUser.service';
 
 @Component({
   selector: 'app-coc-mow',
@@ -27,24 +26,19 @@ export class CocMowComponent implements OnInit {
     private fb: FormBuilder,
     private modalService: NgbModal
   ) {
-    const currentUser = this.userService.currentUserValue;
-    const decodedToken = this.userService.decodeToken(currentUser?.accessToken);
-    const compNo = decodedToken?.CompNo;
     this.vesselForm = this.fb.group({
       vesselName: [''],
-      compNo: [compNo],
       description: [''],
       status: [0],
       docNo: [''],
       tasks: [0],
-      openedDate: ['']
+      openedDate: [''] // Tarih alanı eklenir
     });
   }
 
   ngOnInit(): void {
     this.userService.getVessels().subscribe((response: vesselModel[]) => {
       this.vessels = response;
-      console.log('Vessels:', this.vessels);
     });
   }
 
@@ -74,8 +68,25 @@ export class CocMowComponent implements OnInit {
       });
     }
   }
-  onVesselChange(vessel: vesselModel | null) {
-    this.selectedVessel = vessel;
-    console.log('Selected Vessel:', this.selectedVessel);
+
+
+  deleteVessel(id: number) {
+    console.log('Deleting vessel with ID:', id);
+    this.userService.deleteVessel(id).subscribe({
+      next: () => {
+        this.vessels = this.vessels.filter(v => v.id !== id);
+        window.location.reload();
+      },
+      error: (error) => {
+        console.error('Error deleting vessel:', error);
+      }
+    });
+  }
+
+  get filteredVessels() {
+    if (this.selectedVessel === null || this.selectedVessel.vesselName === 'All') {
+      return this.vessels;
+    }
+    return this.vessels.filter(v => v.vesselName === this.selectedVessel?.vesselName);
   }
 }

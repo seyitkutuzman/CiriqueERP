@@ -1,12 +1,15 @@
 <app-blank>
   <app-section sectionTitle="Condition of Class">
     <div class="vessel-grid-container">
-      <div class="form-group">
-        <label for="vesselSelect">Select a Vessel</label>
-        <select id="vesselSelect" class="form-control" [(ngModel)]="selectedVessel" (ngModelChange)="onVesselChange($event)">
-          <option [ngValue]="null">All</option>
-          <option *ngFor="let vessel of vessels" [ngValue]="vessel">{{ vessel.vesselName }}</option>
-        </select>
+      <div class="vessel-header">
+        <div class="form-group">
+          <label for="vesselSelect">Select a Vessel</label>
+          <select id="vesselSelect" class="form-control vessel-select" [(ngModel)]="selectedVessel">
+            <option [ngValue]="null">All</option>
+            <option *ngFor="let vessel of vessels" [ngValue]="vessel">{{ vessel.vesselName }}</option>
+          </select>
+        </div>
+        <button class="btn btn-primary add-button" (click)="openModal()">+</button>
       </div>
 
       <table class="table table-striped">
@@ -17,20 +20,25 @@
             <th>Status</th>
             <th>Doc No</th>
             <th>Task No</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let vessel of vessels">
+          <tr *ngFor="let vessel of filteredVessels">
             <td>{{ vessel.vesselName }}</td>
             <td>{{ vessel.description }}</td>
             <td>{{ vessel.status }}</td>
             <td>{{ vessel.docNo }}</td>
             <td>{{ vessel.tasks }}</td>
+            <td style="text-align: right;">
+              <button class="btn btn-danger btn-sm delete-button" (click)="deleteVessel(vessel.id)">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <button class="btn btn-primary" style="position: absolute; top: 0; right: 0;" (click)="openModal()">Ekle</button>
   </app-section>
 </app-blank>
 

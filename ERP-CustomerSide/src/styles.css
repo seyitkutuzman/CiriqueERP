@@ -8,7 +8,7 @@
   
   /* Popup genişliğini artır */
   .modal-lg {
-    max-width: 80%;
+    width: 30%;
   }
   
 .modal-backdrop {

@@ -1,7 +1,7 @@
 ﻿using CiriqueERP.Data;
 using CiriqueERP.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
+using System.Linq;
 
 namespace CiriqueERP.Controllers
 {
@@ -30,6 +30,7 @@ namespace CiriqueERP.Controllers
                 .Where(u => u.CompNo == model.CompNo)
                 .Select(u => new
                 {
+                    u.ID,
                     u.VesselName,
                     u.CompNo,
                     u.OpenedDate,
@@ -37,8 +38,7 @@ namespace CiriqueERP.Controllers
                     u.Description,
                     u.DocNo,
                     u.Tasks
-                }
-                )
+                })
                 .ToList();
 
             if (!vessels.Any())
@@ -48,6 +48,7 @@ namespace CiriqueERP.Controllers
 
             return Ok(vessels);
         }
+
         [HttpPost("addvessel")]
         public IActionResult AddVessel([FromBody] AddVesselModel model)
         {
@@ -79,12 +80,29 @@ namespace CiriqueERP.Controllers
 
             return Ok(new { Message = "Vessel added successfully" });
         }
+
+        [HttpDelete("deleteVessel/{id}")]
+        public IActionResult DeleteVessel(int id)
+        {
+            var vessel = _context.CoClass.FirstOrDefault(v => v.ID == id);
+            if (vessel == null)
+            {
+                return NotFound("Vessel not found");
+            }
+
+            _context.CoClass.Remove(vessel);
+            _context.SaveChanges();
+            return Ok();
+        }
+
     }
+
 
     public class VesselModel
     {
         public int CompNo { get; set; }
     }
+
     public class AddVesselModel
     {
         public string VesselName { get; set; }

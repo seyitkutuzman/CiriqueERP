@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { boUserModel } from '../models/backofficeUser.model';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { map, catchError } from 'rxjs/operators';
 import { vesselModel } from '../models/vesselModel';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class boUserService {
   private apiUrl = 'https://localhost:7071/api';
@@ -93,14 +93,23 @@ export class boUserService {
       catchError(this.handleError)
     );
   }
+
   createVessel(vessel: vesselModel): Observable<vesselModel> {
-    return this.http.post<vesselModel>(`${this.apiUrl}/controller/addvessel`, vessel, {
+    return this.http.post<vesselModel>(`${this.apiUrl}/controller/addVessel`, vessel, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
       catchError(this.handleError)
     );
   }
-  
+
+  deleteVessel(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/controller/deleteVessel/${id}`, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   getUserById(id: number): Observable<boUserModel> {
     return this.http.get<boUserModel>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
@@ -127,7 +136,6 @@ export class boUserService {
 
   private handleError(error: HttpErrorResponse) {
     if (error.status === 401 || error.status === 403) {
-      // Token süresi geçmiş veya yetkisiz erişim
       this.logout();
     }
     return throwError(error);

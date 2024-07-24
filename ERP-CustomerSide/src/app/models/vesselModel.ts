@@ -1,5 +1,7 @@
 export interface vesselModel {
 
+    id: number;
+
     compNo: number;
 
     vesselName: string;
