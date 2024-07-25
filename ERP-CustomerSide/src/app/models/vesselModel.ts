@@ -16,5 +16,7 @@ export interface vesselModel {
 
     docNo: string;
 
+    extendedDate: string;
+
 }
   

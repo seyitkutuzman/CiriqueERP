@@ -366,23 +366,63 @@ public partial class MasterContext : DbContext
 
             entity.Property(e => e.ID)
                 .HasColumnName("id");
+
             entity.Property(e => e.Description)
                 .HasMaxLength(1000)
                 .IsUnicode(false)
                 .HasColumnName("description");
+
             entity.Property(e => e.DocNo)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("docNo");
-            entity.Property(e => e.OpenedDate).HasColumnName("openedDate");
-            entity.Property(e => e.Status).HasColumnName("status");
-            entity.Property(e => e.Tasks).HasColumnName("tasks");
+
+            entity.Property(e => e.OpenedDate)
+                .HasColumnName("openedDate");
+
+            entity.Property(e => e.Status)
+                .HasColumnName("status");
+
+            entity.Property(e => e.Tasks)
+                .HasColumnName("tasks");
+
             entity.Property(e => e.VesselName)
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("vesselName");
-            entity.Property(e => e.CompNo).HasColumnName("compNo");
+
+            entity.Property(e => e.CompNo)
+                .HasColumnName("compNo");
+
+            entity.Property(e => e.Human)
+                .HasColumnName("human");
+
+            entity.Property(e => e.System)
+                .HasColumnName("system");
+
+            entity.Property(e => e.Material)
+                .HasColumnName("material");
+
+            entity.Property(e => e.Subject)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("subject");
+
+            entity.Property(e => e.DueDate)
+                .HasColumnName("dueDate");
+
+            entity.Property(e => e.ExtendedDate)
+                .HasColumnName("extendedDate");
+
+            entity.Property(e => e.ClosedDate)
+                .HasColumnName("closedDate");
+
+            entity.Property(e => e.Remarks)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("remarks");
         });
+
         OnModelCreatingPartial(modelBuilder);
     }
 

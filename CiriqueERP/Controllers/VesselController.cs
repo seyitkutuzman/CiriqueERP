@@ -38,7 +38,15 @@ namespace CiriqueERP.Controllers
                     u.Status,
                     u.Description,
                     u.DocNo,
-                    u.Tasks
+                    u.Tasks,
+                    u.ExtendedDate,
+                    u.DueDate,
+                    u.ClosedDate,
+                    u.Human,
+                    u.System,
+                    u.Material,
+                    u.Subject,
+                    u.Remarks
                 })
                 .ToList();
 
@@ -59,21 +67,47 @@ namespace CiriqueERP.Controllers
             }
 
             DateTime openedDate;
-            if (!DateTime.TryParse( model.OpenedDate, out openedDate))
+            if (!DateTime.TryParse(model.OpenedDate, out openedDate))
             {
                 // Varsayılan bir tarih atayın (örneğin: bugünün tarihi)
                 openedDate = DateTime.Now;
+            }
+
+            DateTime dueDate;
+            if (!DateTime.TryParse(model.DueDate, out dueDate))
+            {
+                dueDate = DateTime.Now;
+            }
+
+            DateTime extendedDate;
+            if (!DateTime.TryParse(model.ExtendedDate, out extendedDate))
+            {
+                extendedDate = DateTime.Now;
+            }
+
+            DateTime closedDate;
+            if (!DateTime.TryParse(model.ClosedDate, out closedDate))
+            {
+                closedDate = DateTime.Now;
             }
 
             var newVessel = new CoClass
             {
                 VesselName = model.VesselName,
                 CompNo = model.CompNo,
-                OpenedDate = openedDate, // Dönüştürülmüş tarih değeri kullanılır
+                OpenedDate = openedDate,
+                DueDate = dueDate,
+                ExtendedDate = extendedDate,
+                ClosedDate = closedDate,
                 Status = model.Status,
                 Description = model.Description,
                 DocNo = model.DocNo,
-                Tasks = model.Tasks
+                Tasks = model.Tasks,
+                Human = model.Human,
+                System = model.System,
+                Material = model.Material,
+                Subject = model.Subject,
+                Remarks = model.Remarks
             };
 
             _context.CoClass.Add(newVessel);
@@ -134,9 +168,17 @@ namespace CiriqueERP.Controllers
         public string VesselName { get; set; }
         public int CompNo { get; set; }
         public string OpenedDate { get; set; }
+        public string DueDate { get; set; }
+        public string? ExtendedDate { get; set; }
+        public string? ClosedDate { get; set; }
         public int Status { get; set; }
         public string Description { get; set; }
         public string DocNo { get; set; }
         public int Tasks { get; set; }
+        public bool Human { get; set; }
+        public bool System { get; set; }
+        public bool Material { get; set; }
+        public string Subject { get; set; }
+        public string Remarks { get; set; }
     }
 }

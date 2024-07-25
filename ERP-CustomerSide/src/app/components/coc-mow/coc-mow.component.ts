@@ -1,19 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { vesselModel } from '../../models/vesselModel';
 import { boUserService } from '../../service/backOfficeUser.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { BlankComponent } from '../blank/blank.component';
 import { SectionComponent } from '../section/section.component';
+import { AbstractControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-coc-mow',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterOutlet, BlankComponent, SectionComponent, ReactiveFormsModule],
   templateUrl: './coc-mow.component.html',
-  styleUrls: ['./coc-mow.component.css']
+  styleUrls: ['./coc-mow.component.css'],
+  providers: [DatePipe]
 })
 export class CocMowComponent implements OnInit {
   @ViewChild('modalContent') modalContent: any;
@@ -29,22 +32,23 @@ export class CocMowComponent implements OnInit {
   constructor(
     private userService: boUserService,
     private fb: FormBuilder,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private datePipe: DatePipe
   ) {
     this.vesselForm = this.fb.group({
       vesselId: [null],
-      vesselName: [''],
+      vesselName: ['', Validators.required],
       compNo: [0],
-      docNo: [''],
-      description: [''],
+      docNo: ['', Validators.required],
+      description: ['', Validators.required],
       human: [false],
       system: [false],
       material: [false],
-      subject: [''],
-      openedDate: [''],
-      dueDate: [''],
-      extendedDate: [''],
-      closedDate: [''],
+      subject: ['hull system', Validators.required], // Varsayılan değer olarak 'hull system' ayarlandı
+      openedDate: ['', Validators.required],
+      dueDate: ['', [Validators.required, this.dateValidator('openedDate')]],
+      extendedDate: ['', this.dateValidator('dueDate')],
+      closedDate: ['', this.dateValidator('openedDate')],
       remarks: [''],
       status: [0],
       tasks: [0]
@@ -53,8 +57,14 @@ export class CocMowComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.getVessels().subscribe((response: vesselModel[]) => {
-      this.vessels = response;
-      this.filteredVessels = response;
+      this.vessels = response.map(vessel => {
+        vessel.openedDate = this.datePipe.transform(vessel.openedDate, 'yyyy-MM-dd') || vessel.openedDate;
+        if (vessel.extendedDate && new Date(vessel.extendedDate) < new Date()) {
+          vessel.status = 2; // Expired
+        }
+        return vessel;
+      });
+      this.filteredVessels = this.vessels;
     });
 
     this.userService.getAllVessels().subscribe((response: vesselModel[]) => {
@@ -84,10 +94,18 @@ export class CocMowComponent implements OnInit {
         this.vesselForm.patchValue({ vesselName: selectedVessel.vesselName });
       }
 
+      if (!this.vesselForm.value.closedDate) {
+        this.vesselForm.patchValue({ closedDate: null });
+      }
+
       console.log('Form Values:', this.vesselForm.value); // Form değerlerini kontrol edin
 
       this.userService.createVessel(this.vesselForm.value).subscribe({
         next: (response) => {
+          response.openedDate = this.datePipe.transform(response.openedDate, 'yyyy-MM-dd') || response.openedDate;
+          if (response.extendedDate && new Date(response.extendedDate) < new Date()) {
+            response.status = 2; // Expired
+          }
           this.vessels.push(response);
           this.filteredVessels.push(response);
           this.closeModal();
@@ -119,8 +137,15 @@ export class CocMowComponent implements OnInit {
     });
   }
 
-  getStatusText(status: number): string {
-    switch (status) {
+  getStatusText(vessel: vesselModel): string {
+    const currentDate = new Date();
+    const extendedDate = vessel.extendedDate ? new Date(vessel.extendedDate) : null;
+
+    if (extendedDate && extendedDate < currentDate) {
+      return 'Expired';
+    }
+
+    switch (vessel.status) {
       case 0:
         return 'Opened';
       case 1:
@@ -167,5 +192,24 @@ export class CocMowComponent implements OnInit {
   delete() {
     console.log('Delete clicked');
     // Silme işlemini burada gerçekleştirin
+  }
+
+  
+  
+  dateValidator(compareTo: string) {
+    return (formControl: AbstractControl) => {
+      if (!formControl.parent) {
+        return null;
+      }
+  
+      const compareDate = formControl.parent.get(compareTo)?.value;
+      const currentDate = formControl.value;
+  
+      if (!compareDate || !currentDate) {
+        return null;
+      }
+  
+      return new Date(currentDate) < new Date(compareDate) ? { dateInvalid: true } : null;
+    };
   }
 }
