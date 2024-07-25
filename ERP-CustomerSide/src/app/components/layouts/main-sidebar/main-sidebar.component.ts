@@ -1,34 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginComponent } from '../../login/login.component';
+import { Router, RouterModule } from '@angular/router';
 import { boUserService } from '../../../service/backOfficeUser.service';
 import { SwalService } from '../../../service/swal.service';
-import { Router } from '@angular/router';
 import { HttpService } from '../../../service/http.service';
 import { userInfoService } from '../../../service/userInfo.service';
-
 
 @Component({
   selector: 'app-main-sidebar',
   standalone: true,
-  imports: [LoginComponent],
+  imports: [RouterModule],
   templateUrl: './main-sidebar.component.html',
-  styleUrl: './main-sidebar.component.css'
+  styleUrls: ['./main-sidebar.component.css']
 })
-
-
-
-
 export class MainSidebarComponent implements OnInit {
-  userName: string='';
+  userName: string = '';
 
-  constructor(private userService: userInfoService) {}
+  constructor(private userService: userInfoService,
+              private router: Router,
+              private httpService: HttpService,
+              private swalService: SwalService,
+              private boUserService: boUserService) {}
 
   ngOnInit() {
     this.userService.currentUser.subscribe(user => {
       if (user) {
-        this.userName = `${user.name} ${user.surname}`; 
+        this.userName = `${user.name} ${user.surname}`;
       }
     });
-}
-
+  }
+  logout(){
+    this.boUserService.logout();
+  }
+  
 }

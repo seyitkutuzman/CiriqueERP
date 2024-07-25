@@ -7,9 +7,7 @@ public partial class Role
 {
     public int Id { get; set; }
 
-    public string? RoleName { get; set; }
+    public string RoleName { get; set; } = null!;
 
-    public string? Description { get; set; }
-
-    public virtual ICollection<Department> Departments { get; set; } = new List<Department>();
+    public string Description { get; set; } = null!;
 }

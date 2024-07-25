@@ -1,0 +1,33 @@
+.vessel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.vessel-select {
+  width: 200px;
+}
+
+.add-button {
+  padding: 0.005rem 0.500rem;
+  font-size: 1.5rem;
+}
+
+.delete-button {
+  padding: 0.25rem 0.5rem;
+}
+.modal-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+}
+

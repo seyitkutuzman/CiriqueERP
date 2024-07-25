@@ -7,21 +7,17 @@ public partial class Company
 {
     public int Id { get; set; }
 
-    public int? CompNo { get; set; }
+    public int CompNo { get; set; }
 
-    public string? TaxNumber { get; set; }
+    public string Adress { get; set; } = null!;
 
-    public int? ModuleId { get; set; }
+    public DateOnly CreateDate { get; set; }
 
-    public string? Adress { get; set; }
+    public DateOnly ModifyDate { get; set; }
 
-    public DateOnly? CreateDate { get; set; }
+    public string TaxNumber { get; set; } = null!;
 
-    public DateOnly? ModifyDate { get; set; }
+    public byte[] IsActive { get; set; } = null!;
 
-    public byte[]? IsActive { get; set; }
-
-    public virtual Module? Module { get; set; }
-
-    public virtual ICollection<Users> Users { get; set; } = new List<Users>();
+    public int Module { get; set; }
 }

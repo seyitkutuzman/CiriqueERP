@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace CiriqueERP.Models;
 
-public partial class Manual
+public partial class VesselList
 {
     public int Id { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string? VesselName { get; set; }
 
-    public string Path { get; set; } = null!;
+    public int? CompNo { get; set; }
 }

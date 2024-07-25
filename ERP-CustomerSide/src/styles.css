@@ -1,1 +1,27 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global CSS file (e.g., styles.css) */
+/* Grid view section'ın tam genişliğini kaplasın */
+.vessel-grid-container {
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
+  
+  /* Popup genişliğini artır */
+  .modal-lg {
+    width: 30%;
+  }
+  
+.modal-backdrop {
+    z-index: 1040 !important;
+  }
+  
+  .modal-content {
+    z-index: 1050 !important;
+  }
+  
+  .modal-dialog {
+    position: relative;
+    display: table; /* This is important for centering the modal vertically */
+    overflow-y: auto;
+  }
+  

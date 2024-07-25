@@ -7,11 +7,12 @@ import { FooterComponent } from './footer/footer.component';
 import { boUserService } from '../../service/backOfficeUser.service';
 import { AuthService } from '../../service/auth.service';
 import { userInfoService } from '../../service/userInfo.service';
+import { CocMowComponent } from '../coc-mow/coc-mow.component';
 
 @Component({
   selector: 'app-layouts',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, MainSidebarComponent,ControlSidebarComponent,FooterComponent],
+  imports: [RouterOutlet, NavbarComponent, MainSidebarComponent,ControlSidebarComponent,FooterComponent,CocMowComponent],
   templateUrl: './layouts.component.html',
   styleUrl: './layouts.component.css'
 })

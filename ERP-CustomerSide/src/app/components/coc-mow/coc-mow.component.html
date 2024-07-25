@@ -1,0 +1,156 @@
+<app-blank>
+  <app-section sectionTitle="Condition of Class">
+    <div class="vessel-grid-container">
+      <div class="vessel-header">
+        <div class="form-group">
+          <label for="vesselSelect">Select a Vessel</label>
+          <select id="vesselSelect" class="form-control vessel-select" [(ngModel)]="selectedVessel" (change)="onVesselChange()">
+            <option [ngValue]="null">All</option>
+            <option *ngFor="let vessel of vessels" [ngValue]="vessel">{{ vessel.vesselName }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate" (change)="onDateChange()">
+        </div>
+        <div class="form-group">
+          <label for="endDate">End Date</label>
+          <input type="date" id="endDate" class="form-control" [(ngModel)]="endDate" (change)="onDateChange()">
+        </div>
+        <button class="btn btn-primary add-button" (click)="openModal()">+</button>
+      </div>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Vessel Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Doc No</th>
+            <th>Task No</th>
+            <th>Opened Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vessel of filteredVessels">
+            <td>{{ vessel.vesselName }}</td>
+            <td>{{ vessel.description }}</td>
+            <td>{{ getStatusText(vessel) }}</td>
+            <td>{{ vessel.docNo }}</td>
+            <td>{{ vessel.tasks }}</td>
+            <td>{{ vessel.openedDate | date: 'yyyy-MM-dd' }}</td>
+            <td style="text-align: right;">
+              <button class="btn btn-danger btn-sm delete-button" (click)="deleteVessel(vessel.id)">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-section>
+</app-blank>
+<ng-template #modalContent>
+  <div class="modal-header">
+    <h5 class="modal-title">Add New Vessel</h5>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="vesselForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="vesselId">Select Vessel</label>
+          <select id="vesselId" formControlName="vesselName" class="form-control">
+            <option *ngFor="let vessel of allVessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+          </select>
+          <div *ngIf="vesselForm.get('vesselName')?.invalid && vesselForm.get('vesselName')?.touched" class="text-danger">
+            Vessel Name is required
+          </div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="docNo">Document No</label>
+          <input type="text" id="docNo" formControlName="docNo" class="form-control">
+          <div *ngIf="vesselForm.get('docNo')?.invalid && vesselForm.get('docNo')?.touched" class="text-danger">
+            Document No is required
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 form-group">
+          <label for="description">Description</label>
+          <textarea id="description" formControlName="description" class="form-control" rows="2"></textarea>
+          <div *ngIf="vesselForm.get('description')?.invalid && vesselForm.get('description')?.touched" class="text-danger">
+            Description is required
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 form-group">
+          <label for="analysis">Analysis</label>
+          <div>
+            <input type="checkbox" formControlName="human"> Human
+            <input type="checkbox" formControlName="system"> System
+            <input type="checkbox" formControlName="material"> Material
+          </div>
+        </div>
+        <div class="col-md-8 form-group">
+          <label for="subject">Subject</label>
+          <select id="subject" formControlName="subject" class="form-control">
+            <option value="hull system">Hull System</option>
+            <option value="documents">Documents</option>
+          </select>
+          <div *ngIf="vesselForm.get('subject')?.invalid && vesselForm.get('subject')?.touched" class="text-danger">
+            Subject is required
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="openedDate">Open Date</label>
+          <input type="date" id="openedDate" formControlName="openedDate" class="form-control">
+          <div *ngIf="vesselForm.get('openedDate')?.invalid && vesselForm.get('openedDate')?.touched" class="text-danger">
+            Open Date is required
+          </div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="dueDate">Due Date</label>
+          <input type="date" id="dueDate" formControlName="dueDate" class="form-control">
+          <div *ngIf="vesselForm.get('dueDate')?.invalid && vesselForm.get('dueDate')?.touched" class="text-danger">
+            Due Date must be after Open Date
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="extendedDate">Extended Date</label>
+          <input type="date" id="extendedDate" formControlName="extendedDate" class="form-control">
+          <div *ngIf="vesselForm.get('extendedDate')?.invalid && vesselForm.get('extendedDate')?.touched" class="text-danger">
+            Extended Date must be after Due Date
+          </div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="closedDate">Closed Date</label>
+          <input type="date" id="closedDate" formControlName="closedDate" class="form-control">
+          <div *ngIf="vesselForm.get('closedDate')?.invalid && vesselForm.get('closedDate')?.touched" class="text-danger">
+            Closed Date must be after Open Date
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 form-group">
+          <label for="remarks">Remarks</label>
+          <textarea id="remarks" formControlName="remarks" class="form-control" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save & Exit</button>
+        <button type="button" class="btn btn-warning" (click)="goBack()">Go Back</button>
+        <button type="button" class="btn btn-danger" (click)="delete()">Delete</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
