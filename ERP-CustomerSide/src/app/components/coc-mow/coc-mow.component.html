@@ -17,6 +17,15 @@
           <label for="endDate">End Date</label>
           <input type="date" id="endDate" class="form-control" [(ngModel)]="endDate" (change)="onDateChange()">
         </div>
+        <div class="form-group">
+          <label for="statusSelect">Status</label>
+          <select id="statusSelect" class="form-control status-select" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+            <option [ngValue]="null">All</option>
+            <option value="0">Opened</option>
+            <option value="1">Closed</option>
+            <option value="2">Expired</option>
+          </select>
+        </div>
         <button class="btn btn-primary add-button" (click)="openModal()">+</button>
       </div>
 
@@ -27,9 +36,8 @@
             <th>Description</th>
             <th>Status</th>
             <th>Doc No</th>
-            <th>Task No</th>
             <th>Opened Date</th>
-            <th>Actions</th>
+            <th style="text-align: center;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -38,12 +46,10 @@
             <td>{{ vessel.description }}</td>
             <td>{{ getStatusText(vessel) }}</td>
             <td>{{ vessel.docNo }}</td>
-            <td>{{ vessel.tasks }}</td>
             <td>{{ vessel.openedDate | date: 'yyyy-MM-dd' }}</td>
-            <td style="text-align: right;">
-              <button class="btn btn-danger btn-sm delete-button" (click)="deleteVessel(vessel.id)">
-                <i class="fas fa-trash-alt"></i>
-              </button>
+            <td style="text-align: center;">
+              <button class="btn btn-info btn-sm edit-button" (click)="openEditModal(vessel)">Edit</button>
+              <button class="btn btn-danger btn-sm delete-button" (click)="deleteVessel(vessel.id)">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -51,6 +57,8 @@
     </div>
   </app-section>
 </app-blank>
+
+
 <ng-template #modalContent>
   <div class="modal-header">
     <h5 class="modal-title">Add New Vessel</h5>
@@ -72,10 +80,7 @@
         </div>
         <div class="col-md-6 form-group">
           <label for="docNo">Document No</label>
-          <input type="text" id="docNo" formControlName="docNo" class="form-control">
-          <div *ngIf="vesselForm.get('docNo')?.invalid && vesselForm.get('docNo')?.touched" class="text-danger">
-            Document No is required
-          </div>
+          <input type="text" id="docNo" formControlName="docNo" class="form-control" [value]="documentNo">
         </div>
       </div>
       <div class="row">
@@ -148,8 +153,82 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
         <button type="submit" class="btn btn-primary">Save & Exit</button>
-        <button type="button" class="btn btn-warning" (click)="goBack()">Go Back</button>
-        <button type="button" class="btn btn-danger" (click)="delete()">Delete</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #editModalContent>
+  <div class="modal-header">
+    <h5 class="modal-title">Edit Vessel</h5>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="editVesselForm" (ngSubmit)="onEditSubmit()">
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="editVesselId">Vessel Name</label>
+          <input type="text" id="editVesselId" formControlName="vesselName" class="form-control" readonly>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="editDocNo">Document No</label>
+          <input type="text" id="editDocNo" formControlName="docNo" class="form-control" readonly>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 form-group">
+          <label for="editDescription">Description</label>
+          <textarea id="editDescription" formControlName="description" class="form-control" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 form-group">
+          <label for="editAnalysis">Analysis</label>
+          <div>
+            <input type="checkbox" formControlName="human"> Human
+            <input type="checkbox" formControlName="system"> System
+            <input type="checkbox" formControlName="material"> Material
+          </div>
+        </div>
+        <div class="col-md-8 form-group">
+          <label for="editSubject">Subject</label>
+          <select id="editSubject" formControlName="subject" class="form-control">
+            <option value="hull system">Hull System</option>
+            <option value="documents">Documents</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="editOpenedDate">Open Date</label>
+          <input type="date" id="editOpenedDate" formControlName="openedDate" class="form-control">
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="editDueDate">Due Date</label>
+          <input type="date" id="editDueDate" formControlName="dueDate" class="form-control">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="editExtendedDate">Extended Date</label>
+          <input type="date" id="editExtendedDate" formControlName="extendedDate" class="form-control">
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="editClosedDate">Closed Date</label>
+          <input type="date" id="editClosedDate" formControlName="closedDate" class="form-control">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 form-group">
+          <label for="editRemarks">Remarks</label>
+          <textarea id="editRemarks" formControlName="remarks" class="form-control" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </div>
     </form>
   </div>

@@ -12,6 +12,20 @@ export interface vesselModel {
 
     openedDate: string;
 
+    dueDate: string;
+
+    closedDate: string;
+
+    remarks: string;
+
+    subject: string;
+
+    human: boolean;
+
+    system: boolean;
+
+    material: boolean;
+
     status: number;
 
     docNo: string;

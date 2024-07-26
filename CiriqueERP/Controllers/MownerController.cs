@@ -1,24 +1,24 @@
-﻿using CiriqueERP.Data;
-using CiriqueERP.Models;
+﻿using CiriqueERP.Models;
 using Microsoft.AspNetCore.Mvc;
+using CiriqueERP.Data;
 
 namespace CiriqueERP.Controllers
 {
     [Route("api/controller")]
     [ApiController]
-    public class VesselController : ControllerBase
+    public class MownerController : ControllerBase
     {
         private readonly MasterContext _context;
         private readonly IConfiguration _configuration;
 
-        public VesselController(MasterContext context, IConfiguration configuration)
+        public MownerController(MasterContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
         }
 
-        [HttpPost("vessels")]
-        public IActionResult GetVessels([FromBody] VesselModel model)
+        [HttpPost("Mowners")]
+        public IActionResult GetVessels([FromBody] MownerModel model)
         {
             if (model.CompNo == 0)
             {
@@ -27,7 +27,7 @@ namespace CiriqueERP.Controllers
 
             Console.WriteLine($"Received API call with Company Number: {model.CompNo}");
 
-            var vessels = _context.CoClass
+            var vessels = _context.Mowner
                 .Where(u => u.CompNo == model.CompNo)
                 .Select(u => new
                 {
@@ -58,8 +58,8 @@ namespace CiriqueERP.Controllers
             return Ok(vessels);
         }
 
-        [HttpPost("addVessel")]
-        public IActionResult AddVessel([FromBody] AddVesselModel model)
+        [HttpPost("addMowner")]
+        public IActionResult AddVessel([FromBody] AddMownerModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace CiriqueERP.Controllers
                 closedDate = DateTime.Now;
             }
 
-            var newVessel = new CoClass
+            var newVessel = new Mowner
             {
                 VesselName = model.VesselName,
                 CompNo = model.CompNo,
@@ -110,93 +110,35 @@ namespace CiriqueERP.Controllers
                 Remarks = model.Remarks
             };
 
-            _context.CoClass.Add(newVessel);
+            _context.Mowner.Add(newVessel);
             _context.SaveChanges();
 
             return Ok(new { Message = "Vessel added successfully" });
         }
 
-        [HttpDelete("deleteVessel/{id}")]
+        [HttpDelete("deleteMowner/{id}")]
         public IActionResult DeleteVessel(int id)
         {
-            var vessel = _context.CoClass.FirstOrDefault(v => v.ID == id);
+            var vessel = _context.Mowner.FirstOrDefault(v => v.ID == id);
             if (vessel == null)
             {
                 return NotFound("Vessel not found");
             }
 
-            _context.CoClass.Remove(vessel);
+            _context.Mowner.Remove(vessel);
             _context.SaveChanges();
             return Ok();
         }
-
-        [HttpPost("ownedVessels")]
-        public IActionResult GetAllVessels([FromBody] VesselModel model)
-        {
-            if (model.CompNo == 0)
-            {
-                return BadRequest("Invalid company number");
-            }
-
-            Console.WriteLine($"Received API call with Company Number: {model.CompNo}");
-
-            var vessels = _context.VesselList
-                .Where(u => u.CompNo == model.CompNo)
-                .Select(u => new
-                {
-                    u.VesselName,
-                    u.CompNo
-                })
-                .ToList();
-
-            if (!vessels.Any())
-            {
-                return NotFound("No vessels found for the given company number");
-            }
-
-            return Ok(vessels);
-        }
-        [HttpPut("updateVessel")]
-        public IActionResult UpdateVessel([FromBody] AddVesselModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var vessel = _context.CoClass.FirstOrDefault(v => v.ID == model.id);
-            if (vessel == null)
-            {
-                return NotFound("Vessel not found");
-            }
-
-            vessel.VesselName = model.VesselName;
-            vessel.CompNo = model.CompNo;
-            vessel.OpenedDate = DateTime.TryParse(model.OpenedDate, out var openedDate) ? openedDate : vessel.OpenedDate;
-            vessel.Status = model.Status;
-            vessel.Description = model.Description;
-            vessel.DocNo = model.DocNo;
-            vessel.Tasks = model.Tasks;
-            vessel.DueDate = DateTime.TryParse(model.DueDate, out var dueDate) ? dueDate : vessel.DueDate;
-            vessel.ExtendedDate = DateTime.TryParse(model.ExtendedDate, out var extendedDate) ? extendedDate : vessel.ExtendedDate;
-            vessel.ClosedDate = DateTime.TryParse(model.ClosedDate, out var closedDate) ? closedDate : (DateTime?)null;
-            vessel.Remarks = model.Remarks;
-
-            _context.SaveChanges();
-
-            return Ok(vessel);
-        }
-
+        
     }
 
-    public class VesselModel
+    public class MownerModel
     {
         public int CompNo { get; set; }
     }
 
-    public class AddVesselModel
+    public class AddMownerModel
     {
-        public int id { get; set; }
         public string VesselName { get; set; }
         public int CompNo { get; set; }
         public string OpenedDate { get; set; }

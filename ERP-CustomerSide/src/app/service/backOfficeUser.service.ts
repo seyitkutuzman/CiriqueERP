@@ -118,6 +118,14 @@ export class boUserService {
       catchError(this.handleError)
     );
   }
+
+  updateVessel(vessel: vesselModel): Observable<vesselModel> {
+    return this.http.put<vesselModel>(`${this.apiUrl}/controller/updateVessel`, vessel, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
   
   deleteVessel(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/controller/deleteVessel/${id}`, {

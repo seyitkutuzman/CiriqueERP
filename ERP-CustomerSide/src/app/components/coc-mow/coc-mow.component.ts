@@ -7,8 +7,8 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { BlankComponent } from '../blank/blank.component';
 import { SectionComponent } from '../section/section.component';
-import { AbstractControl } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-coc-mow',
@@ -20,15 +20,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class CocMowComponent implements OnInit {
   @ViewChild('modalContent') modalContent: any;
+  @ViewChild('editModalContent') editModalContent: any;
   vessels: vesselModel[] = [];
-  allVessels: vesselModel[] = []; // For the popup
+  allVessels: vesselModel[] = [];
   filteredVessels: vesselModel[] = [];
   selectedVessel: vesselModel | null = null;
   vesselForm: FormGroup;
+  editVesselForm: FormGroup;
   id: number = 0;
   startDate: string | null = null;
   endDate: string | null = null;
-
+  selectedStatus: number | null = null;
+  documentNo: string = ' 01/2024';
   constructor(
     private userService: boUserService,
     private fb: FormBuilder,
@@ -44,7 +47,26 @@ export class CocMowComponent implements OnInit {
       human: [false],
       system: [false],
       material: [false],
-      subject: ['hull system', Validators.required], // Varsayılan değer olarak 'hull system' ayarlandı
+      subject: ['hull system', Validators.required],
+      openedDate: ['', Validators.required],
+      dueDate: ['', [Validators.required, this.dateValidator('openedDate')]],
+      extendedDate: ['', this.dateValidator('dueDate')],
+      closedDate: ['', this.dateValidator('openedDate')],
+      remarks: [''],
+      status: [0],
+      tasks: [0]
+    });
+
+    this.editVesselForm = this.fb.group({
+      vesselId: [null],
+      vesselName: ['', Validators.required],
+      compNo: [0],
+      docNo: ['', Validators.required],
+      description: ['', Validators.required],
+      human: [false],
+      system: [false],
+      material: [false],
+      subject: ['hull system', Validators.required],
       openedDate: ['', Validators.required],
       dueDate: ['', [Validators.required, this.dateValidator('openedDate')]],
       extendedDate: ['', this.dateValidator('dueDate')],
@@ -59,8 +81,11 @@ export class CocMowComponent implements OnInit {
     this.userService.getVessels().subscribe((response: vesselModel[]) => {
       this.vessels = response.map(vessel => {
         vessel.openedDate = this.datePipe.transform(vessel.openedDate, 'yyyy-MM-dd') || vessel.openedDate;
+        vessel.dueDate = vessel.dueDate ? this.datePipe.transform(vessel.dueDate, 'yyyy-MM-dd') || '' : '';
+        vessel.extendedDate = vessel.extendedDate ? this.datePipe.transform(vessel.extendedDate, 'yyyy-MM-dd') || '' : '';
+        vessel.closedDate = vessel.closedDate ? this.datePipe.transform(vessel.closedDate, 'yyyy-MM-dd') || '' : '';
         if (vessel.extendedDate && new Date(vessel.extendedDate) < new Date()) {
-          vessel.status = 2; // Expired
+          vessel.status = 2;
         }
         return vessel;
       });
@@ -87,7 +112,7 @@ export class CocMowComponent implements OnInit {
       const decodedToken = this.userService.decodeToken(currentUser?.accessToken);
       const compNo = decodedToken?.CompNo;
 
-      this.vesselForm.patchValue({ compNo: compNo }); // compNo'yu ayarla
+      this.vesselForm.patchValue({ compNo: compNo });
 
       const selectedVessel = this.allVessels.find(v => v.vesselName === this.vesselForm.value.vesselName);
       if (selectedVessel) {
@@ -98,13 +123,16 @@ export class CocMowComponent implements OnInit {
         this.vesselForm.patchValue({ closedDate: null });
       }
 
-      console.log('Form Values:', this.vesselForm.value); // Form değerlerini kontrol edin
+      console.log('Form Values:', this.vesselForm.value);
 
       this.userService.createVessel(this.vesselForm.value).subscribe({
         next: (response) => {
           response.openedDate = this.datePipe.transform(response.openedDate, 'yyyy-MM-dd') || response.openedDate;
+          response.dueDate = response.dueDate ? this.datePipe.transform(response.dueDate, 'yyyy-MM-dd') || '' : '';
+          response.extendedDate = response.extendedDate ? this.datePipe.transform(response.extendedDate, 'yyyy-MM-dd') || '' : '';
+          response.closedDate = response.closedDate ? this.datePipe.transform(response.closedDate, 'yyyy-MM-dd') || '' : '';
           if (response.extendedDate && new Date(response.extendedDate) < new Date()) {
-            response.status = 2; // Expired
+            response.status = 2;
           }
           this.vessels.push(response);
           this.filteredVessels.push(response);
@@ -118,7 +146,7 @@ export class CocMowComponent implements OnInit {
   }
 
   deleteVessel(id: number) {
-    console.log('Deleting vessel with ID:', id);  // ID'nin doğru geçtiğini kontrol edin
+    console.log('Deleting vessel with ID:', id);
 
     if (id === undefined || id === null) {
       console.error('Vessel ID is undefined or null');
@@ -158,30 +186,24 @@ export class CocMowComponent implements OnInit {
   }
 
   onVesselChange() {
-    if (this.selectedVessel) {
-      this.filteredVessels = this.vessels.filter(v => v.vesselName === this.selectedVessel?.vesselName);
-    } else {
-      this.filteredVessels = this.vessels;
-    }
-    this.applyDateFilter();
+    this.applyFilters();
   }
 
   onDateChange() {
-    this.applyDateFilter();
+    this.applyFilters();
   }
 
-  applyDateFilter() {
-    if (this.startDate && this.endDate) {
-      const startDate = new Date(this.startDate);
-      const endDate = new Date(this.endDate);
+  onStatusChange() {
+    this.applyFilters();
+  }
 
-      this.filteredVessels = this.vessels.filter(v => {
-        const openedDate = new Date(v.openedDate);
-        return openedDate >= startDate && openedDate <= endDate;
-      });
-    } else {
-      this.filteredVessels = this.vessels;
-    }
+  applyFilters() {
+    this.filteredVessels = this.vessels.filter(vessel => {
+      const matchVessel = this.selectedVessel ? vessel.vesselName === this.selectedVessel.vesselName : true;
+      const matchStatus = this.selectedStatus !== null ? vessel.status === this.selectedStatus : true;
+      const matchDate = this.startDate && this.endDate ? new Date(vessel.openedDate) >= new Date(this.startDate) && new Date(vessel.openedDate) <= new Date(this.endDate) : true;
+      return matchVessel && matchStatus && matchDate;
+    });
   }
 
   goBack() {
@@ -194,22 +216,46 @@ export class CocMowComponent implements OnInit {
     // Silme işlemini burada gerçekleştirin
   }
 
-  
-  
+  openEditModal(vessel: vesselModel) {
+    this.editVesselForm.patchValue(vessel);
+    this.modalService.open(this.editModalContent, { size: 'lg' });
+  }
+
+  onEditSubmit() {
+    if (this.editVesselForm.valid) {
+      this.userService.updateVessel(this.editVesselForm.value).subscribe({
+        next: (response) => {
+          const index = this.vessels.findIndex(v => v.id === response.id);
+          if (index !== -1) {
+            this.vessels[index] = response;
+            this.filteredVessels[index] = response;
+          }
+          this.closeModal();
+        },
+        error: (error) => {
+          console.error('Error updating vessel:', error);
+        }
+      });
+    }
+  }
+
   dateValidator(compareTo: string) {
     return (formControl: AbstractControl) => {
       if (!formControl.parent) {
         return null;
       }
-  
+
       const compareDate = formControl.parent.get(compareTo)?.value;
-      const currentDate = formControl.value;
-  
-      if (!compareDate || !currentDate) {
-        return null;
+      if (compareDate && formControl.value) {
+        const compareDateValue = new Date(compareDate);
+        const formControlValue = new Date(formControl.value);
+
+        if (formControlValue < compareDateValue) {
+          return { invalidDate: true };
+        }
       }
-  
-      return new Date(currentDate) < new Date(compareDate) ? { dateInvalid: true } : null;
+
+      return null;
     };
   }
 }
