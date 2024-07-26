@@ -156,6 +156,37 @@ namespace CiriqueERP.Controllers
 
             return Ok(vessels);
         }
+        [HttpPut("updateVessel")]
+        public IActionResult UpdateVessel([FromBody] AddVesselModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var vessel = _context.CoClass.FirstOrDefault(v => v.ID == model.id);
+            if (vessel == null)
+            {
+                return NotFound("Vessel not found");
+            }
+
+            vessel.VesselName = model.VesselName;
+            vessel.CompNo = model.CompNo;
+            vessel.OpenedDate = DateTime.TryParse(model.OpenedDate, out var openedDate) ? openedDate : vessel.OpenedDate;
+            vessel.Status = model.Status;
+            vessel.Description = model.Description;
+            vessel.DocNo = model.DocNo;
+            vessel.Tasks = model.Tasks;
+            vessel.DueDate = DateTime.TryParse(model.DueDate, out var dueDate) ? dueDate : vessel.DueDate;
+            vessel.ExtendedDate = DateTime.TryParse(model.ExtendedDate, out var extendedDate) ? extendedDate : vessel.ExtendedDate;
+            vessel.ClosedDate = DateTime.TryParse(model.ClosedDate, out var closedDate) ? closedDate : (DateTime?)null;
+            vessel.Remarks = model.Remarks;
+
+            _context.SaveChanges();
+
+            return Ok(vessel);
+        }
+
     }
 
     public class VesselModel
@@ -165,6 +196,7 @@ namespace CiriqueERP.Controllers
 
     public class AddVesselModel
     {
+        public int id { get; set; }
         public string VesselName { get; set; }
         public int CompNo { get; set; }
         public string OpenedDate { get; set; }

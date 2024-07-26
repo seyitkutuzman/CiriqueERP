@@ -31,3 +31,19 @@
   justify-content: space-between;
 }
 
+.edit-button,
+.delete-button {
+  margin: 0 5px;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.vessel-grid-container .table thead th {
+  text-align: center;
+}
+
+.vessel-grid-container .table tbody td {
+  text-align: center;
+}

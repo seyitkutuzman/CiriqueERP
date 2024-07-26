@@ -129,33 +129,7 @@ namespace CiriqueERP.Controllers
             _context.SaveChanges();
             return Ok();
         }
-
-        [HttpPost("ownedVessels")]
-        public IActionResult GetAllVessels([FromBody] VesselModel model)
-        {
-            if (model.CompNo == 0)
-            {
-                return BadRequest("Invalid company number");
-            }
-
-            Console.WriteLine($"Received API call with Company Number: {model.CompNo}");
-
-            var vessels = _context.VesselList
-                .Where(u => u.CompNo == model.CompNo)
-                .Select(u => new
-                {
-                    u.VesselName,
-                    u.CompNo
-                })
-                .ToList();
-
-            if (!vessels.Any())
-            {
-                return NotFound("No vessels found for the given company number");
-            }
-
-            return Ok(vessels);
-        }
+        
     }
 
     public class MownerModel
