@@ -43,7 +43,15 @@
         <tbody>
           <tr *ngFor="let vessel of filteredVessels">
             <td>{{ vessel.vesselName }}</td>
-            <td>{{ vessel.description }}</td>
+            <td>
+              <span *ngIf="vessel.description.length > 50">
+                {{ vessel.description | slice:0:50 }}...
+                <button class="btn btn-link btn-sm p-0" (click)="openDescriptionModal(vessel.description)">Read more</button>
+              </span>
+              <span *ngIf="vessel.description.length <= 50">
+                {{ vessel.description }}
+              </span>
+            </td>
             <td>{{ getStatusText(vessel) }}</td>
             <td>{{ vessel.docNo }}</td>
             <td>{{ vessel.openedDate | date: 'yyyy-MM-dd' }}</td>
@@ -57,7 +65,6 @@
     </div>
   </app-section>
 </app-blank>
-
 
 <ng-template #modalContent>
   <div class="modal-header">
@@ -80,7 +87,7 @@
         </div>
         <div class="col-md-6 form-group">
           <label for="docNo">Document No</label>
-          <input type="text" id="docNo" formControlName="docNo" class="form-control" [value]="documentNo">
+          <input type="text" id="docNo" formControlName="docNo" class="form-control" readonly>
         </div>
       </div>
       <div class="row">
@@ -93,17 +100,22 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-4 form-group">
+        <div class="col-md-6 form-group">
           <label for="analysis">Analysis</label>
-          <div>
-            <input type="checkbox" formControlName="human"> Human
-            <input type="checkbox" formControlName="system"> System
-            <input type="checkbox" formControlName="material"> Material
+          <div class="analysis-checkboxes">
+            <input type="checkbox" formControlName="human" id="human">
+            <label for="human">Human</label>
+            <input type="checkbox" formControlName="system" id="system">
+            <label for="system">System</label>
+            <input type="checkbox" formControlName="material" id="material">
+            <label for="material">Material</label>
           </div>
         </div>
-        <div class="col-md-8 form-group">
+        </div>
+        <div>
+        <div class="col-md-6 form-group">
           <label for="subject">Subject</label>
-          <select id="subject" formControlName="subject" class="form-control">
+          <select id="subject" formControlName="subject" class="form-control subject-select">
             <option value="hull system">Hull System</option>
             <option value="documents">Documents</option>
           </select>
@@ -184,17 +196,20 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-4 form-group">
+        <div class="col-md-6 form-group">
           <label for="editAnalysis">Analysis</label>
-          <div>
-            <input type="checkbox" formControlName="human"> Human
-            <input type="checkbox" formControlName="system"> System
-            <input type="checkbox" formControlName="material"> Material
+          <div class="analysis-checkboxes">
+            <input type="checkbox" formControlName="human" id="editHuman">
+            <label for="editHuman">Human</label>
+            <input type="checkbox" formControlName="system" id="editSystem">
+            <label for="editSystem">System</label>
+            <input type="checkbox" formControlName="material" id="editMaterial">
+            <label for="editMaterial">Material</label>
           </div>
         </div>
-        <div class="col-md-8 form-group">
+        <div class="col-md-6 form-group">
           <label for="editSubject">Subject</label>
-          <select id="editSubject" formControlName="subject" class="form-control">
+          <select id="editSubject" formControlName="subject" class="form-control subject-select">
             <option value="hull system">Hull System</option>
             <option value="documents">Documents</option>
           </select>
@@ -229,6 +244,26 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
         <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #descriptionModalContent>
+  <div class="modal-header">
+    <h5 class="modal-title">Description</h5>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="descriptionForm">
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" class="form-control" rows="5" readonly></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
       </div>
     </form>
   </div>

@@ -9,6 +9,7 @@ import { BlankComponent } from '../blank/blank.component';
 import { SectionComponent } from '../section/section.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AbstractControl } from '@angular/forms';
+import { SwalService } from '../../service/swal.service';
 
 @Component({
   selector: 'app-coc-mow',
@@ -21,28 +22,33 @@ import { AbstractControl } from '@angular/forms';
 export class CocMowComponent implements OnInit {
   @ViewChild('modalContent') modalContent: any;
   @ViewChild('editModalContent') editModalContent: any;
+  @ViewChild('descriptionModalContent') descriptionModalContent: any;
   vessels: vesselModel[] = [];
   allVessels: vesselModel[] = [];
   filteredVessels: vesselModel[] = [];
   selectedVessel: vesselModel | null = null;
   vesselForm: FormGroup;
   editVesselForm: FormGroup;
+  descriptionForm: FormGroup;
   id: number = 0;
   startDate: string | null = null;
   endDate: string | null = null;
   selectedStatus: number | null = null;
   documentNo: string = ' 01/2024';
+  selectedDescription: string = '';
+
   constructor(
     private userService: boUserService,
     private fb: FormBuilder,
     private modalService: NgbModal,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private swal: SwalService
   ) {
     this.vesselForm = this.fb.group({
       vesselId: [null],
       vesselName: ['', Validators.required],
       compNo: [0],
-      docNo: ['', Validators.required],
+      docNo: ['01/2024', Validators.required],
       description: ['', Validators.required],
       human: [false],
       system: [false],
@@ -61,7 +67,7 @@ export class CocMowComponent implements OnInit {
       vesselId: [null],
       vesselName: ['', Validators.required],
       compNo: [0],
-      docNo: ['', Validators.required],
+      docNo: ['01/2024', Validators.required],
       description: ['', Validators.required],
       human: [false],
       system: [false],
@@ -74,6 +80,10 @@ export class CocMowComponent implements OnInit {
       remarks: [''],
       status: [0],
       tasks: [0]
+    });
+
+    this.descriptionForm = this.fb.group({
+      description: ['']
     });
   }
 
@@ -95,6 +105,8 @@ export class CocMowComponent implements OnInit {
     this.userService.getAllVessels().subscribe((response: vesselModel[]) => {
       this.allVessels = response;
       console.log('All Vessels Response:', response);
+    }, (error) => {
+      this.swal.callToast('Can not found any Condition of Class', 'error', 3000, false,'warning');
     });
   }
 
@@ -137,19 +149,19 @@ export class CocMowComponent implements OnInit {
           this.vessels.push(response);
           this.filteredVessels.push(response);
           this.closeModal();
+          window.location.reload();
         },
         error: (error) => {
           console.error('Error creating vessel:', error);
+          this.swal.callToast('Error creating vessel', 'error', 3000, false,'warning');
         }
       });
     }
   }
 
   deleteVessel(id: number) {
-    console.log('Deleting vessel with ID:', id);
-
     if (id === undefined || id === null) {
-      console.error('Vessel ID is undefined or null');
+      this.swal.callToast('Error deleting vessel', 'error', 3000, false,'warning');
       return;
     }
 
@@ -157,10 +169,10 @@ export class CocMowComponent implements OnInit {
       next: () => {
         this.vessels = this.vessels.filter(v => v.id !== id);
         this.filteredVessels = this.filteredVessels.filter(v => v.id !== id);
-        console.log('Vessel deleted successfully');
+        this.swal.callToast('Vessel deleted successfully', 'success', 3000, false);
       },
       error: (error) => {
-        console.error('Error deleting vessel:', error);
+        this.swal.callToast('Error deleting vessel', 'error', 3000, false,'warning');
       }
     });
   }
@@ -171,6 +183,9 @@ export class CocMowComponent implements OnInit {
 
     if (extendedDate && extendedDate < currentDate) {
       return 'Expired';
+    }
+    if (vessel.closedDate) {
+      return 'Closed';
     }
 
     switch (vessel.status) {
@@ -206,16 +221,6 @@ export class CocMowComponent implements OnInit {
     });
   }
 
-  goBack() {
-    console.log('Go back clicked');
-    // Geri gitme işlemini burada gerçekleştirin
-  }
-
-  delete() {
-    console.log('Delete clicked');
-    // Silme işlemini burada gerçekleştirin
-  }
-
   openEditModal(vessel: vesselModel) {
     this.editVesselForm.patchValue(vessel);
     this.modalService.open(this.editModalContent, { size: 'lg' });
@@ -233,7 +238,7 @@ export class CocMowComponent implements OnInit {
           this.closeModal();
         },
         error: (error) => {
-          console.error('Error updating vessel:', error);
+          this.swal.callToast('Error updating vessel', 'error', 3000, false,'warning');
         }
       });
     }
@@ -257,5 +262,11 @@ export class CocMowComponent implements OnInit {
 
       return null;
     };
+  }
+
+  openDescriptionModal(description: string) {
+    this.selectedDescription = description;
+    this.descriptionForm.patchValue({ description: description });
+    this.modalService.open(this.descriptionModalContent, { size: 'lg' });
   }
 }

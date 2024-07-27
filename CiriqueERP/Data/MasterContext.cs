@@ -369,7 +369,7 @@ public partial class MasterContext : DbContext
                 .HasColumnName("id");
 
             entity.Property(e => e.Description)
-                .HasMaxLength(1000)
+                .HasMaxLength(2000)
                 .IsUnicode(false)
                 .HasColumnName("description");
 
