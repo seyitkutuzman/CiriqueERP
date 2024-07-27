@@ -35,6 +35,20 @@
 .delete-button {
   margin: 0 5px;
 }
+.analysis-checkboxes {
+  display: flex;
+  gap: 10px;
+}
+
+.subject-select {
+  width: auto;
+}
+
+.table .edit-button,
+.table .delete-button {
+  margin-right: 5px;
+}
+
 
 .table td {
   vertical-align: middle;

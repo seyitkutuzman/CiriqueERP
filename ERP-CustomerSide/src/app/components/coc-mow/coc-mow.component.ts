@@ -22,17 +22,21 @@ import { SwalService } from '../../service/swal.service';
 export class CocMowComponent implements OnInit {
   @ViewChild('modalContent') modalContent: any;
   @ViewChild('editModalContent') editModalContent: any;
+  @ViewChild('descriptionModalContent') descriptionModalContent: any;
   vessels: vesselModel[] = [];
   allVessels: vesselModel[] = [];
   filteredVessels: vesselModel[] = [];
   selectedVessel: vesselModel | null = null;
   vesselForm: FormGroup;
   editVesselForm: FormGroup;
+  descriptionForm: FormGroup;
   id: number = 0;
   startDate: string | null = null;
   endDate: string | null = null;
   selectedStatus: number | null = null;
   documentNo: string = ' 01/2024';
+  selectedDescription: string = '';
+
   constructor(
     private userService: boUserService,
     private fb: FormBuilder,
@@ -77,6 +81,10 @@ export class CocMowComponent implements OnInit {
       status: [0],
       tasks: [0]
     });
+
+    this.descriptionForm = this.fb.group({
+      description: ['']
+    });
   }
 
   ngOnInit(): void {
@@ -99,8 +107,8 @@ export class CocMowComponent implements OnInit {
       console.log('All Vessels Response:', response);
     }, (error) => {
       this.swal.callToast('Can not found any Condition of Class', 'error', 3000, false,'warning');
-  })
-};
+    });
+  }
 
   openModal() {
     this.modalService.open(this.modalContent, { size: 'lg' });
@@ -141,6 +149,7 @@ export class CocMowComponent implements OnInit {
           this.vessels.push(response);
           this.filteredVessels.push(response);
           this.closeModal();
+          window.location.reload();
         },
         error: (error) => {
           console.error('Error creating vessel:', error);
@@ -174,6 +183,9 @@ export class CocMowComponent implements OnInit {
 
     if (extendedDate && extendedDate < currentDate) {
       return 'Expired';
+    }
+    if (vessel.closedDate) {
+      return 'Closed';
     }
 
     switch (vessel.status) {
@@ -250,5 +262,11 @@ export class CocMowComponent implements OnInit {
 
       return null;
     };
+  }
+
+  openDescriptionModal(description: string) {
+    this.selectedDescription = description;
+    this.descriptionForm.patchValue({ description: description });
+    this.modalService.open(this.descriptionModalContent, { size: 'lg' });
   }
 }
