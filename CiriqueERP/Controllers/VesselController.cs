@@ -1,6 +1,7 @@
 ﻿using CiriqueERP.Data;
 using CiriqueERP.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CiriqueERP.Controllers
 {

@@ -43,6 +43,8 @@ public partial class MasterContext : DbContext
 
     public virtual DbSet<Mowner> Mowner { get; set; }
 
+    public virtual DbSet<Regulatory> Regulatory { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Data Source=cirique-erp.database.windows.net;Initial Catalog=CiriqueERP;Persist Security Info=True;User ID=catalcali;password=Seyit2346;Trust Server Certificate=True");
 
@@ -488,7 +490,99 @@ public partial class MasterContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("remarks");
         });
+        modelBuilder.Entity<CoClass>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__CoClass__3213E83FF541A79F");
 
+            entity.ToTable("CoClass");
+
+            entity.Property(e => e.ID)
+                .HasColumnName("id");
+
+            entity.Property(e => e.Description)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("description");
+
+            entity.Property(e => e.DocNo)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("docNo");
+
+            entity.Property(e => e.OpenedDate)
+                .HasColumnName("openedDate");
+
+            entity.Property(e => e.Status)
+                .HasColumnName("status");
+
+            entity.Property(e => e.Tasks)
+                .HasColumnName("tasks");
+
+            entity.Property(e => e.VesselName)
+                .HasMaxLength(25)
+                .IsUnicode(false)
+                .HasColumnName("vesselName");
+
+            entity.Property(e => e.CompNo)
+                .HasColumnName("compNo");
+
+            entity.Property(e => e.Human)
+                .HasColumnName("human");
+
+            entity.Property(e => e.System)
+                .HasColumnName("system");
+
+            entity.Property(e => e.Material)
+                .HasColumnName("material");
+
+            entity.Property(e => e.Subject)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("subject");
+
+            entity.Property(e => e.DueDate)
+                .HasColumnName("dueDate");
+
+            entity.Property(e => e.ExtendedDate)
+                .HasColumnName("extendedDate");
+
+            entity.Property(e => e.ClosedDate)
+                .HasColumnName("closedDate");
+
+            entity.Property(e => e.Remarks)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("remarks");
+        });
+
+        modelBuilder.Entity<Regulatory>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__Regulato__3214EC27CB36C59B");
+
+            entity.ToTable("RegulatoryInformation");
+
+            entity.Property(e => e.ID)
+                .HasColumnName("id");
+
+            entity.Property(e => e.Description)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("description");
+
+            entity.Property(e => e.Vessel)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("vessel");
+
+            entity.Property(e => e.dueBy)
+                .HasColumnName("dueBy");
+
+            entity.Property(e => e.implementedDate)
+                .HasColumnName("implementedDate");
+
+            entity.Property(e => e.className)
+                .HasColumnName("ClassName");
+        });
         OnModelCreatingPartial(modelBuilder);
     }
 

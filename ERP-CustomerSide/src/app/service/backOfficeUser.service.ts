@@ -6,6 +6,7 @@ import { boUserModel } from '../models/backofficeUser.model';
 import { jwtDecode } from 'jwt-decode';
 import { map, catchError } from 'rxjs/operators';
 import { vesselModel } from '../models/vesselModel';
+import { regulatoryModel } from '../models/regulatoryModel';
 
 @Injectable({
   providedIn: 'root'
@@ -134,7 +135,23 @@ export class boUserService {
       catchError(this.handleError)
     );
   }
+
+  getRegulatoryInfo(): Observable<regulatoryModel[]> {
+    return this.http.get<regulatoryModel[]>(`${this.apiUrl}/controller/regulatoryInfo`);
+  }
+
+  createRegulatoryInfo(info: regulatoryModel): Observable<regulatoryModel> {
+    return this.http.post<regulatoryModel>(`${this.apiUrl}/controller/regulatoryInfo`, info);
+  }
+
+  deleteRegulatoryInfo(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/controller/regulatoryInfo/${id}`);
+  }
   
+  updateRegulatoryInfo(regulatory: regulatoryModel): Observable<regulatoryModel> {
+    return this.http.put<regulatoryModel>(`${this.apiUrl}/controller/updateRegulatory`, regulatory);
+  }
+
 
   getUserById(id: number): Observable<boUserModel> {
     return this.http.get<boUserModel>(`${this.apiUrl}/${id}`).pipe(

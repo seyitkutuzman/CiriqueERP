@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { JwtInterceptor } from './service/jwt.interceptor';
 import { boUserService } from './service/backOfficeUser.service';
 import { CocMowComponent } from './components/coc-mow/coc-mow.component';
+import { RegulatoryInformationComponent } from './components/regulatory/regulatory.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import { CocMowComponent } from './components/coc-mow/coc-mow.component';
     AppRoutingModule,
     AppComponent,
     LoginComponent,
-    CocMowComponent
+    CocMowComponent,
+    RegulatoryInformationComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
