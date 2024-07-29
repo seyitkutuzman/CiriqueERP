@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from './service/auth.service';
-import { boUserService } from './service/backOfficeUser.service';
+import { MainService } from './service/MainService.service';
 import { userInfoService } from './service/userInfo.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';  // NgbModal import edin
 
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private userService: boUserService,
+    private userService: MainService,
     private userInfo: userInfoService,
     private modalService: NgbModal  // NgbModal servisini ekleyin
   ) {}

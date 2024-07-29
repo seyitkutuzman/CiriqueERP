@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { boUserService } from '../../service/backOfficeUser.service';
+import { MainService } from '../../service/MainService.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { BlankComponent } from '../blank/blank.component';
@@ -29,7 +29,7 @@ export class RegulatoryInformationComponent implements OnInit {
   selectedRegulatory: regulatoryModel | null = null;
 
   constructor(
-    private userService: boUserService,
+    private userService: MainService,
     private fb: FormBuilder,
     private modalService: NgbModal,
     private datePipe: DatePipe,
@@ -61,7 +61,10 @@ export class RegulatoryInformationComponent implements OnInit {
         implementedDate: info.implementedDate ? new Date(info.implementedDate) : null
       }));
       this.applyFilter();
-    });
+    }, (error) => {
+      this.swal.callToast('error', 'Can not find any regulatory information',3000,false,'warning');
+    }
+  );
   }
 
   applyFilter() {
@@ -136,9 +139,10 @@ export class RegulatoryInformationComponent implements OnInit {
           this.applyFilter();
         }
         this.closeModal();
+        this.swal.callToast('success', 'Regulatory info updated successfully',3000,false,'success');
       },
       error: (error) => {
-        console.error('Error updating regulatory info:', error);
+        this.swal.callToast('error', 'Error updating regulatory info',3000,false,'error');
       }
     });
   }
@@ -158,9 +162,10 @@ export class RegulatoryInformationComponent implements OnInit {
       next: () => {
         this.regulatoryInfo = this.regulatoryInfo.filter(info => info.id !== id);
         this.applyFilter();
+        this.swal.callToast('success', 'Regulatory info deleted successfully',3000,false,'success');
       },
       error: (error) => {
-        console.error('Error deleting regulatory info:', error);
+        this.swal.callToast('error', 'Error deleting regulatory info',3000,false,'error');
       }
     });
   }

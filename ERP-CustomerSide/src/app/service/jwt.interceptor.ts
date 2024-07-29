@@ -4,11 +4,11 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
-import { boUserService } from './backOfficeUser.service';
+import {MainService } from './MainService.service';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-    constructor(private userService: boUserService, private router: Router) {}
+    constructor(private userService: MainService, private router: Router) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const currentUser = this.userService.currentUserValue;

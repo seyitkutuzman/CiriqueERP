@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterOutlet, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { boUserService } from '../../service/backOfficeUser.service';
+import { MainService } from '../../service/MainService.service';
 import { SwalService } from '../../service/swal.service';
 import { HttpService } from '../../service/http.service';
 import { userInfoService } from '../../service/userInfo.service';
@@ -18,7 +18,7 @@ export class LoginComponent {
   loginData = { compNo: '', userCode: '', userPass: '' };
 
   constructor(
-    private userService: boUserService,
+    private userService: MainService,
     private swal: SwalService,
     private router: Router,
     private http: HttpService,

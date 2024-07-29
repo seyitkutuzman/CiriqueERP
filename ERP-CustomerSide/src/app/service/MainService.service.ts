@@ -7,11 +7,12 @@ import { jwtDecode } from 'jwt-decode';
 import { map, catchError } from 'rxjs/operators';
 import { vesselModel } from '../models/vesselModel';
 import { regulatoryModel } from '../models/regulatoryModel';
+import { mownerModel } from '../models/mownerModel';
 
 @Injectable({
   providedIn: 'root'
 })
-export class boUserService {
+export class MainService {
   private apiUrl = 'https://localhost:7071/api';
   private currentUserSubject: BehaviorSubject<any>;
   public currentUser: Observable<any>;
@@ -152,35 +153,51 @@ export class boUserService {
     return this.http.put<regulatoryModel>(`${this.apiUrl}/controller/updateRegulatory`, regulatory);
   }
 
-
-  getUserById(id: number): Observable<boUserModel> {
-    return this.http.get<boUserModel>(`${this.apiUrl}/${id}`).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  createUser(user: boUserModel): Observable<boUserModel> {
-    return this.http.post<boUserModel>(this.apiUrl, user).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  updateUser(id: number, user: boUserModel): Observable<boUserModel> {
-    return this.http.put<boUserModel>(`${this.apiUrl}/${id}`, user).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      catchError(this.handleError)
-    );
-  }
-
   private handleError(error: HttpErrorResponse) {
     if (error.status === 401 || error.status === 403) {
       this.logout();
     }
     return throwError(error);
+  }
+
+  getMemos(): Observable<mownerModel[]> {
+    const currentUser = this.currentUserValue;
+    const decodedToken = this.decodeToken(currentUser?.accessToken);
+    const compNo = decodedToken?.CompNo;
+  
+    if (!compNo) {
+      return throwError("Invalid company number");
+    }
+  
+    console.log('API Call with Company Number:', compNo);  // Şirket numarasını kontrol edin.
+    return this.http.post<mownerModel[]>(`${this.apiUrl}/controller/Mowners`, { CompNo: compNo }, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
+  createMemo(vessel: mownerModel): Observable<mownerModel> {
+    return this.http.post<vesselModel>(`${this.apiUrl}/controller/addMowner`, vessel, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+  updateMemo(vessel: mownerModel): Observable<mownerModel> {
+    console.log('Updating memo:', vessel); // Güncellenen verileri kontrol edin
+    return this.http.put<mownerModel>(`${this.apiUrl}/controller/updateMowner`, vessel, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }  
+  
+  deleteMemo(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/controller/deleteMowner/${id}`, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 }

@@ -4,10 +4,10 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { MainSidebarComponent } from './main-sidebar/main-sidebar.component';
 import { ControlSidebarComponent } from './control-sidebar/control-sidebar.component';
 import { FooterComponent } from './footer/footer.component';
-import { boUserService } from '../../service/backOfficeUser.service';
+import {MainService } from '../../service/MainService.service';
 import { AuthService } from '../../service/auth.service';
 import { userInfoService } from '../../service/userInfo.service';
-import { CocMowComponent } from '../coc-mow/coc-mow.component';
+import { CocMowComponent } from '../Technical/coc-mow/coc-mow.component';
 
 @Component({
   selector: 'app-layouts',
@@ -20,7 +20,7 @@ export class LayoutsComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private userService: boUserService,
+    private userService: MainService,
     private userInfo: userInfoService,
     private router: Router
   ) {}

@@ -7,8 +7,8 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { AppRoutingModule } from './app-routing.module';
 import { JwtInterceptor } from './service/jwt.interceptor';
-import { boUserService } from './service/backOfficeUser.service';
-import { CocMowComponent } from './components/coc-mow/coc-mow.component';
+import { MainService } from './service/MainService.service';
+import { CocMowComponent } from './components/Technical/coc-mow/coc-mow.component';
 import { RegulatoryInformationComponent } from './components/regulatory/regulatory.component';
 
 @NgModule({
@@ -26,7 +26,7 @@ import { RegulatoryInformationComponent } from './components/regulatory/regulato
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    boUserService
+    MainService
   ],
   bootstrap: []
 })

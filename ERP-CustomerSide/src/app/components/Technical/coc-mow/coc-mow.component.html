@@ -75,6 +75,7 @@
   </div>
   <div class="modal-body">
     <form [formGroup]="vesselForm" (ngSubmit)="onSubmit()">
+      <input type="hidden" formControlName="id">
       <div class="row">
         <div class="col-md-6 form-group">
           <label for="vesselId">Select Vessel</label>
@@ -111,8 +112,6 @@
             <label for="material">Material</label>
           </div>
         </div>
-        </div>
-        <div>
         <div class="col-md-6 form-group">
           <label for="subject">Subject</label>
           <select id="subject" formControlName="subject" class="form-control subject-select">
@@ -179,6 +178,7 @@
   </div>
   <div class="modal-body">
     <form [formGroup]="editVesselForm" (ngSubmit)="onEditSubmit()">
+      <input type="hidden" formControlName="id">
       <div class="row">
         <div class="col-md-6 form-group">
           <label for="editVesselId">Vessel Name</label>
