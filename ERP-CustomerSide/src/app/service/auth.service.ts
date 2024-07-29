@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-import { boUserService } from './backOfficeUser.service';
+import { MainService } from './MainService.service';
 import { SwalService } from './swal.service';
 import { empty, isEmpty } from 'rxjs';
 
@@ -13,7 +13,7 @@ export class AuthService {
   token:string = "";
   constructor(
     private router: Router,
-    private userService: boUserService,
+    private userService: MainService,
     private swal: SwalService
   ) { }
 

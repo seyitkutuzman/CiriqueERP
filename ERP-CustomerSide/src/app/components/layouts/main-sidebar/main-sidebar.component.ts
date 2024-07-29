@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { boUserService } from '../../../service/backOfficeUser.service';
+import { MainService } from '../../../service/MainService.service';
 import { SwalService } from '../../../service/swal.service';
 import { HttpService } from '../../../service/http.service';
 import { userInfoService } from '../../../service/userInfo.service';
@@ -19,7 +19,7 @@ export class MainSidebarComponent implements OnInit {
               private router: Router,
               private httpService: HttpService,
               private swalService: SwalService,
-              private boUserService: boUserService) {}
+              private boUserService: MainService) {}
 
   ngOnInit() {
     this.userService.currentUser.subscribe(user => {

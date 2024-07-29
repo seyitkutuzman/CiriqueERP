@@ -24,4 +24,22 @@
     display: table; /* This is important for centering the modal vertically */
     overflow-y: auto;
   }
+  /* treeview item'ların küçülmesini sağlar */
+.sidebar .nav-treeview > .nav-item > .nav-link {
+  padding-left: 30px;
+  font-size: 14px;
+}
+
+/* treeview içindeki alt elemanlar için padding ve font boyutunu küçültme */
+.sidebar .nav-treeview .nav-item .nav-link {
+  padding-left: 40px; /* İstediğiniz değeri girin */
+  font-size: 12px; /* İstediğiniz değeri girin */
+}
+
+/* Alt itemler açıldığında biraz daha küçük */
+.sidebar .nav-treeview > .nav-item .nav-treeview > .nav-item > .nav-link {
+  padding-left: 50px;
+  font-size: 11px;
+}
+
   

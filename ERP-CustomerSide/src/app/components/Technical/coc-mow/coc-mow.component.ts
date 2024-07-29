@@ -1,15 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { vesselModel } from '../../models/vesselModel';
-import { boUserService } from '../../service/backOfficeUser.service';
+import { vesselModel } from '../../../models/vesselModel';
+import { MainService } from '../../../service/MainService.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { BlankComponent } from '../blank/blank.component';
-import { SectionComponent } from '../section/section.component';
+import { BlankComponent } from '../../blank/blank.component';
+import { SectionComponent } from '../../section/section.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AbstractControl } from '@angular/forms';
-import { SwalService } from '../../service/swal.service';
+import { SwalService } from '../../../service/swal.service';
 
 @Component({
   selector: 'app-coc-mow',
@@ -38,13 +38,14 @@ export class CocMowComponent implements OnInit {
   selectedDescription: string = '';
 
   constructor(
-    private userService: boUserService,
+    private userService: MainService,
     private fb: FormBuilder,
     private modalService: NgbModal,
     private datePipe: DatePipe,
     private swal: SwalService
   ) {
     this.vesselForm = this.fb.group({
+      id: [null],
       vesselId: [null],
       vesselName: ['', Validators.required],
       compNo: [0],
@@ -64,6 +65,7 @@ export class CocMowComponent implements OnInit {
     });
 
     this.editVesselForm = this.fb.group({
+      id: [null],
       vesselId: [null],
       vesselName: ['', Validators.required],
       compNo: [0],
@@ -180,13 +182,15 @@ export class CocMowComponent implements OnInit {
   getStatusText(vessel: vesselModel): string {
     const currentDate = new Date();
     const extendedDate = vessel.extendedDate ? new Date(vessel.extendedDate) : null;
+    
+    if (vessel.closedDate) {
+      return 'Closed';
+    }
 
     if (extendedDate && extendedDate < currentDate) {
       return 'Expired';
     }
-    if (vessel.closedDate) {
-      return 'Closed';
-    }
+    
 
     switch (vessel.status) {
       case 0:

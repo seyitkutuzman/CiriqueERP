@@ -25,8 +25,6 @@ namespace CiriqueERP.Controllers
                 return BadRequest("Invalid company number");
             }
 
-            Console.WriteLine($"Received API call with Company Number: {model.CompNo}");
-
             var vessels = _context.Mowner
                 .Where(u => u.CompNo == model.CompNo)
                 .Select(u => new
@@ -66,39 +64,14 @@ namespace CiriqueERP.Controllers
                 return BadRequest(ModelState);
             }
 
-            DateTime openedDate;
-            if (!DateTime.TryParse(model.OpenedDate, out openedDate))
-            {
-                // Varsayılan bir tarih atayın (örneğin: bugünün tarihi)
-                openedDate = DateTime.Now;
-            }
-
-            DateTime dueDate;
-            if (!DateTime.TryParse(model.DueDate, out dueDate))
-            {
-                dueDate = DateTime.Now;
-            }
-
-            DateTime extendedDate;
-            if (!DateTime.TryParse(model.ExtendedDate, out extendedDate))
-            {
-                extendedDate = DateTime.Now;
-            }
-
-            DateTime closedDate;
-            if (!DateTime.TryParse(model.ClosedDate, out closedDate))
-            {
-                closedDate = DateTime.Now;
-            }
-
             var newVessel = new Mowner
             {
                 VesselName = model.VesselName,
                 CompNo = model.CompNo,
-                OpenedDate = openedDate,
-                DueDate = dueDate,
-                ExtendedDate = extendedDate,
-                ClosedDate = closedDate,
+                OpenedDate = string.IsNullOrEmpty(model.OpenedDate) ? DateTime.Now : DateTime.Parse(model.OpenedDate),
+                DueDate = string.IsNullOrEmpty(model.DueDate) ? DateTime.Now : DateTime.Parse(model.DueDate),
+                ExtendedDate = string.IsNullOrEmpty(model.ExtendedDate) ? (DateTime?)null : DateTime.Parse(model.ExtendedDate),
+                ClosedDate = string.IsNullOrEmpty(model.ClosedDate) ? (DateTime?)null : DateTime.Parse(model.ClosedDate),
                 Status = model.Status,
                 Description = model.Description,
                 DocNo = model.DocNo,
@@ -129,7 +102,37 @@ namespace CiriqueERP.Controllers
             _context.SaveChanges();
             return Ok();
         }
-        
+
+        [HttpPut("updateMowner")]
+        public IActionResult UpdateVessel([FromBody] AddMownerModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var vessel = _context.Mowner.FirstOrDefault(v => v.ID == model.ID);
+            if (vessel == null)
+            {
+                return NotFound("Vessel not found");
+            }
+            vessel.VesselName = model.VesselName;
+            vessel.CompNo = model.CompNo;
+            vessel.OpenedDate = string.IsNullOrEmpty(model.OpenedDate) ? vessel.OpenedDate : DateTime.Parse(model.OpenedDate);
+            vessel.Status = model.Status;
+            vessel.Description = model.Description;
+            vessel.DocNo = model.DocNo;
+            vessel.Tasks = model.Tasks;
+            vessel.DueDate = string.IsNullOrEmpty(model.DueDate) ? vessel.DueDate : DateTime.Parse(model.DueDate);
+            vessel.ExtendedDate = string.IsNullOrEmpty(model.ExtendedDate) ? vessel.ExtendedDate : DateTime.Parse(model.ExtendedDate);
+            vessel.ClosedDate = string.IsNullOrEmpty(model.ClosedDate) ? vessel.ClosedDate : DateTime.Parse(model.ClosedDate);
+            vessel.Remarks = model.Remarks;
+
+            _context.SaveChanges();
+
+            return Ok(vessel);
+        }
+
     }
 
     public class MownerModel
@@ -139,6 +142,7 @@ namespace CiriqueERP.Controllers
 
     public class AddMownerModel
     {
+        public int ID { get; set; }
         public string VesselName { get; set; }
         public int CompNo { get; set; }
         public string OpenedDate { get; set; }

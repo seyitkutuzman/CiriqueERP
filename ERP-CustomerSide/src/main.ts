@@ -6,13 +6,13 @@ import { FormsModule } from '@angular/forms';
 import { routes } from './app/app-routing.module'; // routes dizisini import ediyoruz
 import { JwtInterceptor } from './app/service/jwt.interceptor';
 import { importProvidersFrom } from '@angular/core';
-import { boUserService } from './app/service/backOfficeUser.service';
+import { MainService } from './app/service/MainService.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes), // routes dizisini kullanıyoruz
     importProvidersFrom(HttpClientModule, FormsModule),
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    boUserService
+    MainService
   ]
 }).catch(err => console.error(err));

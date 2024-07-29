@@ -1,6 +1,7 @@
 ﻿using CiriqueERP.Data;
 using CiriqueERP.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CiriqueERP.Controllers
 {
@@ -169,7 +170,7 @@ namespace CiriqueERP.Controllers
             {
                 return NotFound("Vessel not found");
             }
-
+            vessel.ID= model.id;
             vessel.VesselName = model.VesselName;
             vessel.CompNo = model.CompNo;
             vessel.OpenedDate = DateTime.TryParse(model.OpenedDate, out var openedDate) ? openedDate : vessel.OpenedDate;
