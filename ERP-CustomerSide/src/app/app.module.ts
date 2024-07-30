@@ -10,6 +10,8 @@ import { JwtInterceptor } from './service/jwt.interceptor';
 import { MainService } from './service/MainService.service';
 import { CocMowComponent } from './components/Technical/coc-mow/coc-mow.component';
 import { RegulatoryInformationComponent } from './components/regulatory/regulatory.component';
+import { DocumentEquipmentComponent } from './components/Technical/definitions/document-equipment/document-equipment.component';
+import { DocumentSectionComponent } from './components/Technical/definitions/document-section/document-section.component';
 
 @NgModule({
   imports: [
@@ -22,7 +24,9 @@ import { RegulatoryInformationComponent } from './components/regulatory/regulato
     AppComponent,
     LoginComponent,
     CocMowComponent,
-    RegulatoryInformationComponent
+    RegulatoryInformationComponent,
+    DocumentEquipmentComponent, 
+    DocumentSectionComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

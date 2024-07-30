@@ -1,5 +1,5 @@
 ﻿using CiriqueERP.Data;
-using CiriqueERP.Models; // DocumentEquipment modeli için gerekli
+using CiriqueERP.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CiriqueERP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/controller")]
     [ApiController]
     public class DocumentEquipmentController : ControllerBase
     {
@@ -19,22 +19,22 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<DocumentEquipmentModel>>> GetDocumentEquipments()
+        [HttpGet("GetAllDocEq")]
+        public async Task<ActionResult<IEnumerable<DocumentEquipment>>> GetDocumentEquipments()
         {
             return await _context.DocumentEquipments.ToListAsync();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<DocumentEquipmentModel>> PostDocumentEquipment(DocumentEquipmentModel documentEquipment)
+        [HttpPost("AddDocEq")]
+        public async Task<ActionResult<DocumentEquipment>> PostDocumentEquipment(DocumentEquipment documentEquipment)
         {
             _context.DocumentEquipments.Add(documentEquipment);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetDocumentEquipments), new { id = documentEquipment.Id }, documentEquipment);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutDocumentEquipment(int id, DocumentEquipmentModel documentEquipment)
+        [HttpPut("UpdateDocEq/{id}")]
+        public async Task<IActionResult> PutDocumentEquipment(int id, DocumentEquipment documentEquipment)
         {
             if (id != documentEquipment.Id)
             {
@@ -62,7 +62,7 @@ namespace CiriqueERP.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteDocEq/{id}")]
         public async Task<IActionResult> DeleteDocumentEquipment(int id)
         {
             var documentEquipment = await _context.DocumentEquipments.FindAsync(id);

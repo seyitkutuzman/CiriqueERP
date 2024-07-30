@@ -1,0 +1,34 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h2>Document Section Name</h2>
+      
+        <form [formGroup]="documentSectionForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="sectionName">Section Name</label>
+            <input type="text" id="sectionName" formControlName="sectionName" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      
+        <table class="table table-striped mt-4">
+          <thead>
+            <tr>
+              <th>Document Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let documentSection of documentSections">
+              <td>{{ documentSection.sectionName }}</td>
+              <td>
+                <button class="btn btn-info" (click)="onEdit(documentSection)">Edit</button>
+                <button class="btn btn-danger" (click)="onDelete(documentSection.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-section>
+  </app-blank>
+  

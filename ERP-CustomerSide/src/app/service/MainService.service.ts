@@ -1,14 +1,14 @@
-import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { boUserModel } from '../models/backofficeUser.model';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import { map, catchError } from 'rxjs/operators';
 import { vesselModel } from '../models/vesselModel';
 import { regulatoryModel } from '../models/regulatoryModel';
 import { mownerModel } from '../models/mownerModel';
 import { DocumentEquipment } from '../models/documentEquipment.model';
+import { DocumentSection } from '../models/DocumentSection.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class MainService {
   private currentUserSubject: BehaviorSubject<any>;
   public currentUser: Observable<any>;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient) {
     const storedUser = localStorage.getItem('currentUser');
     this.currentUserSubject = new BehaviorSubject<any>(storedUser ? JSON.parse(storedUser) : null);
     this.currentUser = this.currentUserSubject.asObservable();
@@ -47,7 +47,7 @@ export class MainService {
   logout() {
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    // Optional: Add router.navigate(['/login']); if you want to navigate to login on logout
   }
 
   decodeToken(token: string): any {
@@ -115,6 +115,7 @@ export class MainService {
     );
   }
   createVessel(vessel: vesselModel): Observable<vesselModel> {
+    console.log('Create Vessel Payload:', vessel);
     return this.http.post<vesselModel>(`${this.apiUrl}/controller/addVessel`, vessel, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
@@ -123,6 +124,7 @@ export class MainService {
   }
 
   updateVessel(vessel: vesselModel): Observable<vesselModel> {
+    console.log('Update Vessel Payload:', vessel);
     return this.http.put<vesselModel>(`${this.apiUrl}/controller/updateVessel`, vessel, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
@@ -131,6 +133,7 @@ export class MainService {
   }
   
   deleteVessel(id: number): Observable<void> {
+    console.log('Delete Vessel ID:', id);
     return this.http.delete<void>(`${this.apiUrl}/controller/deleteVessel/${id}`, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
@@ -155,6 +158,7 @@ export class MainService {
   }
 
   private handleError(error: HttpErrorResponse) {
+    console.error('An error occurred:', error.message);
     if (error.status === 401 || error.status === 403) {
       this.logout();
     }
@@ -179,7 +183,8 @@ export class MainService {
   }
   
   createMemo(vessel: mownerModel): Observable<mownerModel> {
-    return this.http.post<vesselModel>(`${this.apiUrl}/controller/addMowner`, vessel, {
+    console.log('Create Memo Payload:', vessel);
+    return this.http.post<mownerModel>(`${this.apiUrl}/controller/addMowner`, vessel, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
       catchError(this.handleError)
@@ -195,6 +200,7 @@ export class MainService {
   }  
   
   deleteMemo(id: number): Observable<void> {
+    console.log('Delete Memo ID:', id);
     return this.http.delete<void>(`${this.apiUrl}/controller/deleteMowner/${id}`, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
@@ -202,18 +208,65 @@ export class MainService {
     );
   }
   getDocumentEquipments(): Observable<DocumentEquipment[]> {
-    return this.http.get<DocumentEquipment[]>(this.apiUrl);
+    console.log('Fetching all Document Equipments');
+    return this.http.get<DocumentEquipment[]>(`${this.apiUrl}/controller/GetAllDocEq`, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   addDocumentEquipment(documentEquipment: DocumentEquipment): Observable<DocumentEquipment> {
-    return this.http.post<DocumentEquipment>(this.apiUrl, documentEquipment);
+    console.log('Add Document Equipment Payload:', documentEquipment);
+    return this.http.post<DocumentEquipment>(`${this.apiUrl}/controller/AddDocEq`, documentEquipment, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   updateDocumentEquipment(id: number, documentEquipment: DocumentEquipment): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, documentEquipment);
+    console.log('Update Document Equipment ID:', id, 'Payload:', documentEquipment);
+    return this.http.put<void>(`${this.apiUrl}/controller/UpdateDocEq/${id}`, documentEquipment, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   deleteDocumentEquipment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    console.log('Delete Document Equipment ID:', id);
+    return this.http.delete<void>(`${this.apiUrl}/controller/DeleteDocEq/${id}`, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
+  getDocumentSections(): Observable<DocumentSection[]> {
+    console.log('Fetching all Document Sections');
+    return this.http.get<DocumentSection[]>(`${this.apiUrl}/DocumentSection/GetAllDocSections`).pipe(
+        catchError(this.handleError)
+    );
+}
+
+addDocumentSection(documentSection: DocumentSection): Observable<DocumentSection> {
+    console.log('Add Document Section Payload:', documentSection);
+    return this.http.post<DocumentSection>(`${this.apiUrl}/DocumentSection/AddDocSection`, documentSection).pipe(
+        catchError(this.handleError)
+    );
+}
+
+updateDocumentSection(id: number, documentSection: DocumentSection): Observable<void> {
+    console.log('Update Document Section ID:', id, 'Payload:', documentSection);
+    return this.http.put<void>(`${this.apiUrl}/DocumentSection/UpdateDocSection/${id}`, documentSection).pipe(
+        catchError(this.handleError)
+    );
+}
+
+deleteDocumentSection(id: number): Observable<void> {
+    console.log('Delete Document Section ID:', id);
+    return this.http.delete<void>(`${this.apiUrl}/DocumentSection/DeleteDocSection/${id}`).pipe(
+        catchError(this.handleError)
+    );
+}
 }

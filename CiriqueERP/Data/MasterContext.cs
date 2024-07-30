@@ -44,7 +44,9 @@ public partial class MasterContext : DbContext
     public virtual DbSet<Mowner> Mowner { get; set; }
 
     public virtual DbSet<Regulatory> Regulatory { get; set; }
-    public virtual DbSet<DocumentEquipmentModel> DocumentEquipments { get; set; }
+    public virtual DbSet<DocumentEquipment> DocumentEquipments { get; set; }
+
+    public virtual DbSet<DocumentSection> DocumentSections { get; set; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -585,9 +587,9 @@ public partial class MasterContext : DbContext
             entity.Property(e => e.className)
                 .HasColumnName("ClassName");
         });
-        modelBuilder.Entity<DocumentEquipmentModel>(entity =>
+        modelBuilder.Entity<DocumentEquipment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_DocumentEquipment");
+            entity.HasKey(e => e.Id).HasName("PK__Document__3214EC07C1E02CBA");
 
             entity.ToTable("DocumentEquipment");
 
@@ -607,6 +609,15 @@ public partial class MasterContext : DbContext
                 .HasMaxLength(1000)
                 .IsUnicode(false)
                 .HasColumnName("comment");
+        });
+        modelBuilder.Entity<DocumentSection>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Document__3214EC07D025B26D");
+            entity.Property(e => e.SectionName)
+                .IsRequired()
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("sectionName");
         });
 
         OnModelCreatingPartial(modelBuilder);
