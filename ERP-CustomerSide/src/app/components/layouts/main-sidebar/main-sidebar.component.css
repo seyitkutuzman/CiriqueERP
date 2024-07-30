@@ -8,3 +8,20 @@
   .me{
     text-align: right;
   }
+
+  /* Genel stil ayarları */
+.sidebar .nav-link {
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.sidebar .nav-treeview > .nav-item > .nav-link {
+  font-size: 12px;
+  padding: 5px 20px;
+}
+
+/* Alt menüler için stil */
+.sidebar .nav-treeview .nav-treeview > .nav-item > .nav-link {
+  font-size: 11px;
+  padding: 5px 30px;
+}

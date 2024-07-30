@@ -8,6 +8,7 @@ import { map, catchError } from 'rxjs/operators';
 import { vesselModel } from '../models/vesselModel';
 import { regulatoryModel } from '../models/regulatoryModel';
 import { mownerModel } from '../models/mownerModel';
+import { DocumentEquipment } from '../models/documentEquipment.model';
 
 @Injectable({
   providedIn: 'root'
@@ -199,5 +200,20 @@ export class MainService {
     }).pipe(
       catchError(this.handleError)
     );
+  }
+  getDocumentEquipments(): Observable<DocumentEquipment[]> {
+    return this.http.get<DocumentEquipment[]>(this.apiUrl);
+  }
+
+  addDocumentEquipment(documentEquipment: DocumentEquipment): Observable<DocumentEquipment> {
+    return this.http.post<DocumentEquipment>(this.apiUrl, documentEquipment);
+  }
+
+  updateDocumentEquipment(id: number, documentEquipment: DocumentEquipment): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, documentEquipment);
+  }
+
+  deleteDocumentEquipment(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

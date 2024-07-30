@@ -44,6 +44,8 @@ public partial class MasterContext : DbContext
     public virtual DbSet<Mowner> Mowner { get; set; }
 
     public virtual DbSet<Regulatory> Regulatory { get; set; }
+    public virtual DbSet<DocumentEquipmentModel> DocumentEquipments { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Data Source=cirique-erp.database.windows.net;Initial Catalog=CiriqueERP;Persist Security Info=True;User ID=catalcali;password=Seyit2346;Trust Server Certificate=True");
@@ -583,6 +585,30 @@ public partial class MasterContext : DbContext
             entity.Property(e => e.className)
                 .HasColumnName("ClassName");
         });
+        modelBuilder.Entity<DocumentEquipmentModel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_DocumentEquipment");
+
+            entity.ToTable("DocumentEquipment");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+
+            entity.Property(e => e.RootName)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("rootName");
+
+            entity.Property(e => e.EquipmentName)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("equipmentName");
+
+            entity.Property(e => e.Comment)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("comment");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 
