@@ -85,7 +85,14 @@ namespace CiriqueERP.Controllers
                 return BadRequest("No file uploaded.");
             }
 
-            var filePath = Path.Combine("uploads", file.FileName);
+            var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+
+            if (!Directory.Exists(uploadsDir))
+            {
+                Directory.CreateDirectory(uploadsDir);
+            }
+
+            var filePath = Path.Combine(uploadsDir, file.FileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -94,5 +101,6 @@ namespace CiriqueERP.Controllers
 
             return Ok(new { FilePath = filePath });
         }
+
     }
 }
