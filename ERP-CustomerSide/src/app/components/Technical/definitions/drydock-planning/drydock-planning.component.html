@@ -1,0 +1,127 @@
+<app-blank>
+  <app-section>
+    <div class="container">
+      <h2>Drydock Planning</h2>
+
+      <form [formGroup]="drydockPlanningForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="vessel">Vessel</label>
+          <select id="vessel" formControlName="vesselId" class="form-control">
+            <option *ngFor="let vessel of vessels" [value]="vessel.id">{{ vessel.vesselName }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="shipyardName">Shipyard Name</label>
+          <input type="text" id="shipyardName" formControlName="shipyardName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="plannedStartDate">Planned Start Date</label>
+          <input type="date" id="plannedStartDate" formControlName="plannedStartDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="plannedEndDate">Planned End Date</label>
+          <input type="date" id="plannedEndDate" formControlName="plannedEndDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" id="startDate" formControlName="startDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="endDate">End Date</label>
+          <input type="date" id="endDate" formControlName="endDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="currency">Currency</label>
+          <select id="currency" formControlName="currency" class="form-control">
+            <option value="USD">USD</option>
+            <option value="TL">TL</option>
+            <!-- Diğer para birimleri burada olacak -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="comment">Comment</label>
+          <textarea id="comment" formControlName="comment" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>Shipyard</th>
+            <th>Planned Start</th>
+            <th>Planned End</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Tasks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let drydockPlanning of drydockPlannings">
+            <td>{{ drydockPlanning.shipyardName }}</td>
+            <td>{{ drydockPlanning.plannedStartDate | date }}</td>
+            <td>{{ drydockPlanning.plannedEndDate | date }}</td>
+            <td>{{ drydockPlanning.startDate | date }}</td>
+            <td>{{ drydockPlanning.endDate | date }}</td>
+            <td>
+              <button class="btn btn-info" (click)="openEditModal(drydockPlanning, editContent)">Edit</button>
+              <button class="btn btn-danger" (click)="drydockPlanning.id !== undefined && onDelete(drydockPlanning.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-section>
+
+  <ng-template #editContent let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Edit Drydock Planning</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="editForm">
+        <div class="form-group">
+          <label for="editVessel">Vessel</label>
+          <select id="editVessel" formControlName="vesselId" class="form-control">
+            <option *ngFor="let vessel of vessels" [value]="vessel.id">{{ vessel.vesselName }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="editShipyardName">Shipyard Name</label>
+          <input type="text" id="editShipyardName" formControlName="shipyardName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="editPlannedStartDate">Planned Start Date</label>
+          <input type="date" id="editPlannedStartDate" formControlName="plannedStartDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="editPlannedEndDate">Planned End Date</label>
+          <input type="date" id="editPlannedEndDate" formControlName="plannedEndDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="editStartDate">Start Date</label>
+          <input type="date" id="editStartDate" formControlName="startDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="editEndDate">End Date</label>
+          <input type="date" id="editEndDate" formControlName="endDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="editCurrency">Currency</label>
+          <select id="editCurrency" formControlName="currency" class="form-control">
+            <option value="USD">USD</option>
+            <option value="TL">TL</option>
+            <!-- Diğer para birimleri burada olacak -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="editComment">Comment</label>
+          <textarea id="editComment" formControlName="comment" class="form-control"></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" (click)="onUpdate(modal)">Save changes</button>
+      </form>
+    </div>
+  </ng-template>
+</app-blank>

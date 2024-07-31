@@ -13,6 +13,7 @@ import { CertificateComponent } from './components/Technical/definitions/certifi
 import { EquipmentCounterComponent } from './components/Technical/definitions/equipment-counter/equipment-counter.component';
 import { JobsComponent } from './components/Technical/definitions/jobs/jobs.component';
 import { VesselComponentComponent } from './components/Technical/definitions/vessel-component/vessel-component.component';
+import { DrydockPlanningComponent } from './components/Technical/definitions/drydock-planning/drydock-planning.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -27,8 +28,8 @@ export const routes: Routes = [
     {path: 'certificate', component:CertificateComponent},
     {path: 'counter', component:EquipmentCounterComponent},
     {path: 'jobs', component:JobsComponent},
-    {path: 'vesselComponent', component:VesselComponentComponent}
-
+    {path: 'vesselComponent', component:VesselComponentComponent},
+    {path: 'drydock-planning', component:DrydockPlanningComponent}
   ] },
   { path: '**', redirectTo: '' }
 ];

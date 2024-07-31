@@ -1,12 +1,12 @@
 export interface Job {
-    id?: number;
-    vessel: string;
+    id: number;
+    jobCode: string;
+    jobTitle: string;
     jobType: string;
     priority: string;
-    jobTitle?: string;
-    jobCode?: string;
-    description?: string;
-    isRAS?: boolean;
-    isCE?: boolean;
+    vessel: string;
+    description: string;
+    isRAS: boolean;
+    isCE: boolean;
   }
   

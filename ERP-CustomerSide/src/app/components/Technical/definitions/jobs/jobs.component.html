@@ -2,48 +2,46 @@
     <app-section>
       <div class="container">
         <h2>Jobs</h2>
+        
         <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="vessel">Vessel</label>
-              <select id="vessel" formControlName="vessel" class="form-control">
-                <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
-              </select>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="jobType">Job Type</label>
-              <select id="jobType" formControlName="jobType" class="form-control">
-                <option value="All">All</option>
-                <option value="Periodical">Periodical</option>
-                <option value="Counter">Counter</option>
-                <option value="Periodical Or Counter">Periodical Or Counter</option>
-              </select>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="priority">Priority</label>
-              <select id="priority" formControlName="priority" class="form-control">
-                <option value="All">All</option>
-                <option value="Normal">Normal</option>
-                <option value="Stand By">Stand By</option>
-                <option value="Critical Equipment">Critical Equipment</option>
-              </select>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="jobTitle">Job Title</label>
-              <input type="text" id="jobTitle" formControlName="jobTitle" class="form-control">
-            </div>
+          <div class="form-group">
+            <label for="vessel">Vessel</label>
+            <select id="vessel" formControlName="vessel" class="form-control">
+              <option value="">Choose Vessel</option>
+              <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+            </select>
           </div>
-          <div class="form-row">
-            <div class="form-check col-md-6">
-              <input type="checkbox" id="filterRAS" formControlName="filterRAS" (change)="onFilterChange()" class="form-check-input">
-              <label for="filterRAS" class="form-check-label">Filter RAS Required Jobs</label>
-            </div>
-            <div class="form-check col-md-6">
-              <input type="checkbox" id="filterCE" formControlName="filterCE" (change)="onFilterChange()" class="form-check-input">
-              <label for="filterCE" class="form-check-label">Filter CE Shutdown Required Jobs</label>
-            </div>
+          <div class="form-group">
+            <label for="jobType">Job Type</label>
+            <select id="jobType" formControlName="jobType" class="form-control">
+              <option value="All">All</option>
+              <option value="Periodical">Periodical</option>
+              <option value="Counter">Counter</option>
+              <option value="Periodical Or Counter">Periodical Or Counter</option>
+            </select>
           </div>
-          <button type="submit" class="btn btn-primary">Search</button>
+          <div class="form-group">
+            <label for="priority">Priority</label>
+            <select id="priority" formControlName="priority" class="form-control">
+              <option value="All">All</option>
+              <option value="Normal">Normal</option>
+              <option value="Stand By">Stand By</option>
+              <option value="Critical Equipment">Critical Equipment</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="jobTitle">Job Title</label>
+            <input type="text" id="jobTitle" formControlName="jobTitle" class="form-control">
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="filterRAS" formControlName="filterRAS" class="form-check-input">
+            <label for="filterRAS" class="form-check-label">Filter RAS Required Jobs</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="filterCE" formControlName="filterCE" class="form-check-input">
+            <label for="filterCE" class="form-check-label">Filter CE Shutdown Required Jobs</label>
+          </div>
+          <button type="submit" class="btn btn-primary mt-3">Search</button>
         </form>
         
         <table class="table table-striped mt-4">
@@ -54,7 +52,7 @@
               <th>Description</th>
               <th>RAS?</th>
               <th>CE?</th>
-              <th>Tasks</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -66,46 +64,43 @@
               <td>{{ job.isCE ? 'Yes' : 'No' }}</td>
               <td>
                 <button class="btn btn-info" (click)="openEditModal(job, editModal)">Edit</button>
-                <button class="btn btn-danger" (click)="job.id !== undefined ? onDelete(job.id) : null">Delete</button>
+                <button class="btn btn-danger" (click)="onDelete(job.id!)">Delete</button>
               </td>
             </tr>
           </tbody>
         </table>
+        
+        <ng-template #editModal let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Edit Job</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="editForm">
+              <div class="form-group">
+                <label for="editJobTitle">Job Title</label>
+                <input type="text" id="editJobTitle" formControlName="jobTitle" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="editDescription">Description</label>
+                <input type="text" id="editDescription" formControlName="description" class="form-control">
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="editIsRAS" formControlName="isRAS" class="form-check-input">
+                <label for="editIsRAS" class="form-check-label">Is RAS?</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="editIsCE" formControlName="isCE" class="form-check-input">
+                <label for="editIsCE" class="form-check-label">Is CE?</label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="onUpdate(modal)">Save changes</button>
+          </div>
+        </ng-template>
       </div>
     </app-section>
-  
-    <!-- Edit Modal -->
-    <ng-template #editModal let-modal>
-      <div class="modal-header">
-        <h4 class="modal-title">Edit Job</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="editForm">
-          <div class="form-group">
-            <label for="editJobTitle">Job Title</label>
-            <input type="text" id="editJobTitle" formControlName="jobTitle" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="editDescription">Description</label>
-            <input type="text" id="editDescription" formControlName="description" class="form-control">
-          </div>
-          <div class="form-check">
-            <input type="checkbox" id="editIsRAS" formControlName="isRAS" class="form-check-input">
-            <label for="editIsRAS" class="form-check-label">RAS?</label>
-          </div>
-          <div class="form-check">
-            <input type="checkbox" id="editIsCE" formControlName="isCE" class="form-check-input">
-            <label for="editIsCE" class="form-check-label">CE?</label>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="onUpdate(modal)">Save</button>
-      </div>
-    </ng-template>
   </app-blank>
   

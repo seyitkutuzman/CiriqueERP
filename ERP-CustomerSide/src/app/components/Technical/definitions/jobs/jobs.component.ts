@@ -7,6 +7,7 @@ import { JobService } from '../../../../service/DefinitionsService.service';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../../../modules/shared.module';
 import { MainService } from '../../../../service/MainService.service';
+
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -38,7 +39,11 @@ export class JobsComponent implements OnInit {
 
     this.editForm = this.fb.group({
       id: [null],
+      jobCode: ['', Validators.required],
       jobTitle: ['', Validators.required],
+      jobType: ['', Validators.required],
+      priority: ['', Validators.required],
+      vessel: ['', Validators.required],
       description: ['', Validators.required],
       isRAS: [false],
       isCE: [false]
@@ -63,7 +68,7 @@ export class JobsComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  filterJobs(): void {
     const { vessel, jobType, priority, jobTitle, filterRAS, filterCE } = this.jobForm.value;
 
     this.filteredJobs = this.jobs.filter(job => {
@@ -90,26 +95,26 @@ export class JobsComponent implements OnInit {
       }
 
       if (filterCE) {
-        matches = matches && (job.isCE || false);
+        matches = matches && !!job.isCE;
       }
 
       return matches;
     });
   }
 
+  onSubmit(): void {
+    this.filterJobs();
+  }
+
   onFilterChange(): void {
-    this.onSubmit();
+    this.filterJobs();
   }
 
   openEditModal(job: Job, content: any): void {
     this.editForm.patchValue(job);
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(() => {
       if (this.editForm.valid) {
-        this.jobService.updateJob(this.editForm.value.id!, {
-          ...this.editForm.value,
-          isRAS: !!this.editForm.value.isRAS,
-          isCE: !!this.editForm.value.isCE
-        }).subscribe(() => {
+        this.jobService.updateJob(this.editForm.value.id!, this.editForm.value).subscribe(() => {
           this.loadJobs();
         });
       }
@@ -126,11 +131,7 @@ export class JobsComponent implements OnInit {
 
   onUpdate(modal: any): void {
     if (this.editForm.valid) {
-      this.jobService.updateJob(this.editForm.value.id!, {
-        ...this.editForm.value,
-        isRAS: !!this.editForm.value.isRAS,
-        isCE: !!this.editForm.value.isCE
-      }).subscribe(() => {
+      this.jobService.updateJob(this.editForm.value.id!, this.editForm.value).subscribe(() => {
         this.loadJobs();
         modal.close();
       });
