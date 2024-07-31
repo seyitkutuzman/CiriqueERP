@@ -50,6 +50,12 @@ public partial class MasterContext : DbContext
     public virtual DbSet<DocumentSection> DocumentSections { get; set; }
     public virtual DbSet<DocumentTypes> DocumentTypes { get; set; }
     public virtual DbSet<Certificate> Certificates { get; set; }
+    public DbSet<EquipmentCounter> EquipmentCounters { get; set; }
+    public DbSet<VesselComponent> VesselComponents { get; set; }
+
+    public DbSet<Job> Jobs { get; set; }
+
+
 
 
 

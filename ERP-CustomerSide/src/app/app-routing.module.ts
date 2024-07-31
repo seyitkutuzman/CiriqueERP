@@ -10,6 +10,9 @@ import { DocumentEquipmentComponent } from './components/Technical/definitions/d
 import { DocumentSectionComponent } from './components/Technical/definitions/document-section/document-section.component';
 import { DocumentTypeComponent } from './components/Technical/definitions/document-type/document-type.component';
 import { CertificateComponent } from './components/Technical/definitions/certificate/certificate.component';
+import { EquipmentCounterComponent } from './components/Technical/definitions/equipment-counter/equipment-counter.component';
+import { JobsComponent } from './components/Technical/definitions/jobs/jobs.component';
+import { VesselComponentComponent } from './components/Technical/definitions/vessel-component/vessel-component.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -21,10 +24,10 @@ export const routes: Routes = [
     {path: 'docEquip', component: DocumentEquipmentComponent},
     {path: 'docSection', component: DocumentSectionComponent},
     {path: 'docType', component: DocumentTypeComponent},
-    {path: 'certificate', component:CertificateComponent}
-
-
-
+    {path: 'certificate', component:CertificateComponent},
+    {path: 'counter', component:EquipmentCounterComponent},
+    {path: 'jobs', component:JobsComponent},
+    {path: 'vesselComponent', component:VesselComponentComponent}
 
   ] },
   { path: '**', redirectTo: '' }

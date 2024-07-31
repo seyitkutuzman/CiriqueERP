@@ -14,6 +14,8 @@ import { DocumentEquipmentComponent } from './components/Technical/definitions/d
 import { DocumentSectionComponent } from './components/Technical/definitions/document-section/document-section.component';
 import { DocumentTypeComponent } from './components/Technical/definitions/document-type/document-type.component';
 import { CertificateComponent } from './components/Technical/definitions/certificate/certificate.component';
+import { JobsComponent } from './components/Technical/definitions/jobs/jobs.component';
+import { VesselComponentComponent } from './components/Technical/definitions/vessel-component/vessel-component.component';
 
 @NgModule({
   imports: [
@@ -30,7 +32,9 @@ import { CertificateComponent } from './components/Technical/definitions/certifi
     DocumentEquipmentComponent, 
     DocumentSectionComponent,
     DocumentTypeComponent,
-    CertificateComponent
+    CertificateComponent,
+    JobsComponent,
+    VesselComponentComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
