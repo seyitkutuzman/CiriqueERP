@@ -12,6 +12,8 @@ import { CocMowComponent } from './components/Technical/coc-mow/coc-mow.componen
 import { RegulatoryInformationComponent } from './components/regulatory/regulatory.component';
 import { DocumentEquipmentComponent } from './components/Technical/definitions/document-equipment/document-equipment.component';
 import { DocumentSectionComponent } from './components/Technical/definitions/document-section/document-section.component';
+import { DocumentTypeComponent } from './components/Technical/definitions/document-type/document-type.component';
+import { CertificateComponent } from './components/Technical/definitions/certificate/certificate.component';
 
 @NgModule({
   imports: [
@@ -26,7 +28,9 @@ import { DocumentSectionComponent } from './components/Technical/definitions/doc
     CocMowComponent,
     RegulatoryInformationComponent,
     DocumentEquipmentComponent, 
-    DocumentSectionComponent
+    DocumentSectionComponent,
+    DocumentTypeComponent,
+    CertificateComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

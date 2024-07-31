@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using CiriqueERP.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,6 +48,9 @@ public partial class MasterContext : DbContext
     public virtual DbSet<DocumentEquipment> DocumentEquipments { get; set; }
 
     public virtual DbSet<DocumentSection> DocumentSections { get; set; }
+    public virtual DbSet<DocumentTypes> DocumentTypes { get; set; }
+    public virtual DbSet<Certificate> Certificates { get; set; }
+
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -613,6 +617,7 @@ public partial class MasterContext : DbContext
         modelBuilder.Entity<DocumentSection>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Document__3214EC07D025B26D");
+            entity.ToTable("DocumentSection");
             entity.Property(e => e.SectionName)
                 .IsRequired()
                 .HasMaxLength(100)

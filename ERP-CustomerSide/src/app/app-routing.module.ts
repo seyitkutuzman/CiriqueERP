@@ -8,6 +8,8 @@ import { RegulatoryInformationComponent } from './components/regulatory/regulato
 import { MemoComponent } from './components/Technical/memo/memo.component';
 import { DocumentEquipmentComponent } from './components/Technical/definitions/document-equipment/document-equipment.component';
 import { DocumentSectionComponent } from './components/Technical/definitions/document-section/document-section.component';
+import { DocumentTypeComponent } from './components/Technical/definitions/document-type/document-type.component';
+import { CertificateComponent } from './components/Technical/definitions/certificate/certificate.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -17,7 +19,11 @@ export const routes: Routes = [
     {path: 'regulatory', component: RegulatoryInformationComponent},
     {path: 'memo', component: MemoComponent},
     {path: 'docEquip', component: DocumentEquipmentComponent},
-    {path: 'docSection', component: DocumentSectionComponent}
+    {path: 'docSection', component: DocumentSectionComponent},
+    {path: 'docType', component: DocumentTypeComponent},
+    {path: 'certificate', component:CertificateComponent}
+
+
 
 
   ] },

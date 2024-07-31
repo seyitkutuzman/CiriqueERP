@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CiriqueERP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/controller")]
     [ApiController]
     public class DocumentSectionController : ControllerBase
     {
