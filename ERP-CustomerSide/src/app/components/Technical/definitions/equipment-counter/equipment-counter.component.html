@@ -1,0 +1,69 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h2>Equipment Counter</h2>
+  
+        <form [formGroup]="equipmentCounterForm" (ngSubmit)="onSubmit()">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="vessel">Vessel</label>
+              <select id="vessel" formControlName="vessel" class="form-control">
+                <option value="">Choose Vessel</option>
+                <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="equipmentCounterName">Equipment Counter Name</label>
+              <input type="text" id="equipmentCounterName" formControlName="equipmentCounterName" class="form-control">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+  
+        <table class="table table-striped mt-4">
+          <thead>
+            <tr>
+              <th>Vessel</th>
+              <th>Equipment Counter Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let equipmentCounter of equipmentCounters">
+              <td>{{ equipmentCounter.vessel }}</td>
+              <td>{{ equipmentCounter.equipmentCounterName }}</td>
+              <td>
+                <button class="btn btn-info" (click)="onEdit(equipmentCounter, editModal)">Edit</button>
+                <button class="btn btn-danger" (click)="onDelete(equipmentCounter.id!)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <ng-template #editModal let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Edit Equipment Counter</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="editForm" (ngSubmit)="modal.close('Save click')">
+              <div class="form-group">
+                <label for="editVessel">Vessel</label>
+                <select id="editVessel" formControlName="vessel" class="form-control">
+                  <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="editEquipmentCounterName">Equipment Counter Name</label>
+                <input type="text" id="editEquipmentCounterName" formControlName="equipmentCounterName" class="form-control">
+              </div>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+          </div>
+        </ng-template>
+      </div>
+    </app-section>
+  </app-blank>
+  

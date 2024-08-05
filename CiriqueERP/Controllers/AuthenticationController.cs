@@ -25,6 +25,7 @@ public class AuthenticationController : ControllerBase
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginModel model)
     {
+        
         var user = _context.Users
             .Where(u => u.CompNo == model.compNo && u.UserNo == model.userNo && u.UserPass == model.userPass)
             .Select(u => new

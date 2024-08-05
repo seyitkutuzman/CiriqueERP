@@ -10,6 +10,14 @@ import { JwtInterceptor } from './service/jwt.interceptor';
 import { MainService } from './service/MainService.service';
 import { CocMowComponent } from './components/Technical/coc-mow/coc-mow.component';
 import { RegulatoryInformationComponent } from './components/regulatory/regulatory.component';
+import { DocumentEquipmentComponent } from './components/Technical/definitions/document-equipment/document-equipment.component';
+import { DocumentSectionComponent } from './components/Technical/definitions/document-section/document-section.component';
+import { DocumentTypeComponent } from './components/Technical/definitions/document-type/document-type.component';
+import { CertificateComponent } from './components/Technical/definitions/certificate/certificate.component';
+import { JobsComponent } from './components/Technical/definitions/jobs/jobs.component';
+import { VesselComponentComponent } from './components/Technical/definitions/vessel-component/vessel-component.component';
+import { DrydockPlanningComponent } from './components/Technical/drydock/drydock-planning/drydock-planning.component';
+import { DrydockJobsComponent } from './components/Technical/drydock/drydock-job/drydock-job.component';
 
 @NgModule({
   imports: [
@@ -22,7 +30,13 @@ import { RegulatoryInformationComponent } from './components/regulatory/regulato
     AppComponent,
     LoginComponent,
     CocMowComponent,
-    RegulatoryInformationComponent
+    RegulatoryInformationComponent,
+    DocumentEquipmentComponent, 
+    DocumentSectionComponent,
+    DocumentTypeComponent,
+    CertificateComponent,
+    JobsComponent,
+    VesselComponentComponent, DrydockPlanningComponent, DrydockJobsComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

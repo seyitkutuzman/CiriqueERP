@@ -1,0 +1,208 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h2>Certificates And Surveys</h2>
+  
+        <form [formGroup]="certificateForm" (ngSubmit)="onSubmit()">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="certificateName">Certificate Name</label>
+              <input type="text" id="certificateName" formControlName="certificateName" class="form-control">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="certificateNo">Certificate No</label>
+              <input type="text" id="certificateNo" formControlName="certificateNo" class="form-control">
+            </div>
+          </div>
+  
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="certificateGroup">Certificate Group</label>
+              <select id="certificateGroup" formControlName="certificateGroup" class="form-control">
+                <option value="">Choose</option>
+                <option value="Trading">Trading</option>
+                <option value="Equipment Certificates">Equipment Certificates</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="certificateType">Certificate Type</label>
+              <select id="certificateType" formControlName="certificateType" class="form-control">
+                <option value="">Choose</option>
+                <option value="Class">Class</option>
+                <option value="Flag">Flag</option>
+                <option value="Other">Other</option>
+                <option value="Addendum / Attestation">Addendum / Attestation</option>
+              </select>
+            </div>
+          </div>
+  
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="department">Department</label>
+              <select id="department" formControlName="department" class="form-control">
+                <option value="">Choose Department</option>
+                <option value="ALPINA">ALPINA</option>
+                <option value="CHARTERING">CHARTERING</option>
+                <option value="FINANCIAL">FINANCIAL</option>
+                <option value="FLEET MANAGER">FLEET MANAGER</option>
+                <option value="HR & ADMIN">HR & ADMIN</option>
+                <option value="HSEQ">HSEQ</option>
+                <option value="INFORMATION TECHNOLOGY">INFORMATION TECHNOLOGY</option>
+                <option value="INSURANCE">INSURANCE</option>
+                <option value="LAW">LAW</option>
+                <option value="MANAGEMENT">MANAGEMENT</option>
+                <option value="MINE">MINE</option>
+                <option value="OPERATION">OPERATION</option>
+                <option value="PURCHASING">PURCHASING</option>
+                <option value="TECHNICAL">TECHNICAL</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="renewal">Renewal (Month)</label>
+              <input type="number" id="renewal" formControlName="renewal" class="form-control">
+            </div>
+          </div>
+  
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="annual">Annual (Month)</label>
+              <input type="number" id="annual" formControlName="annual" class="form-control">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="intermediate">Intermediate (Month)</label>
+              <input type="number" id="intermediate" formControlName="intermediate" class="form-control">
+            </div>
+          </div>
+  
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="comment">Comment</label>
+              <textarea id="comment" formControlName="comment" class="form-control"></textarea>
+            </div>
+          </div>
+  
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+  
+        <table class="table table-striped mt-4">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Certificate</th>
+              <th>Certificate Group</th>
+              <th>Cert. Type</th>
+              <th>Renewal</th>
+              <th>Department</th>
+              <th>Tasks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let certificate of certificates">
+              <td>{{ certificate.certificateNo }}</td>
+              <td>{{ certificate.certificateName }}</td>
+              <td>{{ certificate.certificateGroup }}</td>
+              <td>{{ certificate.certificateType }}</td>
+              <td>{{ certificate.renewal }}</td>
+              <td>{{ certificate.department }}</td>
+              <td>
+                <button class="btn btn-info" (click)="onEdit(certificate)">Edit</button>
+                <button class="btn btn-danger" (click)="certificate.id !== undefined ? onDelete(certificate.id) : null">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <ng-template #editModal let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Edit Certificate</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="editForm" (ngSubmit)="onUpdate(modal)">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="editCertificateName">Certificate Name</label>
+                  <input type="text" id="editCertificateName" formControlName="certificateName" class="form-control">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="editCertificateNo">Certificate No</label>
+                  <input type="text" id="editCertificateNo" formControlName="certificateNo" class="form-control">
+                </div>
+              </div>
+  
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="editCertificateGroup">Certificate Group</label>
+                  <select id="editCertificateGroup" formControlName="certificateGroup" class="form-control">
+                    <option value="">Choose</option>
+                    <option value="Trading">Trading</option>
+                    <option value="Equipment Certificates">Equipment Certificates</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="editCertificateType">Certificate Type</label>
+                  <select id="editCertificateType" formControlName="certificateType" class="form-control">
+                    <option value="">Choose</option>
+                    <option value="Class">Class</option>
+                    <option value="Flag">Flag</option>
+                    <option value="Other">Other</option>
+                    <option value="Addendum / Attestation">Addendum / Attestation</option>
+                  </select>
+                </div>
+              </div>
+  
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="editDepartment">Department</label>
+                  <select id="editDepartment" formControlName="department" class="form-control">
+                    <option value="">Choose Department</option>
+                    <option value="ALPINA">ALPINA</option>
+                    <option value="CHARTERING">CHARTERING</option>
+                    <option value="FINANCIAL">FINANCIAL</option>
+                    <option value="FLEET MANAGER">FLEET MANAGER</option>
+                    <option value="HR & ADMIN">HR & ADMIN</option>
+                    <option value="HSEQ">HSEQ</option>
+                    <option value="INFORMATION TECHNOLOGY">INFORMATION TECHNOLOGY</option>
+                    <option value="INSURANCE">INSURANCE</option>
+                    <option value="LAW">LAW</option>
+                    <option value="MANAGEMENT">MANAGEMENT</option>
+                    <option value="MINE">MINE</option>
+                    <option value="OPERATION">OPERATION</option>
+                    <option value="PURCHASING">PURCHASING</option>
+                    <option value="TECHNICAL">TECHNICAL</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="editRenewal">Renewal (Month)</label>
+                  <input type="number" id="editRenewal" formControlName="renewal" class="form-control">
+                </div>
+              </div>
+  
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="editAnnual">Annual (Month)</label>
+                  <input type="number" id="editAnnual" formControlName="annual" class="form-control">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="editIntermediate">Intermediate (Month)</label>
+                  <input type="number" id="editIntermediate" formControlName="intermediate" class="form-control">
+                </div>
+              </div>
+  
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <label for="editComment">Comment</label>
+                  <textarea id="editComment" formControlName="comment" class="form-control"></textarea>
+                </div>
+              </div>
+  
+              <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+          </div>
+        </ng-template>
+      </div>
+    </app-section>
+  </app-blank>
+  

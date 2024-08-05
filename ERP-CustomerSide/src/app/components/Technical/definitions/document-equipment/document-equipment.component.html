@@ -1,0 +1,72 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h2>Document Equipment</h2>
+        <form [formGroup]="documentEquipmentForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="rootName">Root Name</label>
+            <input type="text" id="rootName" formControlName="rootName" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="equipmentName">Equipment Name</label>
+            <input type="text" id="equipmentName" formControlName="equipmentName" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="comment">Comment</label>
+            <textarea id="comment" formControlName="comment" class="form-control"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+  
+        <table class="table table-striped mt-4">
+          <thead>
+            <tr>
+              <th>Root Name</th>
+              <th>Equipment Name</th>
+              <th>Comment</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let documentEquipment of documentEquipments">
+              <td>{{ documentEquipment.rootName }}</td>
+              <td>{{ documentEquipment.equipmentName }}</td>
+              <td>{{ documentEquipment.comment }}</td>
+              <td>
+                <button class="btn btn-info" (click)="openEditModal(editModal, documentEquipment)">Edit</button>
+                <button class="btn btn-danger" (click)="onDelete(documentEquipment.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <!-- Edit Modal -->
+      <ng-template #editModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Document Equipment</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="editDocumentEquipmentForm" (ngSubmit)="onEditSubmit()">
+            <div class="form-group">
+              <label for="rootName">Root Name</label>
+              <input type="text" id="rootName" formControlName="rootName" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="equipmentName">Equipment Name</label>
+              <input type="text" id="equipmentName" formControlName="equipmentName" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="comment">Comment</label>
+              <textarea id="comment" formControlName="comment" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+        </div>
+      </ng-template>
+    </app-section>
+  </app-blank>
+  

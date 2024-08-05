@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using CiriqueERP.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,6 +45,22 @@ public partial class MasterContext : DbContext
     public virtual DbSet<Mowner> Mowner { get; set; }
 
     public virtual DbSet<Regulatory> Regulatory { get; set; }
+    public virtual DbSet<DocumentEquipment> DocumentEquipments { get; set; }
+
+    public virtual DbSet<DocumentSection> DocumentSections { get; set; }
+    public virtual DbSet<DocumentTypes> DocumentTypes { get; set; }
+    public virtual DbSet<Certificate> Certificates { get; set; }
+    public DbSet<EquipmentCounter> EquipmentCounters { get; set; }
+    public DbSet<VesselComponent> VesselComponents { get; set; }
+
+    public DbSet<DrydockPlanning> DrydockPlannings { get; set; }
+    public DbSet<DrydockJob> DrydockJobs { get; set; }
+
+    public DbSet<Job> Jobs { get; set; }
+
+
+
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Data Source=cirique-erp.database.windows.net;Initial Catalog=CiriqueERP;Persist Security Info=True;User ID=catalcali;password=Seyit2346;Trust Server Certificate=True");
@@ -583,6 +600,40 @@ public partial class MasterContext : DbContext
             entity.Property(e => e.className)
                 .HasColumnName("ClassName");
         });
+        modelBuilder.Entity<DocumentEquipment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Document__3214EC07C1E02CBA");
+
+            entity.ToTable("DocumentEquipment");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+
+            entity.Property(e => e.RootName)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("rootName");
+
+            entity.Property(e => e.EquipmentName)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("equipmentName");
+
+            entity.Property(e => e.Comment)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("comment");
+        });
+        modelBuilder.Entity<DocumentSection>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Document__3214EC07D025B26D");
+            entity.ToTable("DocumentSection");
+            entity.Property(e => e.SectionName)
+                .IsRequired()
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("sectionName");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 
