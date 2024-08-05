@@ -54,6 +54,7 @@ public partial class MasterContext : DbContext
     public DbSet<VesselComponent> VesselComponents { get; set; }
 
     public DbSet<DrydockPlanning> DrydockPlannings { get; set; }
+    public DbSet<DrydockJob> DrydockJobs { get; set; }
 
     public DbSet<Job> Jobs { get; set; }
 

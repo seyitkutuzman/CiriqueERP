@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { DrydockPlanning } from '../models/DrydockPlanning.model';
 import { catchError } from 'rxjs/operators';
+import { DrydockJob } from '../models/DrydockJob.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,8 +38,29 @@ export class DrydockPlanningService {
       .pipe(catchError(this.handleError));
   }
 
+  getDrydockJobs(): Observable<DrydockJob[]> {
+    return this.http.get<DrydockJob[]>(`${this.apiUrl}/drydockjobs/getJobs`, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  
+  addDrydockJob(drydockJob: DrydockJob): Observable<DrydockJob> {
+    return this.http.post<DrydockJob>(`${this.apiUrl}/drydockjobs/addJob`, drydockJob, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  
+  updateDrydockJob(id: number, drydockJob: DrydockJob): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/drydockjobs/updateJob/${id}`, drydockJob, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  
+  deleteDrydockJob(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/drydockjobs/deleteJob/${id}`, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(error: any) {
     console.error('An error occurred:', error);
     return throwError(error);
   }
+
 }

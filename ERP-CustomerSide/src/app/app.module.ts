@@ -16,7 +16,8 @@ import { DocumentTypeComponent } from './components/Technical/definitions/docume
 import { CertificateComponent } from './components/Technical/definitions/certificate/certificate.component';
 import { JobsComponent } from './components/Technical/definitions/jobs/jobs.component';
 import { VesselComponentComponent } from './components/Technical/definitions/vessel-component/vessel-component.component';
-import { DrydockPlanningComponent } from './components/Technical/definitions/drydock-planning/drydock-planning.component';
+import { DrydockPlanningComponent } from './components/Technical/drydock/drydock-planning/drydock-planning.component';
+import { DrydockJobsComponent } from './components/Technical/drydock/drydock-job/drydock-job.component';
 
 @NgModule({
   imports: [
@@ -35,7 +36,7 @@ import { DrydockPlanningComponent } from './components/Technical/definitions/dry
     DocumentTypeComponent,
     CertificateComponent,
     JobsComponent,
-    VesselComponentComponent, DrydockPlanningComponent
+    VesselComponentComponent, DrydockPlanningComponent, DrydockJobsComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

@@ -1,0 +1,125 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h2>Drydock Jobs</h2>
+  
+        <form [formGroup]="jobForm" (ngSubmit)="onAdd(jobForm)">
+          <div class="form-group">
+            <label for="jobCode">Job Code</label>
+            <input type="text" id="jobCode" formControlName="jobCode" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="jobTitle">Job Title</label>
+            <input type="text" id="jobTitle" formControlName="jobTitle" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="unitType">Unit Type</label>
+            <select id="unitType" formControlName="unitType" class="form-control" required>
+              <option value="Type1">Type1</option>
+              <option value="Type2">Type2</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" class="form-control"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary mt-3">Add Job</button>
+        </form>
+  
+        <table class="table table-striped mt-4">
+          <thead>
+            <tr>
+              <th>Job Code</th>
+              <th>Job Title</th>
+              <th>Unit Type</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let job of jobs">
+              <td>{{ job.jobCode }}</td>
+              <td>{{ job.jobTitle }}</td>
+              <td>{{ job.unitType }}</td>
+              <td>{{ job.description }}</td>
+              <td>
+                <button class="btn btn-info" (click)="openEditModal(job, editModal)">Edit</button>
+                <button class="btn btn-danger" (click)="job.id !== undefined ? onDelete(job.id) : null">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <button class="btn btn-primary mt-3" (click)="openNewModal(newJobModal)">Add New Job</button>
+  
+        <ng-template #newJobModal let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Add New Job</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="newForm">
+              <div class="form-group">
+                <label for="newJobCode">Job Code</label>
+                <input type="text" id="newJobCode" formControlName="jobCode" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="newJobTitle">Job Title</label>
+                <input type="text" id="newJobTitle" formControlName="jobTitle" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="newUnitType">Unit Type</label>
+                <select id="newUnitType" formControlName="unitType" class="form-control" required>
+                  <option value="Type1">Type1</option>
+                  <option value="Type2">Type2</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="newDescription">Description</label>
+                <textarea id="newDescription" formControlName="description" class="form-control"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="onAdd(modal)">Save</button>
+          </div>
+        </ng-template>
+  
+        <ng-template #editModal let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title">Edit Job</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="editForm">
+              <div class="form-group">
+                <label for="editJobCode">Job Code</label>
+                <input type="text" id="editJobCode" formControlName="jobCode" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="editJobTitle">Job Title</label>
+                <input type="text" id="editJobTitle" formControlName="jobTitle" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="editUnitType">Unit Type</label>
+                <select id="editUnitType" formControlName="unitType" class="form-control" required>
+                  <option value="Type1">Type1</option>
+                  <option value="Type2">Type2</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="editDescription">Description</label>
+                <textarea id="editDescription" formControlName="description" class="form-control"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="onUpdate(modal)">Save changes</button>
+          </div>
+        </ng-template>
+      </div>
+    </app-section>
+  </app-blank>
+  

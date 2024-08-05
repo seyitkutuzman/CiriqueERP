@@ -13,7 +13,8 @@ import { CertificateComponent } from './components/Technical/definitions/certifi
 import { EquipmentCounterComponent } from './components/Technical/definitions/equipment-counter/equipment-counter.component';
 import { JobsComponent } from './components/Technical/definitions/jobs/jobs.component';
 import { VesselComponentComponent } from './components/Technical/definitions/vessel-component/vessel-component.component';
-import { DrydockPlanningComponent } from './components/Technical/definitions/drydock-planning/drydock-planning.component';
+import { DrydockPlanningComponent } from './components/Technical/drydock/drydock-planning/drydock-planning.component';
+import { DrydockJobsComponent } from './components/Technical/drydock/drydock-job/drydock-job.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,7 +30,8 @@ export const routes: Routes = [
     {path: 'counter', component:EquipmentCounterComponent},
     {path: 'jobs', component:JobsComponent},
     {path: 'vesselComponent', component:VesselComponentComponent},
-    {path: 'drydock-planning', component:DrydockPlanningComponent}
+    {path: 'drydock-planning', component:DrydockPlanningComponent},
+    {path: 'drydock-job', component:DrydockJobsComponent}
   ] },
   { path: '**', redirectTo: '' }
 ];

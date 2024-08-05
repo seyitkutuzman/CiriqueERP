@@ -1,106 +1,304 @@
 <app-blank>
-    <app-section>
-      <div class="container">
-        <h2>Jobs</h2>
-        
-        <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
-          <div class="form-group">
-            <label for="vessel">Vessel</label>
-            <select id="vessel" formControlName="vessel" class="form-control">
-              <option value="">Choose Vessel</option>
-              <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="jobType">Job Type</label>
-            <select id="jobType" formControlName="jobType" class="form-control">
-              <option value="All">All</option>
-              <option value="Periodical">Periodical</option>
-              <option value="Counter">Counter</option>
-              <option value="Periodical Or Counter">Periodical Or Counter</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="priority">Priority</label>
-            <select id="priority" formControlName="priority" class="form-control">
-              <option value="All">All</option>
-              <option value="Normal">Normal</option>
-              <option value="Stand By">Stand By</option>
-              <option value="Critical Equipment">Critical Equipment</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="jobTitle">Job Title</label>
-            <input type="text" id="jobTitle" formControlName="jobTitle" class="form-control">
-          </div>
-          <div class="form-check">
-            <input type="checkbox" id="filterRAS" formControlName="filterRAS" class="form-check-input">
-            <label for="filterRAS" class="form-check-label">Filter RAS Required Jobs</label>
-          </div>
-          <div class="form-check">
-            <input type="checkbox" id="filterCE" formControlName="filterCE" class="form-check-input">
-            <label for="filterCE" class="form-check-label">Filter CE Shutdown Required Jobs</label>
-          </div>
-          <button type="submit" class="btn btn-primary mt-3">Search</button>
-        </form>
-        
-        <table class="table table-striped mt-4">
-          <thead>
-            <tr>
-              <th>Job Code</th>
-              <th>Job Title</th>
-              <th>Description</th>
-              <th>RAS?</th>
-              <th>CE?</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let job of filteredJobs">
-              <td>{{ job.jobCode }}</td>
-              <td>{{ job.jobTitle }}</td>
-              <td>{{ job.description }}</td>
-              <td>{{ job.isRAS ? 'Yes' : 'No' }}</td>
-              <td>{{ job.isCE ? 'Yes' : 'No' }}</td>
-              <td>
-                <button class="btn btn-info" (click)="openEditModal(job, editModal)">Edit</button>
-                <button class="btn btn-danger" (click)="onDelete(job.id!)">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <ng-template #editModal let-modal>
-          <div class="modal-header">
-            <h4 class="modal-title">Edit Job</h4>
-            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-          </div>
-          <div class="modal-body">
-            <form [formGroup]="editForm">
-              <div class="form-group">
-                <label for="editJobTitle">Job Title</label>
-                <input type="text" id="editJobTitle" formControlName="jobTitle" class="form-control">
-              </div>
-              <div class="form-group">
-                <label for="editDescription">Description</label>
-                <input type="text" id="editDescription" formControlName="description" class="form-control">
-              </div>
-              <div class="form-check">
-                <input type="checkbox" id="editIsRAS" formControlName="isRAS" class="form-check-input">
-                <label for="editIsRAS" class="form-check-label">Is RAS?</label>
-              </div>
-              <div class="form-check">
-                <input type="checkbox" id="editIsCE" formControlName="isCE" class="form-check-input">
-                <label for="editIsCE" class="form-check-label">Is CE?</label>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Cancel</button>
-            <button type="button" class="btn btn-primary" (click)="onUpdate(modal)">Save changes</button>
-          </div>
-        </ng-template>
-      </div>
-    </app-section>
-  </app-blank>
-  
+  <app-section>
+    <div class="container">
+      <h2>Jobs</h2>
+
+      <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="vessel">Vessel</label>
+          <select id="vessel" formControlName="vessel" class="form-control">
+            <option value="">Choose Vessel</option>
+            <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="jobType">Job Type</label>
+          <select id="jobType" formControlName="jobType" class="form-control">
+            <option value="All">All</option>
+            <option value="Periodical">Periodical</option>
+            <option value="Counter">Counter</option>
+            <option value="Periodical Or Counter">Periodical Or Counter</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="priority">Priority</label>
+          <select id="priority" formControlName="priority" class="form-control">
+            <option value="All">All</option>
+            <option value="Normal">Normal</option>
+            <option value="Stand By">Stand By</option>
+            <option value="Critical Equipment">Critical Equipment</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="jobTitle">Job Title</label>
+          <input type="text" id="jobTitle" formControlName="jobTitle" class="form-control">
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="filterRAS" formControlName="filterRAS" class="form-check-input">
+          <label for="filterRAS" class="form-check-label">Filter RAS Required Jobs</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="filterCE" formControlName="filterCE" class="form-check-input">
+          <label for="filterCE" class="form-check-label">Filter CE Shutdown Required Jobs</label>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Search</button>
+      </form>
+
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>Job Code</th>
+            <th>Job Title</th>
+            <th>Description</th>
+            <th>RAS?</th>
+            <th>CE?</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let job of filteredJobs">
+            <td>{{ job.jobCode }}</td>
+            <td>{{ job.jobTitle }}</td>
+            <td>{{ job.description }}</td>
+            <td>{{ job.isRAS ? 'Yes' : 'No' }}</td>
+            <td>{{ job.isCE ? 'Yes' : 'No' }}</td>
+            <td>
+              <button class="btn btn-info" (click)="openEditModal(job, editModal)">Edit</button>
+              <button class="btn btn-danger" (click)="onDelete(job.id!)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button class="btn btn-primary mt-3" (click)="openNewModal(newJobModal)">Add New Job</button>
+
+      <ng-template #newJobModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title">Add New Job</h4>
+          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="newForm">
+            <div class="form-group">
+              <label for="newVessel">Vessel</label>
+              <select id="newVessel" formControlName="vessel" class="form-control">
+                <option value="">Choose Vessel</option>
+                <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="newComponent">Component</label>
+              <input type="text" id="newComponent" formControlName="component" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="newJobTitle">Job Title</label>
+              <input type="text" id="newJobTitle" formControlName="jobTitle" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="newJobCode">Job Code</label>
+              <input type="text" id="newJobCode" formControlName="jobCode" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="newResponsiblePersonnel">Responsible Personnel</label>
+              <input type="text" id="newResponsiblePersonnel" formControlName="responsiblePersonnel" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="newJobType">Job Type</label>
+              <select id="newJobType" formControlName="jobType" class="form-control">
+                <option value="Periodical">Periodical</option>
+                <option value="Counter">Counter</option>
+                <option value="Periodical Or Counter">Periodical Or Counter</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="newPriority">Priority</label>
+              <select id="newPriority" formControlName="priority" class="form-control">
+                <option value="Normal">Normal</option>
+                <option value="Stand By">Stand By</option>
+                <option value="Critical Equipment">Critical Equipment</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="newJobStart">Job Start %</label>
+              <input type="number" id="newJobStart" formControlName="jobStart" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="newJobOverdue">Job Overdue %</label>
+              <input type="number" id="newJobOverdue" formControlName="jobOverdue" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="newDescription">Description</label>
+              <input type="text" id="newDescription" formControlName="description" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="newJobProcedures">Job Procedures</label>
+              <textarea id="newJobProcedures" formControlName="jobProcedures" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="newInstructionFile">Instruction File</label>
+              <input type="text" id="newInstructionFile" formControlName="instructionFile" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="newRasDocument">RAS Document</label>
+              <input type="text" id="newRasDocument" formControlName="rasDocument" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="newRasTemplate">RAS Template</label>
+              <input type="text" id="newRasTemplate" formControlName="rasTemplate" class="form-control">
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="newIsRAS" formControlName="isRAS" class="form-check-input">
+              <label for="newIsRAS" class="form-check-label">RAS required to close job</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="newVisualOnly" formControlName="visualOnly" class="form-check-input">
+              <label for="newVisualOnly" class="form-check-label">Mark this job as 'Visual' only</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="newAttachmentRequired" formControlName="attachmentRequired" class="form-check-input">
+              <label for="newAttachmentRequired" class="form-check-label">Attachment required to close job (Picture, Document etc)</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="newCeShutdown" formControlName="ceShutdown" class="form-check-input">
+              <label for="newCeShutdown" class="form-check-label">CE shutdown required to close job</label>
+            </div>
+            <div class="form-group">
+              <label for="newJobConstant">Job Constant</label>
+              <select id="newJobConstant" formControlName="jobConstant" class="form-control">
+                <option value="External Oil">External Oil</option>
+                <option value="External Water">External Water</option>
+                <option value="Onboard Boiler Water">Onboard Boiler Water</option>
+                <option value="Onboard Cooling Water">Onboard Cooling Water</option>
+                <option value="Onboard LO Test For Engine">Onboard LO Test For Engine</option>
+                <option value="Onboard LO Test For Aux. Equipments">Onboard LO Test For Aux. Equipments</option>
+                <option value="Vibration Measurement">Vibration Measurement</option>
+                <option value="Infrared Measurement">Infrared Measurement</option>
+                <option value="Noise Measurement">Noise Measurement</option>
+                <option value="Pressure">Pressure</option>
+                <option value="Scrubber Water Analysis">Scrubber Water Analysis</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="onAdd(modal)">Save</button>
+        </div>
+      </ng-template>
+
+      <ng-template #editModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Job</h4>
+          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="editForm">
+            <div class="form-group">
+              <label for="editVessel">Vessel</label>
+              <select id="editVessel" formControlName="vessel" class="form-control">
+                <option value="">Choose Vessel</option>
+                <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editComponent">Component</label>
+              <input type="text" id="editComponent" formControlName="component" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="editJobTitle">Job Title</label>
+              <input type="text" id="editJobTitle" formControlName="jobTitle" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="editJobCode">Job Code</label>
+              <input type="text" id="editJobCode" formControlName="jobCode" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="editResponsiblePersonnel">Responsible Personnel</label>
+              <input type="text" id="editResponsiblePersonnel" formControlName="responsiblePersonnel" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="editJobType">Job Type</label>
+              <select id="editJobType" formControlName="jobType" class="form-control">
+                <option value="Periodical">Periodical</option>
+                <option value="Counter">Counter</option>
+                <option value="Periodical Or Counter">Periodical Or Counter</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editPriority">Priority</label>
+              <select id="editPriority" formControlName="priority" class="form-control">
+                <option value="Normal">Normal</option>
+                <option value="Stand By">Stand By</option>
+                <option value="Critical Equipment">Critical Equipment</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editJobStart">Job Start %</label>
+              <input type="number" id="editJobStart" formControlName="jobStart" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="editJobOverdue">Job Overdue %</label>
+              <input type="number" id="editJobOverdue" formControlName="jobOverdue" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="editDescription">Description</label>
+              <input type="text" id="editDescription" formControlName="description" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="editJobProcedures">Job Procedures</label>
+              <textarea id="editJobProcedures" formControlName="jobProcedures" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="editInstructionFile">Instruction File</label>
+              <input type="text" id="editInstructionFile" formControlName="instructionFile" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="editRasDocument">RAS Document</label>
+              <input type="text" id="editRasDocument" formControlName="rasDocument" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="editRasTemplate">RAS Template</label>
+              <input type="text" id="editRasTemplate" formControlName="rasTemplate" class="form-control">
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="editIsRAS" formControlName="isRAS" class="form-check-input">
+              <label for="editIsRAS" class="form-check-label">RAS required to close job</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="editVisualOnly" formControlName="visualOnly" class="form-check-input">
+              <label for="editVisualOnly" class="form-check-label">Mark this job as 'Visual' only</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="editAttachmentRequired" formControlName="attachmentRequired" class="form-check-input">
+              <label for="editAttachmentRequired" class="form-check-label">Attachment required to close job (Picture, Document etc)</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="editCeShutdown" formControlName="ceShutdown" class="form-check-input">
+              <label for="editCeShutdown" class="form-check-label">CE shutdown required to close job</label>
+            </div>
+            <div class="form-group">
+              <label for="editJobConstant">Job Constant</label>
+              <select id="editJobConstant" formControlName="jobConstant" class="form-control">
+                <option value="External Oil">External Oil</option>
+                <option value="External Water">External Water</option>
+                <option value="Onboard Boiler Water">Onboard Boiler Water</option>
+                <option value="Onboard Cooling Water">Onboard Cooling Water</option>
+                <option value="Onboard LO Test For Engine">Onboard LO Test For Engine</option>
+                <option value="Onboard LO Test For Aux. Equipments">Onboard LO Test For Aux. Equipments</option>
+                <option value="Vibration Measurement">Vibration Measurement</option>
+                <option value="Infrared Measurement">Infrared Measurement</option>
+                <option value="Noise Measurement">Noise Measurement</option>
+                <option value="Pressure">Pressure</option>
+                <option value="Scrubber Water Analysis">Scrubber Water Analysis</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="onUpdate(modal)">Save changes</button>
+        </div>
+      </ng-template>
+    </div>
+  </app-section>
+</app-blank>

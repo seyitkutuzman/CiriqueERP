@@ -21,6 +21,7 @@ export class JobsComponent implements OnInit {
   vessels: vesselModel[] = [];
   jobForm: FormGroup;
   editForm: FormGroup;
+  newForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -29,7 +30,7 @@ export class JobsComponent implements OnInit {
     private mainService: MainService
   ) {
     this.jobForm = this.fb.group({
-      vessel: [''],
+      vessel: ['', Validators.required],
       jobType: ['All'],
       priority: ['All'],
       jobTitle: [''],
@@ -39,14 +40,53 @@ export class JobsComponent implements OnInit {
 
     this.editForm = this.fb.group({
       id: [null],
-      jobCode: ['', Validators.required],
-      jobTitle: ['', Validators.required],
-      jobType: ['', Validators.required],
-      priority: ['', Validators.required],
       vessel: ['', Validators.required],
-      description: ['', Validators.required],
+      component: ['', Validators.required],
+      jobTitle: ['', Validators.required],
+      jobCode: ['', Validators.required],
+      responsiblePersonnel: ['', Validators.required],
+      jobType: ['', Validators.required],
+      counterName: ['', Validators.required],
+      pmHour: ['', Validators.required],
+      jobStart: ['', Validators.required],
+      jobOverdue: ['', Validators.required],
+      jobProcedures: ['', Validators.required],
+      instructionFile: ['', Validators.required],
+      rasDocument: ['', Validators.required],
+      rasTemplate: ['', Validators.required],
       isRAS: [false],
-      isCE: [false]
+      visualOnly: [false],
+      attachmentRequired: [false],
+      ceShutdown: [false],
+      jobConstant: ['', Validators.required],
+      fileType: ['', Validators.required],
+      priority: ['', Validators.required],
+      description: ['', Validators.required]
+    });
+
+    this.newForm = this.fb.group({
+      vessel: ['', Validators.required],
+      component: ['', Validators.required],
+      jobTitle: ['', Validators.required],
+      jobCode: ['', Validators.required],
+      responsiblePersonnel: ['', Validators.required],
+      jobType: ['', Validators.required],
+      counterName: ['', Validators.required],
+      pmHour: ['', Validators.required],
+      jobStart: ['', Validators.required],
+      jobOverdue: ['', Validators.required],
+      jobProcedures: ['', Validators.required],
+      instructionFile: ['', Validators.required],
+      rasDocument: ['', Validators.required],
+      rasTemplate: ['', Validators.required],
+      isRAS: [false],
+      visualOnly: [false],
+      attachmentRequired: [false],
+      ceShutdown: [false],
+      jobConstant: ['', Validators.required],
+      fileType: ['', Validators.required],
+      priority: ['', Validators.required],
+      description: ['', Validators.required]
     });
   }
 
@@ -123,6 +163,10 @@ export class JobsComponent implements OnInit {
     });
   }
 
+  openNewModal(content: any): void {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+  }
+
   onDelete(id: number): void {
     this.jobService.deleteJob(id).subscribe(() => {
       this.loadJobs();
@@ -135,6 +179,28 @@ export class JobsComponent implements OnInit {
         this.loadJobs();
         modal.close();
       });
+    }
+  }
+
+  onAdd(modal: any): void {
+    if (this.newForm.valid) {
+      this.jobService.addJob(this.newForm.value).subscribe(() => {
+        this.loadJobs();
+        modal.close();
+      });
+    } else {
+      console.log("Form is invalid");
+      console.log(this.newForm.errors);
+      for (const key in this.newForm.controls) {
+        if (this.newForm.controls.hasOwnProperty(key)) {
+          const controlErrors = this.newForm.get(key)?.errors;
+          if (controlErrors != null) {
+            Object.keys(controlErrors).forEach(keyError => {
+              console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
+            });
+          }
+        }
+      }
     }
   }
 }
