@@ -45,7 +45,7 @@ export class CocMowComponent implements OnInit {
     private swal: SwalService
   ) {
     this.vesselForm = this.fb.group({
-      id: [null],
+      id: [null], // Yeni kayıt için null veya 0 gönderin
       vesselId: [null],
       vesselName: ['', Validators.required],
       compNo: [0],
@@ -137,9 +137,12 @@ export class CocMowComponent implements OnInit {
         this.vesselForm.patchValue({ closedDate: null });
       }
 
-      console.log('Form Values:', this.vesselForm.value);
+      const vesselData = this.vesselForm.value;
+      vesselData.id = null; // Yeni bir kayıt için ID'yi 0 olarak ayarlayın
 
-      this.userService.createVessel(this.vesselForm.value).subscribe({
+      console.log('Form Values:', vesselData);
+
+      this.userService.createVessel(vesselData).subscribe({
         next: (response) => {
           response.openedDate = this.datePipe.transform(response.openedDate, 'yyyy-MM-dd') || response.openedDate;
           response.dueDate = response.dueDate ? this.datePipe.transform(response.dueDate, 'yyyy-MM-dd') || '' : '';

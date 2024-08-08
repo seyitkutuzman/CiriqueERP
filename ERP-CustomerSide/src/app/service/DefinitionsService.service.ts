@@ -19,8 +19,8 @@ export class JobService {
 
   constructor(private http: HttpClient) {}
 
-  getJobs(): Observable<Job[]> {
-    return this.http.get<Job[]>(`${this.apiUrl}/jobs/getJobs`, this.httpOptions).pipe(
+  getJobs(compNo: number): Observable<Job[]> {
+    return this.http.get<Job[]>(`${this.apiUrl}/jobs/getJobs/${compNo}`, this.httpOptions).pipe(
       catchError(this.handleError)
     );
   }

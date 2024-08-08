@@ -6,6 +6,7 @@ import { vesselModel } from '../../../../models/vesselModel';
 import { MainService } from '../../../../service/MainService.service';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../../../modules/shared.module';
+
 @Component({
   selector: 'app-equipment-counter',
   standalone: true,
@@ -26,13 +27,15 @@ export class EquipmentCounterComponent implements OnInit {
   ) {
     this.equipmentCounterForm = this.fb.group({
       vessel: ['', Validators.required],
-      equipmentCounterName: ['', Validators.required]
+      equipmentCounterName: ['', Validators.required],
+      compNo: [''] // compNo alanı eklendi
     });
 
     this.editForm = this.fb.group({
       id: [null],
       vessel: ['', Validators.required],
-      equipmentCounterName: ['', Validators.required]
+      equipmentCounterName: ['', Validators.required],
+      compNo: [''] // compNo alanı eklendi
     });
   }
 
@@ -42,10 +45,19 @@ export class EquipmentCounterComponent implements OnInit {
   }
 
   loadEquipmentCounters(): void {
-    this.mainService.getEquipmentCounters().subscribe(data => {
-      this.equipmentCounters = data;
-    });
+    const compNo = parseInt(localStorage.getItem('compNo') || '0', 10); // compNo'yu localStorage'dan çekip integer'a çevir
+    if (compNo > 0) {
+      this.mainService.getEquipmentCounters(compNo).subscribe(data => {
+        this.equipmentCounters = data;
+      }, error => {
+        console.error('Error fetching equipment counters:', error);
+      });
+    } else {
+      console.error('Invalid company number');
+      // İsteğe bağlı olarak kullanıcıya bir hata mesajı gösterebilirsiniz.
+    }
   }
+  
 
   loadVessels(): void {
     this.mainService.getAllVessels().subscribe(data => {
@@ -55,7 +67,8 @@ export class EquipmentCounterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.equipmentCounterForm.valid) {
-      const equipmentCounter: EquipmentCounter = this.equipmentCounterForm.value;
+      const compNo = localStorage.getItem('compNo'); // compNo'yu localStorage'dan al
+      const equipmentCounter: EquipmentCounter = { ...this.equipmentCounterForm.value, compNo };
 
       this.mainService.addEquipmentCounter(equipmentCounter).subscribe(() => {
         this.loadEquipmentCounters();
@@ -68,14 +81,25 @@ export class EquipmentCounterComponent implements OnInit {
     this.editForm.patchValue(equipmentCounter);
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(() => {
       if (this.editForm.valid) {
-        this.mainService.updateEquipmentCounter(this.editForm.value.id!, this.editForm.value).subscribe(() => {
-          this.loadEquipmentCounters();
-        });
+        const updatedCounter: EquipmentCounter = this.editForm.value;
+  
+        // compNo'yu güvenli bir şekilde sayıya çevirme
+        const compNo = parseInt(localStorage.getItem('compNo') || '0', 10);
+        if (compNo > 0) {
+          updatedCounter.compNo = compNo;
+  
+          this.mainService.updateEquipmentCounter(updatedCounter.id!, updatedCounter).subscribe(() => {
+            this.loadEquipmentCounters();
+          });
+        } else {
+          console.error('Invalid or missing company number');
+        }
       }
     }, () => {
       this.editForm.reset();
     });
   }
+  
 
   onDelete(id: number): void {
     this.mainService.deleteEquipmentCounter(id!).subscribe(() => {

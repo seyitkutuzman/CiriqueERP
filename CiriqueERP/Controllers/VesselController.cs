@@ -139,14 +139,11 @@ namespace CiriqueERP.Controllers
                 return BadRequest("Invalid company number");
             }
 
-            Console.WriteLine($"Received API call with Company Number: {model.CompNo}");
-
             var vessels = _context.VesselList
-                .Where(u => u.CompNo == model.CompNo)
-                .Select(u => new
+                .Where(v => v.CompNo == model.CompNo)
+                .Select(v => new
                 {
-                    u.VesselName,
-                    u.CompNo
+                    v.VesselName
                 })
                 .ToList();
 
@@ -157,6 +154,8 @@ namespace CiriqueERP.Controllers
 
             return Ok(vessels);
         }
+
+
         [HttpPut("updateVessel")]
         public IActionResult UpdateVessel([FromBody] AddVesselModel model)
         {
@@ -170,7 +169,7 @@ namespace CiriqueERP.Controllers
             {
                 return NotFound("Vessel not found");
             }
-            vessel.ID= model.id;
+            vessel.ID= model.id ?? null;
             vessel.VesselName = model.VesselName;
             vessel.CompNo = model.CompNo;
             vessel.OpenedDate = DateTime.TryParse(model.OpenedDate, out var openedDate) ? openedDate : vessel.OpenedDate;
@@ -197,7 +196,7 @@ namespace CiriqueERP.Controllers
 
     public class AddVesselModel
     {
-        public int id { get; set; }
+        public int? id { get; set; } // ID alanını opsiyonel (nullable) hale getirin
         public string VesselName { get; set; }
         public int CompNo { get; set; }
         public string OpenedDate { get; set; }
@@ -214,4 +213,5 @@ namespace CiriqueERP.Controllers
         public string Subject { get; set; }
         public string Remarks { get; set; }
     }
+
 }

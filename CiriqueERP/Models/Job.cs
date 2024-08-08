@@ -3,6 +3,7 @@
     public class Job
     {
         public int? Id { get; set; }
+        public int CompNo { get; set; } // Yeni Alan
         public string Vessel { get; set; }
         public string Component { get; set; }
         public string JobTitle { get; set; }

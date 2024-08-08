@@ -96,11 +96,20 @@ export class JobsComponent implements OnInit {
   }
 
   loadJobs(): void {
-    this.jobService.getJobs().subscribe(data => {
-      this.jobs = data;
-      this.filteredJobs = data;
-    });
-  }
+    const compNoString = localStorage.getItem('compNo'); // compNo değeri string olarak alınır
+    const compNo = compNoString ? parseInt(compNoString, 10) : null; // String değeri number'a çevrilir
+
+    if (compNo !== null) {
+        this.jobService.getJobs(compNo).subscribe(data => {
+            this.jobs = data;
+            this.filteredJobs = data;
+        });
+    } else {
+        console.error('Company number not found ');
+        // Hata durumunda yapılacak işlemler
+    }
+}
+
 
   loadVessels(): void {
     this.mainService.getAllVessels().subscribe(data => {
@@ -175,32 +184,39 @@ export class JobsComponent implements OnInit {
 
   onUpdate(modal: any): void {
     if (this.editForm.valid) {
-      this.jobService.updateJob(this.editForm.value.id!, this.editForm.value).subscribe(() => {
-        this.loadJobs();
-        modal.close();
-      });
-    }
-  }
+        const compNo = localStorage.getItem('compNo');  // Şirket numarasını localStorage'dan al
+        const updatedJobData = { ...this.editForm.value, compNo: compNo };  // Form verilerine `compNo` ekle
 
-  onAdd(modal: any): void {
-    if (this.newForm.valid) {
-      this.jobService.addJob(this.newForm.value).subscribe(() => {
-        this.loadJobs();
-        modal.close();
+        this.jobService.updateJob(this.editForm.value.id!, updatedJobData).subscribe(() => {
+            this.loadJobs();
+            modal.close();
+        });
+    }
+}
+
+onAdd(modal: any): void {
+  if (this.newForm.valid) {
+      const compNo = localStorage.getItem('compNo');  // Şirket numarasını localStorage'dan al
+      const newJobData = { ...this.newForm.value, compNo: compNo };  // Form verilerine `compNo` ekle
+
+      this.jobService.addJob(newJobData).subscribe(() => {
+          this.loadJobs();
+          modal.close();
       });
-    } else {
+  } else {
       console.log("Form is invalid");
       console.log(this.newForm.errors);
       for (const key in this.newForm.controls) {
-        if (this.newForm.controls.hasOwnProperty(key)) {
-          const controlErrors = this.newForm.get(key)?.errors;
-          if (controlErrors != null) {
-            Object.keys(controlErrors).forEach(keyError => {
-              console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
-            });
+          if (this.newForm.controls.hasOwnProperty(key)) {
+              const controlErrors = this.newForm.get(key)?.errors;
+              if (controlErrors != null) {
+                  Object.keys(controlErrors).forEach(keyError => {
+                      console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
+                  });
+              }
           }
-        }
       }
-    }
   }
+}
+  
 }

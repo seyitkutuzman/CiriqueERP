@@ -19,10 +19,10 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet("getJobs")]
-        public async Task<ActionResult<IEnumerable<Job>>> GetJobs()
+        [HttpGet("getJobs/{compNo}")]
+        public async Task<ActionResult<IEnumerable<Job>>> GetJobs(int compNo)
         {
-            return await _context.Jobs.ToListAsync();
+            return await _context.Jobs.Where(j => j.CompNo == compNo).ToListAsync();
         }
 
         [HttpPost("addJob")]

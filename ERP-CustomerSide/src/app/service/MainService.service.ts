@@ -44,6 +44,7 @@
         map(user => {
           if (user && user.accessToken) {
             localStorage.setItem('currentUser', JSON.stringify(user));
+            localStorage.setItem('compNo', compNo); // compNo bilgisini localStorage'a kaydedin
             this.currentUserSubject.next(user);
           }
           return user;
@@ -89,10 +90,8 @@
     }
 
     getVessels(): Observable<vesselModel[]> {
-      const currentUser = this.currentUserValue;
-      const decodedToken = this.decodeToken(currentUser?.accessToken);
-      const compNo = decodedToken?.CompNo;
-    
+      const compNo = localStorage.getItem('compNo'); // compNo bilgisini localStorage'dan alın
+      
       if (!compNo) {
         return throwError("Invalid company number");
       }
@@ -344,22 +343,19 @@
       catchError(this.handleError)
     );
   }
-  getEquipmentCounters(): Observable<EquipmentCounter[]> {
-    console.log('Fetching all Equipment Counters');
-    return this.http.get<EquipmentCounter[]>(`${this.apiUrl}/controller/getCounters`, this.httpOptions).pipe(
-      catchError(this.handleError)
-    );
-  }
-
+  getEquipmentCounters(compNo: number): Observable<EquipmentCounter[]> {
+  return this.http.get<EquipmentCounter[]>(`${this.apiUrl}/controller/getCounters/${compNo}`, this.httpOptions)
+    .pipe(catchError(this.handleError));
+}
   addEquipmentCounter(equipmentCounter: EquipmentCounter): Observable<EquipmentCounter> {
-    console.log('Add Equipment Counter Payload:', equipmentCounter);
+    console.log('Adding Equipment Counter:', equipmentCounter);
     return this.http.post<EquipmentCounter>(`${this.apiUrl}/controller/addCounter`, equipmentCounter, this.httpOptions).pipe(
       catchError(this.handleError)
     );
   }
 
   updateEquipmentCounter(id: number, equipmentCounter: EquipmentCounter): Observable<void> {
-    console.log('Update Equipment Counter ID:', id, 'Payload:', equipmentCounter);
+    console.log('Updating Equipment Counter ID:', id, 'Payload:', equipmentCounter);
     return this.http.put<void>(`${this.apiUrl}/controller/updateCounter/${id}`, equipmentCounter, this.httpOptions).pipe(
       catchError(this.handleError)
     );

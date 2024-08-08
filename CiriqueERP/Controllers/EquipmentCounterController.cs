@@ -19,10 +19,12 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet("getCounters")]
-        public async Task<ActionResult<IEnumerable<EquipmentCounter>>> GetEquipmentCounters()
+        [HttpGet("getCounters/{compNo}")]
+        public async Task<ActionResult<IEnumerable<EquipmentCounter>>> GetEquipmentCounters(int compNo)
         {
-            return await _context.EquipmentCounters.ToListAsync();
+            return await _context.EquipmentCounters
+                                 .Where(c => c.CompNo == compNo)
+                                 .ToListAsync();
         }
 
         [HttpPost("addCounter")]
@@ -30,7 +32,7 @@ namespace CiriqueERP.Controllers
         {
             _context.EquipmentCounters.Add(equipmentCounter);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetEquipmentCounters), new { id = equipmentCounter.Id }, equipmentCounter);
+            return CreatedAtAction(nameof(GetEquipmentCounters), new { compNo = equipmentCounter.CompNo }, equipmentCounter);
         }
 
         [HttpPut("updateCounter/{id}")]
