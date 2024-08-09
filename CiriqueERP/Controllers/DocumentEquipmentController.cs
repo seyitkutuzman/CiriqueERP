@@ -19,10 +19,12 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet("GetAllDocEq")]
-        public async Task<ActionResult<IEnumerable<DocumentEquipment>>> GetDocumentEquipments()
+        [HttpGet("GetAllDocEq/{compNo}")]
+        public async Task<ActionResult<IEnumerable<DocumentEquipment>>> GetDocumentEquipments(int compNo)
         {
-            return await _context.DocumentEquipments.ToListAsync();
+            return await _context.DocumentEquipments
+                .Where(de => de.CompNo == compNo)
+                .ToListAsync();
         }
 
         [HttpPost("AddDocEq")]
@@ -30,7 +32,7 @@ namespace CiriqueERP.Controllers
         {
             _context.DocumentEquipments.Add(documentEquipment);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetDocumentEquipments), new { id = documentEquipment.Id }, documentEquipment);
+            return CreatedAtAction(nameof(GetDocumentEquipments), new { compNo = documentEquipment.CompNo, id = documentEquipment.Id }, documentEquipment);
         }
 
         [HttpPut("UpdateDocEq/{id}")]
@@ -63,9 +65,12 @@ namespace CiriqueERP.Controllers
         }
 
         [HttpDelete("DeleteDocEq/{id}")]
-        public async Task<IActionResult> DeleteDocumentEquipment(int id)
+        public async Task<IActionResult> DeleteDocumentEquipment(int id, int compNo)
         {
-            var documentEquipment = await _context.DocumentEquipments.FindAsync(id);
+            var documentEquipment = await _context.DocumentEquipments
+                .Where(de => de.Id == id && de.CompNo == compNo)
+                .FirstOrDefaultAsync();
+
             if (documentEquipment == null)
             {
                 return NotFound();

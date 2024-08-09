@@ -70,7 +70,6 @@ namespace CiriqueERP.Controllers
             DateTime openedDate;
             if (!DateTime.TryParse(model.OpenedDate, out openedDate))
             {
-                // Varsayılan bir tarih atayın (örneğin: bugünün tarihi)
                 openedDate = DateTime.Now;
             }
 
@@ -155,7 +154,6 @@ namespace CiriqueERP.Controllers
             return Ok(vessels);
         }
 
-
         [HttpPut("updateVessel")]
         public IActionResult UpdateVessel([FromBody] AddVesselModel model)
         {
@@ -169,7 +167,7 @@ namespace CiriqueERP.Controllers
             {
                 return NotFound("Vessel not found");
             }
-            vessel.ID= model.id ?? null;
+
             vessel.VesselName = model.VesselName;
             vessel.CompNo = model.CompNo;
             vessel.OpenedDate = DateTime.TryParse(model.OpenedDate, out var openedDate) ? openedDate : vessel.OpenedDate;
@@ -186,7 +184,6 @@ namespace CiriqueERP.Controllers
 
             return Ok(vessel);
         }
-
     }
 
     public class VesselModel
@@ -213,5 +210,4 @@ namespace CiriqueERP.Controllers
         public string Subject { get; set; }
         public string Remarks { get; set; }
     }
-
 }

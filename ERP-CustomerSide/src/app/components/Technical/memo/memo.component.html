@@ -30,7 +30,7 @@
           </select>
         </div>
         <!-- Add Button -->
-        <button class="btn btn-primary add-button" (click)="openModal()">+</button>
+        <button class="btn btn-primary add-button" *ngIf="canEdit" (click)="openModal()">+</button>
       </div>
       <!-- Vessel Table -->
       <table class="table table-striped">
@@ -60,9 +60,11 @@
             <td>{{ vessel.docNo }}</td>
             <td>{{ vessel.openedDate | date: 'yyyy-MM-dd' }}</td>
             <td style="text-align: center;">
-              <button class="btn btn-info btn-sm edit-button" (click)="openEditModal(vessel)">Edit</button>
-              <button class="btn btn-danger btn-sm delete-button" (click)="deleteMemo(vessel.id)">Delete</button>
+              <button *ngIf="canEdit" class="btn btn-info btn-sm edit-button" (click)="openEditModal(vessel)">Edit</button>
+              <button *ngIf="!canEdit" class="btn btn-secondary btn-sm view-button" (click)="openViewModal(vessel)">View</button>
+              <button class="btn btn-danger btn-sm delete-button" *ngIf="canEdit" (click)="deleteMemo(vessel.id)">Delete</button>
             </td>
+            
           </tr>
         </tbody>
       </table>

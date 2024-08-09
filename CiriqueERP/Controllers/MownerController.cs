@@ -142,7 +142,7 @@ namespace CiriqueERP.Controllers
 
     public class AddMownerModel
     {
-        public int ID { get; set; }
+        public int? ID { get; set; }
         public string VesselName { get; set; }
         public int CompNo { get; set; }
         public string OpenedDate { get; set; }

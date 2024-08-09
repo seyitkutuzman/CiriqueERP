@@ -20,6 +20,7 @@ import { SwalService } from '../../../service/swal.service';
   providers: [DatePipe]
 })
 export class CocMowComponent implements OnInit {
+  canEdit: boolean = false;
   @ViewChild('modalContent') modalContent: any;
   @ViewChild('editModalContent') editModalContent: any;
   @ViewChild('descriptionModalContent') descriptionModalContent: any;
@@ -90,6 +91,11 @@ export class CocMowComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
+    const currentUser = this.userService.currentUserValue;
+    const decodedToken = this.userService.decodeToken(currentUser?.accessToken);
+    const departmentId = decodedToken?.Departmant;
+    this.canEdit = departmentId === '2' || departmentId === '3';
     this.userService.getVessels().subscribe((response: vesselModel[]) => {
       this.vessels = response.map(vessel => {
         vessel.openedDate = this.datePipe.transform(vessel.openedDate, 'yyyy-MM-dd') || vessel.openedDate;
@@ -108,11 +114,23 @@ export class CocMowComponent implements OnInit {
       this.allVessels = response;
       console.log('All Vessels Response:', response);
     }, (error) => {
-      this.swal.callToast('Can not found any Condition of Class', 'error', 3000, false,'warning');
+      this.swal.callToast('Can not found any Condition of Class', 'error', 3000, false, 'warning');
     });
   }
 
+  canEditOrAdd(): boolean {
+    const currentUser = this.userService.currentUserValue;
+    const department = currentUser?.department;
+
+    // Department 1, 4, 5 ise false dön, aksi halde true
+    return !(department === 1 || department === 4 || department === 5);
+  }
+
   openModal() {
+    if (!this.canEditOrAdd()) {
+      this.swal.callToast('Yetkiniz Yok', 'Bu işlemi gerçekleştiremezsiniz.', 3000, false, 'error');
+      return;
+    }
     this.modalService.open(this.modalContent, { size: 'lg' });
   }
 
@@ -121,6 +139,11 @@ export class CocMowComponent implements OnInit {
   }
 
   onSubmit() {
+    if (!this.canEditOrAdd()) {
+      this.swal.callToast('Yetkiniz Yok', 'Bu işlemi gerçekleştiremezsiniz.', 3000, false, 'error');
+      return;
+    }
+
     if (this.vesselForm.valid) {
       const currentUser = this.userService.currentUserValue;
       const decodedToken = this.userService.decodeToken(currentUser?.accessToken);
@@ -158,15 +181,20 @@ export class CocMowComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error creating vessel:', error);
-          this.swal.callToast('Error creating vessel', 'error', 3000, false,'warning');
+          this.swal.callToast('Error creating vessel', 'error', 3000, false, 'warning');
         }
       });
     }
   }
 
   deleteVessel(id: number) {
+    if (!this.canEditOrAdd()) {
+      this.swal.callToast('Yetkiniz Yok', 'Bu işlemi gerçekleştiremezsiniz.', 3000, false, 'error');
+      return;
+    }
+
     if (id === undefined || id === null) {
-      this.swal.callToast('Error deleting vessel', 'error', 3000, false,'warning');
+      this.swal.callToast('Error deleting vessel', 'error', 3000, false, 'warning');
       return;
     }
 
@@ -177,64 +205,25 @@ export class CocMowComponent implements OnInit {
         this.swal.callToast('Vessel deleted successfully', 'success', 3000, false);
       },
       error: (error) => {
-        this.swal.callToast('Error deleting vessel', 'error', 3000, false,'warning');
+        this.swal.callToast('Error deleting vessel', 'error', 3000, false, 'warning');
       }
     });
   }
 
-  getStatusText(vessel: vesselModel): string {
-    const currentDate = new Date();
-    const extendedDate = vessel.extendedDate ? new Date(vessel.extendedDate) : null;
-    
-    if (vessel.closedDate) {
-      return 'Closed';
-    }
-
-    if (extendedDate && extendedDate < currentDate) {
-      return 'Expired';
-    }
-    
-
-    switch (vessel.status) {
-      case 0:
-        return 'Opened';
-      case 1:
-        return 'Closed';
-      case 2:
-        return 'Expired';
-      default:
-        return 'Unknown';
-    }
-  }
-
-  onVesselChange() {
-    this.applyFilters();
-  }
-
-  onDateChange() {
-    this.applyFilters();
-  }
-
-  onStatusChange() {
-    this.applyFilters();
-  }
-
-  applyFilters() {
-    this.filteredVessels = this.vessels.filter(vessel => {
-      const matchVessel = this.selectedVessel ? vessel.vesselName === this.selectedVessel.vesselName : true;
-      const matchStatus = this.selectedStatus !== null ? vessel.status === this.selectedStatus : true;
-      const matchDate = this.startDate && this.endDate ? new Date(vessel.openedDate) >= new Date(this.startDate) && new Date(vessel.openedDate) <= new Date(this.endDate) : true;
-      return matchVessel && matchStatus && matchDate;
-    });
+  openViewModal(vessel: vesselModel) {
+    this.editVesselForm.patchValue(vessel);
+    this.editVesselForm.disable();  // Formu sadece görüntüleme moduna al
+    this.modalService.open(this.editModalContent, { size: 'lg' });
   }
 
   openEditModal(vessel: vesselModel) {
     this.editVesselForm.patchValue(vessel);
+    this.editVesselForm.enable();  // Formu düzenleme moduna al
     this.modalService.open(this.editModalContent, { size: 'lg' });
   }
 
   onEditSubmit() {
-    if (this.editVesselForm.valid) {
+    if (this.canEdit && this.editVesselForm.valid) {
       this.userService.updateVessel(this.editVesselForm.value).subscribe({
         next: (response) => {
           const index = this.vessels.findIndex(v => v.id === response.id);
@@ -276,4 +265,62 @@ export class CocMowComponent implements OnInit {
     this.descriptionForm.patchValue({ description: description });
     this.modalService.open(this.descriptionModalContent, { size: 'lg' });
   }
+
+  onVesselChange() {
+    this.applyFilters();
+  }
+  onDateChange() {
+    this.applyFilters();
+  }
+  onStatusChange() {
+    this.applyFilters();
+  }
+  getStatusText(vessel: vesselModel): string {
+    const currentDate = new Date();
+    const extendedDate = vessel.extendedDate ? new Date(vessel.extendedDate) : null;
+  
+    if (vessel.closedDate) {
+      return 'Closed';
+    }
+  
+    if (extendedDate && extendedDate < currentDate) {
+      return 'Expired';
+    }
+  
+    switch (vessel.status) {
+      case 0:
+        return 'Opened';
+      case 1:
+        return 'Closed';
+      case 2:
+        return 'Expired';
+      default:
+        return 'Unknown';
+    }
+  
+  }
+  applyFilters() {
+    this.filteredVessels = this.vessels.filter(vessel => {
+      if (this.selectedVessel && vessel.vesselName !== this.selectedVessel.vesselName) {
+        return false;
+      }
+
+      if (this.startDate && new Date(vessel.openedDate) < new Date(this.startDate)) {
+        return false;
+      }
+
+      if (this.endDate && new Date(vessel.openedDate) > new Date(this.endDate)) {
+        return false;
+      }
+
+      if (this.selectedStatus !== null && vessel.status !== this.selectedStatus) {
+        return false;
+      }
+
+      return true;
+    });
+  }
+  
+      
+  
 }
