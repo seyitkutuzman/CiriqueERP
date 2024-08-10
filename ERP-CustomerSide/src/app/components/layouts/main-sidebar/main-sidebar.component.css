@@ -1,27 +1,27 @@
 .logout-button {
-    padding: 0.005rem 0.50rem;
-    font-size: 0.75rem;
-    margin-left: 0.8rem;
-    margin-top: 0.5rem;
-  }
+  padding: 0.005rem 0.50rem;
+  font-size: 0.75rem;
+  margin-left: 0.8rem;
+  margin-top: 0.5rem;
+}
 
-  .me{
-    text-align: right;
-  }
+.me{
+  text-align: right;
+}
 
-  /* Genel stil ayarları */
+/* Genel stil ayarları */
 .sidebar .nav-link {
-  font-size: 14px;
-  padding: 5px 10px;
+font-size: 14px;
+padding: 5px 10px;
 }
 
 .sidebar .nav-treeview > .nav-item > .nav-link {
-  font-size: 12px;
-  padding: 5px 20px;
+font-size: 12px;
+padding: 5px 20px;
 }
 
 /* Alt menüler için stil */
 .sidebar .nav-treeview .nav-treeview > .nav-item > .nav-link {
-  font-size: 11px;
-  padding: 5px 30px;
+font-size: 11px;
+padding: 5px 30px;
 }
