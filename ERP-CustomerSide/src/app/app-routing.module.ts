@@ -4,7 +4,7 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component'; 
 import { LayoutsComponent } from './components/layouts/layouts.component';
 import { CocMowComponent } from './components/Technical/coc-mow/coc-mow.component';
-import { RegulatoryInformationComponent } from './components/regulatory/regulatory.component';
+import { RegulatoryInformationComponent } from './components/Technical/regulatory/regulatory.component';
 import { MemoComponent } from './components/Technical/memo/memo.component';
 import { DocumentEquipmentComponent } from './components/Technical/definitions/document-equipment/document-equipment.component';
 import { DocumentSectionComponent } from './components/Technical/definitions/document-section/document-section.component';

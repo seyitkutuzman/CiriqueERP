@@ -20,7 +20,7 @@ import { mownerModel } from '../../../models/mownerModel';
   providers: [DatePipe]
 })
 export class MemoComponent implements OnInit {
-  
+  canEdit: boolean = false;
   @ViewChild('modalContent') modalContent: any;
   @ViewChild('editModalContent') editModalContent: any;
   @ViewChild('descriptionModalContent') descriptionModalContent: any;
@@ -91,6 +91,10 @@ export class MemoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const currentUser = this.userService.currentUserValue;
+    const decodedToken = this.userService.decodeToken(currentUser?.accessToken);
+    const departmentId = decodedToken?.Departmant;
+    this.canEdit = departmentId === '2' || departmentId === '3';
     this.userService.getMemos().subscribe((response: mownerModel[]) => {
       this.vessels = response.map(vessel => {
         vessel.openedDate = this.datePipe.transform(vessel.openedDate, 'yyyy-MM-dd') || vessel.openedDate;
@@ -226,33 +230,21 @@ export class MemoComponent implements OnInit {
     });
   }
 
+  openViewModal(vessel: mownerModel) {
+    this.editVesselForm.patchValue(vessel);
+    this.editVesselForm.disable();  // Formu sadece görüntüleme moduna al
+    this.modalService.open(this.editModalContent, { size: 'lg' });
+  }
+
   openEditModal(vessel: mownerModel) {
-    console.log('Vessel to edit:', vessel);  // Konsolda vessel objesini kontrol edin
-    this.editVesselForm.patchValue({
-      id: vessel.id,  // ID alanını buraya ekliyoruz
-      vesselName: vessel.vesselName,
-      compNo: vessel.compNo,
-      docNo: vessel.docNo,
-      description: vessel.description,
-      human: vessel.human,
-      system: vessel.system,
-      material: vessel.material,
-      subject: vessel.subject,
-      openedDate: vessel.openedDate,
-      dueDate: vessel.dueDate,
-      extendedDate: vessel.extendedDate,
-      closedDate: vessel.closedDate,
-      remarks: vessel.remarks,
-      status: vessel.status,
-      tasks: vessel.tasks
-    });
+    this.editVesselForm.patchValue(vessel);
+    this.editVesselForm.enable();  // Formu düzenleme moduna al
     this.modalService.open(this.editModalContent, { size: 'lg' });
   }
 
   onEditSubmit() {
-    if (this.editVesselForm.valid) {
+    if (this.canEdit && this.editVesselForm.valid) {
       const updatedVessel = this.editVesselForm.value;
-      console.log('Updated Vessel:', updatedVessel);  // Bu satırla formun içeriğini kontrol edin
       this.userService.updateMemo(updatedVessel).subscribe({
         next: (response) => {
           const index = this.vessels.findIndex(v => v.id === response.id);

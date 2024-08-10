@@ -1,0 +1,142 @@
+<app-blank>
+  <app-section sectionTitle="Regulatory Information">
+    <div class="regulatory-grid-container">
+      <form [formGroup]="regulatoryForm" (ngSubmit)="onSubmit()" *ngIf="canEdit">
+        <div class="row">
+          <div class="col-md-4 form-group">
+            <label for="vesselSelect">Vessel</label>
+            <select id="vesselSelect" formControlName="vessel" class="form-control">
+              <option value="" disabled selected>Choose Vessel</option>
+              <option *ngFor="let vessel of vessels" [value]="vessel">{{ vessel }}</option>
+            </select>
+            <div *ngIf="regulatoryForm.get('vessel')?.invalid && regulatoryForm.get('vessel')?.touched" class="text-danger">
+              Vessel is required
+            </div>
+          </div>
+          <div class="col-md-4 form-group">
+            <label for="className">Class Name</label>
+            <input type="text" id="className" formControlName="className" class="form-control">
+            <div *ngIf="regulatoryForm.get('className')?.invalid && regulatoryForm.get('className')?.touched" class="text-danger">
+              Class Name is required
+            </div>
+          </div>
+          <div class="col-md-4 form-group">
+            <label for="dueBy">Due By</label>
+            <input type="date" id="dueBy" formControlName="dueBy" class="form-control">
+            <div *ngIf="regulatoryForm.get('dueBy')?.invalid && regulatoryForm.get('dueBy')?.touched" class="text-danger">
+              Due By is required
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 form-group">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" class="form-control" rows="3"></textarea>
+            <div *ngIf="regulatoryForm.get('description')?.invalid && regulatoryForm.get('description')?.touched" class="text-danger">
+              Description is required
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 form-group">
+            <label for="implementedDate">Implemented Date</label>
+            <input type="date" id="implementedDate" formControlName="implementedDate" class="form-control">
+          </div>
+          <div class="col-md-4 form-group d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">Add</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="filterExpiredData" [(ngModel)]="filterExpiredData">
+        <label class="form-check-label" for="filterExpiredData">Filter Expired Data</label>
+      </div>
+
+      <table class="table table-striped mt-3">
+        <thead>
+          <tr>
+            <th>Vessel</th>
+            <th>Class</th>
+            <th>Description</th>
+            <th>Due By</th>
+            <th>Implemented Date</th>
+            <th>Tasks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let info of filteredRegulatoryInfo">
+            <td>{{ info.vessel }}</td>
+            <td>{{ info.className }}</td>
+            <td>{{ info.description }}</td>
+            <td>{{ info.dueBy | date: 'dd.MM.yyyy' }}</td>
+            <td>{{ info.implementedDate | date: 'dd.MM.yyyy' }}</td>
+            <td>
+              <button *ngIf="canEdit" class="btn btn-sm btn-info" (click)="editInfo(info)">Edit</button>
+              <button *ngIf="canEdit" class="btn btn-sm btn-danger" (click)="deleteInfo(info.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-section>
+</app-blank>
+
+  <ng-template #modalContent let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Edit Regulatory Info</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="regulatoryForm" (ngSubmit)="onSubmit()">
+        <!-- Form İçeriği Buraya Geliyor -->
+        <div class="row">
+          <div class="col-md-4 form-group">
+            <label for="vesselSelect">Vessel</label>
+            <select id="vesselSelect" formControlName="vessel" class="form-control">
+              <option value="" disabled selected>Choose Vessel</option>
+              <option *ngFor="let vessel of vessels" [value]="vessel">{{ vessel }}</option>
+            </select>
+            <div *ngIf="regulatoryForm.get('vessel')?.invalid && regulatoryForm.get('vessel')?.touched" class="text-danger">
+              Vessel is required
+            </div>
+          </div>
+          <div class="col-md-4 form-group">
+            <label for="className">Class Name</label>
+            <input type="text" id="className" formControlName="className" class="form-control">
+            <div *ngIf="regulatoryForm.get('className')?.invalid && regulatoryForm.get('className')?.touched" class="text-danger">
+              Class Name is required
+            </div>
+          </div>
+          <div class="col-md-4 form-group">
+            <label for="dueBy">Due By</label>
+            <input type="date" id="dueBy" formControlName="dueBy" class="form-control">
+            <div *ngIf="regulatoryForm.get('dueBy')?.invalid && regulatoryForm.get('dueBy')?.touched" class="text-danger">
+              Due By is required
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 form-group">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" class="form-control" rows="3"></textarea>
+            <div *ngIf="regulatoryForm.get('description')?.invalid && regulatoryForm.get('description')?.touched" class="text-danger">
+              Description is required
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 form-group">
+            <label for="implementedDate">Implemented Date</label>
+            <input type="date" id="implementedDate" formControlName="implementedDate" class="form-control">
+          </div>
+          <div class="col-md-4 form-group d-flex align-items-end">
+            <button type="button" class="btn btn-primary" (click)="updateRegulatory()">Save</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+  

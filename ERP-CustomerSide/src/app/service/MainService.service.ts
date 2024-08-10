@@ -1,7 +1,7 @@
   import { Injectable } from '@angular/core';
   import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
   import { BehaviorSubject, Observable, throwError } from 'rxjs';
-  import { boUserModel } from '../models/backofficeUser.model';
+  import { boUserModel } from '../models/User.model';
   import {jwtDecode} from 'jwt-decode';
   import { map, catchError } from 'rxjs/operators';
   import { vesselModel } from '../models/vesselModel';
@@ -36,6 +36,8 @@
       return this.currentUserSubject.value;
     }
 
+    
+
     login(compNo: string, userCode: string, userPass: string): Observable<any> {
       const loginData = { compNo: compNo, userNo: userCode, userPass: userPass };
       return this.http.post<any>(`${this.apiUrl}/controller/login`, loginData, {
@@ -44,6 +46,7 @@
         map(user => {
           if (user && user.accessToken) {
             localStorage.setItem('currentUser', JSON.stringify(user));
+            localStorage.setItem('compNo', compNo); // compNo bilgisini localStorage'a kaydedin
             this.currentUserSubject.next(user);
           }
           return user;
@@ -55,7 +58,6 @@
     logout() {
       localStorage.removeItem('currentUser');
       this.currentUserSubject.next(null);
-      // Optional: Add router.navigate(['/login']); if you want to navigate to login on logout
     }
 
     decodeToken(token: string): any {
@@ -89,10 +91,8 @@
     }
 
     getVessels(): Observable<vesselModel[]> {
-      const currentUser = this.currentUserValue;
-      const decodedToken = this.decodeToken(currentUser?.accessToken);
-      const compNo = decodedToken?.CompNo;
-    
+      const compNo = localStorage.getItem('compNo'); // compNo bilgisini localStorage'dan alın
+      
       if (!compNo) {
         return throwError("Invalid company number");
       }
@@ -215,16 +215,18 @@
         catchError(this.handleError)
       );
     }
-    getDocumentEquipments(): Observable<DocumentEquipment[]> {
-      console.log('Fetching all Document Equipments');
-      return this.http.get<DocumentEquipment[]>(`${this.apiUrl}/controller/GetAllDocEq`, {
-        headers: { 'Content-Type': 'application/json' }
+    getDocumentEquipments(compNo: number): Observable<DocumentEquipment[]> {
+      console.log('Fetching Document Equipments for compNo:', compNo);
+      return this.http.get<DocumentEquipment[]>(`${this.apiUrl}/controller/GetAllDocEq/${compNo}`, {
+        headers: { 'Content-Type': 'application/json' },
+        params: { compNo: compNo.toString() }  // compNo parametresini query parametre olarak ekliyoruz
       }).pipe(
         catchError(this.handleError)
       );
     }
-
-    addDocumentEquipment(documentEquipment: DocumentEquipment): Observable<DocumentEquipment> {
+    
+    addDocumentEquipment(documentEquipment: DocumentEquipment, compNo: number): Observable<DocumentEquipment> {
+      documentEquipment.compNo = compNo;  // compNo değerini documentEquipment nesnesine ekliyoruz
       console.log('Add Document Equipment Payload:', documentEquipment);
       return this.http.post<DocumentEquipment>(`${this.apiUrl}/controller/AddDocEq`, documentEquipment, {
         headers: { 'Content-Type': 'application/json' }
@@ -232,8 +234,9 @@
         catchError(this.handleError)
       );
     }
-
-    updateDocumentEquipment(id: number, documentEquipment: DocumentEquipment): Observable<void> {
+    
+    updateDocumentEquipment(id: number, documentEquipment: DocumentEquipment, compNo: number): Observable<void> {
+      documentEquipment.compNo = compNo;  // compNo değerini documentEquipment nesnesine ekliyoruz
       console.log('Update Document Equipment ID:', id, 'Payload:', documentEquipment);
       return this.http.put<void>(`${this.apiUrl}/controller/UpdateDocEq/${id}`, documentEquipment, {
         headers: { 'Content-Type': 'application/json' }
@@ -241,15 +244,17 @@
         catchError(this.handleError)
       );
     }
-
-    deleteDocumentEquipment(id: number): Observable<void> {
-      console.log('Delete Document Equipment ID:', id);
+    
+    deleteDocumentEquipment(id: number, compNo: number): Observable<void> {
+      console.log('Delete Document Equipment ID:', id, 'for compNo:', compNo);
       return this.http.delete<void>(`${this.apiUrl}/controller/DeleteDocEq/${id}`, {
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        params: { compNo: compNo.toString() }  // compNo parametresini query parametre olarak ekliyoruz
       }).pipe(
         catchError(this.handleError)
       );
     }
+    
     getDocumentSections(): Observable<DocumentSection[]> {
       console.log('Fetching all Document Sections');
       return this.http.get<DocumentSection[]>(`${this.apiUrl}/controller/GetAllDocSections`).pipe(
@@ -344,22 +349,19 @@
       catchError(this.handleError)
     );
   }
-  getEquipmentCounters(): Observable<EquipmentCounter[]> {
-    console.log('Fetching all Equipment Counters');
-    return this.http.get<EquipmentCounter[]>(`${this.apiUrl}/controller/getCounters`, this.httpOptions).pipe(
-      catchError(this.handleError)
-    );
-  }
-
+  getEquipmentCounters(compNo: number): Observable<EquipmentCounter[]> {
+  return this.http.get<EquipmentCounter[]>(`${this.apiUrl}/controller/getCounters/${compNo}`, this.httpOptions)
+    .pipe(catchError(this.handleError));
+}
   addEquipmentCounter(equipmentCounter: EquipmentCounter): Observable<EquipmentCounter> {
-    console.log('Add Equipment Counter Payload:', equipmentCounter);
+    console.log('Adding Equipment Counter:', equipmentCounter);
     return this.http.post<EquipmentCounter>(`${this.apiUrl}/controller/addCounter`, equipmentCounter, this.httpOptions).pipe(
       catchError(this.handleError)
     );
   }
 
   updateEquipmentCounter(id: number, equipmentCounter: EquipmentCounter): Observable<void> {
-    console.log('Update Equipment Counter ID:', id, 'Payload:', equipmentCounter);
+    console.log('Updating Equipment Counter ID:', id, 'Payload:', equipmentCounter);
     return this.http.put<void>(`${this.apiUrl}/controller/updateCounter/${id}`, equipmentCounter, this.httpOptions).pipe(
       catchError(this.handleError)
     );

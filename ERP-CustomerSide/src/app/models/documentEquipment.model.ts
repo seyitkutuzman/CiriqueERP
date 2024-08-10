@@ -3,4 +3,5 @@ export interface DocumentEquipment {
     rootName: string;
     equipmentName: string;
     comment: string;
+    compNo: number;
 }

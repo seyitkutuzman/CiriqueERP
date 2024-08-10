@@ -18,6 +18,7 @@ export class DocumentEquipmentComponent implements OnInit {
   documentEquipmentForm: FormGroup;
   editDocumentEquipmentForm: FormGroup;
   modalRef: NgbModalRef | undefined;
+  canEdit: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -28,76 +29,108 @@ export class DocumentEquipmentComponent implements OnInit {
       id: [null],
       rootName: ['', Validators.required],
       equipmentName: ['', Validators.required],
-      comment: ['']
+      comment: [''],
+      compNo: ['']  // compNo'yu forma ekledik
     });
 
     this.editDocumentEquipmentForm = this.fb.group({
       id: [null],
       rootName: ['', Validators.required],
       equipmentName: ['', Validators.required],
-      comment: ['']
+      comment: [''],
+      compNo: ['']  // compNo'yu forma ekledik
     });
   }
+  
 
   ngOnInit(): void {
+    const currentUser = this.documentEquipmentService.currentUserValue;
+    const decodedToken = this.documentEquipmentService.decodeToken(currentUser?.accessToken);
+    const departmentId = decodedToken?.Departmant;
+    this.canEdit = departmentId === '2' || departmentId === '3';
+
     this.loadDocumentEquipments();
   }
 
   loadDocumentEquipments(): void {
-    this.documentEquipmentService.getDocumentEquipments().subscribe(data => {
-      this.documentEquipments = data;
-      console.log('Fetched Document Equipments:', data);
-    }, error => {
-      console.error('Error fetching document equipments:', error);
-    });
-  }
+    const currentUser = this.documentEquipmentService.currentUserValue;
+    const decodedToken = this.documentEquipmentService.decodeToken(currentUser?.accessToken);
+    const compNo = decodedToken?.CompNo;
 
-  onSubmit(): void {
-    if (this.documentEquipmentForm.valid) {
-      const documentEquipment: DocumentEquipment = this.documentEquipmentForm.value;
-      console.log('Form Submit Payload:', documentEquipment);
-
-      if (documentEquipment.id) {
-        this.documentEquipmentService.updateDocumentEquipment(documentEquipment.id, documentEquipment).subscribe(() => {
-          this.loadDocumentEquipments();
-          this.documentEquipmentForm.reset();
-        }, error => {
-          console.error('Error updating document equipment:', error);
-        });
-      } else {
-        this.documentEquipmentService.addDocumentEquipment(documentEquipment).subscribe(() => {
-          this.loadDocumentEquipments();
-          this.documentEquipmentForm.reset();
-        }, error => {
-          console.error('Error adding document equipment:', error);
-        });
-      }
-    }
-  }
-
-  openEditModal(content: any, documentEquipment: DocumentEquipment): void {
-    this.editDocumentEquipmentForm.patchValue(documentEquipment);
-    this.modalRef = this.modalService.open(content, { size: 'lg' });
-  }
-
-  onEditSubmit(): void {
-    if (this.editDocumentEquipmentForm.valid) {
-      const documentEquipment: DocumentEquipment = this.editDocumentEquipmentForm.value;
-      this.documentEquipmentService.updateDocumentEquipment(documentEquipment.id, documentEquipment).subscribe(() => {
-        this.loadDocumentEquipments();
-        this.editDocumentEquipmentForm.reset();
-        this.modalRef?.close();
+    if (compNo) {
+      this.documentEquipmentService.getDocumentEquipments(compNo).subscribe(data => {
+        this.documentEquipments = data;
       }, error => {
-        console.error('Error updating document equipment:', error);
+        console.error('Error fetching document equipments:', error);
       });
     }
   }
 
+  onSubmit(): void {
+    if (this.canEdit) {
+      if (this.documentEquipmentForm.valid) {
+        const documentEquipment: DocumentEquipment = this.documentEquipmentForm.value;
+
+        if (documentEquipment.id) {
+          this.documentEquipmentService.updateDocumentEquipment(documentEquipment.id, documentEquipment, documentEquipment.compNo).subscribe(() => {
+            this.loadDocumentEquipments();
+            this.documentEquipmentForm.reset();
+          }, error => {
+            console.error('Error updating document equipment:', error);
+          });
+        } else {
+          this.documentEquipmentService.addDocumentEquipment(documentEquipment, documentEquipment.compNo).subscribe(() => {
+            this.loadDocumentEquipments();
+            this.documentEquipmentForm.reset();
+          }, error => {
+            console.error('Error adding document equipment:', error);
+          });
+        }
+      }
+    } else {
+      console.warn('User does not have permission to add or edit document equipment.');
+    }
+  }
+
+  openEditModal(content: any, documentEquipment: DocumentEquipment): void {
+    if (this.canEdit) {
+      this.editDocumentEquipmentForm.patchValue(documentEquipment);
+      this.modalRef = this.modalService.open(content, { size: 'lg' });
+    } else {
+      console.warn('User does not have permission to open edit modal.');
+    }
+  }
+
+  onEditSubmit(): void {
+    if (this.canEdit) {
+      if (this.editDocumentEquipmentForm.valid) {
+        const documentEquipment: DocumentEquipment = this.editDocumentEquipmentForm.value;
+        this.documentEquipmentService.updateDocumentEquipment(documentEquipment.id, documentEquipment, documentEquipment.compNo).subscribe(() => {
+          this.loadDocumentEquipments();
+          this.editDocumentEquipmentForm.reset();
+          this.modalRef?.close();
+        }, error => {
+          console.error('Error updating document equipment:', error);
+        });
+      }
+    } else {
+      console.warn('User does not have permission to edit document equipment.');
+    }
+  }
+
   onDelete(id: number): void {
-    this.documentEquipmentService.deleteDocumentEquipment(id).subscribe(() => {
-      this.loadDocumentEquipments();
-    }, error => {
-      console.error('Error deleting document equipment:', error);
-    });
+    if (this.canEdit) {
+      const currentUser = this.documentEquipmentService.currentUserValue;
+      const decodedToken = this.documentEquipmentService.decodeToken(currentUser?.accessToken);
+      const compNo = decodedToken?.CompNo;
+
+      this.documentEquipmentService.deleteDocumentEquipment(id, compNo).subscribe(() => {
+        this.loadDocumentEquipments();
+      }, error => {
+        console.error('Error deleting document equipment:', error);
+      });
+    } else {
+      console.warn('User does not have permission to delete document equipment.');
+    }
   }
 }

@@ -17,7 +17,7 @@
                 <a href="#" class="d-block">{{userName}}</a>
             </div>
             <div class="button">
-                <button class="btn btn-warning logout-button" (click)="logout()">
+                <button [routerLink]="['/login']" class="btn btn-warning logout-button" (click)="logout()">
                     logout
                 </button>
             </div>
