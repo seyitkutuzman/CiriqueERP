@@ -2,15 +2,17 @@
   <app-section>
     <div class="container">
       <h2>Document Section Name</h2>
-    
-      <form [formGroup]="documentSectionForm" (ngSubmit)="onSubmit()">
+
+      <!-- Sadece yetkili departmanlara formu göster -->
+      <form [formGroup]="documentSectionForm" *ngIf="canEdit" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label for="sectionName">Section Name</label>
           <input type="text" id="sectionName" formControlName="sectionName" class="form-control">
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
       </form>
-    
+
+      <!-- Kayıtlar listelenir -->
       <table class="table table-striped mt-4">
         <thead>
           <tr>
@@ -22,14 +24,16 @@
           <tr *ngFor="let documentSection of documentSections">
             <td>{{ documentSection.sectionName }}</td>
             <td>
-              <button class="btn btn-info" (click)="onEdit(documentSection, content)">Edit</button>
-              <button class="btn btn-danger" (click)="onDelete(documentSection.id)">Delete</button>
+              <!-- Edit butonu sadece yetkili departmanlara gösterilir -->
+              <button *ngIf="canEdit" class="btn btn-info" (click)="onEdit(documentSection, content)">Edit</button>
+              <!-- Delete butonu sadece yetkili departmanlara gösterilir -->
+              <button *ngIf="canEdit" class="btn btn-danger" (click)="onDelete(documentSection.id)">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    
+
     <!-- Edit Modal -->
     <ng-template #content let-modal>
       <div class="modal-header">

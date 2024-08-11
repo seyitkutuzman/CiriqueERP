@@ -4,5 +4,6 @@ export interface DrydockJob {
     jobTitle: string;
     unitType: string;
     description: string;
+    compNo: number;
   }
   

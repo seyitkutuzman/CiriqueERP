@@ -17,6 +17,7 @@ export class DocumentTypeComponent implements OnInit {
   @ViewChild('content') content: any; // Modal içerik referansı
   documentTypes: DocumentType[] = [];
   documentTypeForm: FormGroup;
+  canEdit: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -30,26 +31,38 @@ export class DocumentTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const currentUser = this.documentTypeService.currentUserValue;
+    const decodedToken = this.documentTypeService.decodeToken(currentUser?.accessToken);
+    const departmentId = decodedToken?.Departmant;
+    this.canEdit = departmentId === '2' || departmentId === '3';
+
     this.loadDocumentTypes();
   }
 
   loadDocumentTypes(): void {
-    this.documentTypeService.getDocumentTypes().subscribe(data => {
+    const currentUser = this.documentTypeService.currentUserValue;
+    const decodedToken = this.documentTypeService.decodeToken(currentUser?.accessToken);
+    const compNo = decodedToken?.CompNo;
+
+    this.documentTypeService.getDocumentTypes(compNo).subscribe(data => {
       this.documentTypes = data;
     });
   }
 
   onSubmit(): void {
-    if (this.documentTypeForm.valid) {
+    if (this.canEdit && this.documentTypeForm.valid) {
       const documentType: DocumentType = this.documentTypeForm.value;
+      const currentUser = this.documentTypeService.currentUserValue;
+      const decodedToken = this.documentTypeService.decodeToken(currentUser?.accessToken);
+      const compNo = decodedToken?.CompNo;
 
       if (documentType.id) {
-        this.documentTypeService.updateDocumentType(documentType.id!, documentType).subscribe(() => {
+        this.documentTypeService.updateDocumentType(documentType.id, documentType, compNo).subscribe(() => {
           this.loadDocumentTypes();
           this.documentTypeForm.reset();
         });
       } else {
-        this.documentTypeService.addDocumentType(documentType).subscribe(() => {
+        this.documentTypeService.addDocumentType(documentType, compNo).subscribe(() => {
           this.loadDocumentTypes();
           this.documentTypeForm.reset();
         });
@@ -58,23 +71,35 @@ export class DocumentTypeComponent implements OnInit {
   }
 
   onEdit(documentType: DocumentType): void {
-    this.documentTypeForm.patchValue(documentType);
-    this.modalService.open(this.content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-      if (result === 'Save' && this.documentTypeForm.valid) {
-        const updatedDocumentType: DocumentType = this.documentTypeForm.value;
-        this.documentTypeService.updateDocumentType(updatedDocumentType.id!, updatedDocumentType).subscribe(() => {
-          this.loadDocumentTypes();
-        });
-      }
-      this.documentTypeForm.reset();
-    }, (reason) => {
-      this.documentTypeForm.reset();
-    });
+    if (this.canEdit) {
+      this.documentTypeForm.patchValue(documentType);
+      this.modalService.open(this.content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+        if (result === 'Save' && this.documentTypeForm.valid) {
+          const updatedDocumentType: DocumentType = this.documentTypeForm.value;
+          const currentUser = this.documentTypeService.currentUserValue;
+          const decodedToken = this.documentTypeService.decodeToken(currentUser?.accessToken);
+          const compNo = decodedToken?.CompNo;
+
+          this.documentTypeService.updateDocumentType(updatedDocumentType.id!, updatedDocumentType, compNo).subscribe(() => {
+            this.loadDocumentTypes();
+          });
+        }
+        this.documentTypeForm.reset();
+      }, (reason) => {
+        this.documentTypeForm.reset();
+      });
+    }
   }
 
   onDelete(id: number): void {
-    this.documentTypeService.deleteDocumentType(id).subscribe(() => {
-      this.loadDocumentTypes();
-    });
+    const currentUser = this.documentTypeService.currentUserValue;
+    const decodedToken = this.documentTypeService.decodeToken(currentUser?.accessToken);
+    const compNo = decodedToken?.CompNo;
+
+    if (this.canEdit) {
+      this.documentTypeService.deleteDocumentType(id, compNo).subscribe(() => {
+        this.loadDocumentTypes();
+      });
+    }
   }
 }

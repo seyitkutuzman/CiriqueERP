@@ -1,14 +1,99 @@
 <app-blank>
-    <app-section>
-      <div class="container">
-        <h2>Vessel Component</h2>
-  
-        <form [formGroup]="vesselComponentForm" (ngSubmit)="onSubmit()">
+  <app-section>
+    <div class="container">
+      <h2>Vessel Component</h2>
+
+      <form [formGroup]="vesselComponentForm" (ngSubmit)="onSubmit()" *ngIf="canEdit">
+        <div class="form-group">
+          <label for="vessel">Vessel</label>
+          <select id="vessel" formControlName="vessel" class="form-control">
+            <option value="">Choose Vessel</option>
+            <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="componentName">Component Name</label>
+          <input type="text" id="componentName" formControlName="componentName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="maker">Maker</label>
+          <input type="text" id="maker" formControlName="maker" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="model">Model</label>
+          <input type="text" id="model" formControlName="model" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="serial">Serial</label>
+          <input type="text" id="serial" formControlName="serial" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="priority">Priority</label>
+          <select id="priority" formControlName="priority" class="form-control">
+            <option value="Normal">Normal</option>
+            <option value="Stand By">Stand By</option>
+            <option value="Critical Equipment">Critical Equipment</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="troubleshootingFile">Troubleshooting File</label>
+          <input type="file" id="troubleshootingFile" (change)="onFileChange($event)" class="form-control">
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="isExProof" formControlName="isExProof" class="form-check-input">
+          <label for="isExProof" class="form-check-label">Is component Ex-Proof?</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="isClassRelated" formControlName="isClassRelated" class="form-check-input">
+          <label for="isClassRelated" class="form-check-label">Is component class related item?</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="hasSparePart" formControlName="hasSparePart" class="form-check-input">
+          <label for="hasSparePart" class="form-check-label">Has spare part?</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </form>
+
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>Root Name</th>
+            <th>Priority</th>
+            <th>Name</th>
+            <th>Maker</th>
+            <th>Model</th>
+            <th>Tasks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vesselComponent of vesselComponents">
+            <td>{{ vesselComponent.vessel }}</td>
+            <td>{{ vesselComponent.priority }}</td>
+            <td>{{ vesselComponent.componentName }}</td>
+            <td>{{ vesselComponent.maker }}</td>
+            <td>{{ vesselComponent.model }}</td>
+            <td>
+              <button class="btn btn-info" (click)="onEdit(vesselComponent, editModal)" [disabled]="!canEdit">Edit</button>
+              <button class="btn btn-danger" (click)="onDelete(vesselComponent.id || 0)" [disabled]="!canEdit">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #editModal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Vessel Component</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editForm" *ngIf="canEdit">
+          <!-- Form fields identical to the add form -->
           <div class="form-group">
             <label for="vessel">Vessel</label>
             <select id="vessel" formControlName="vessel" class="form-control">
               <option value="">Choose Vessel</option>
-              <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+              <option *ngFor="let vessel of vessels" [value]="vessel.name">{{ vessel.name }}</option>
             </select>
           </div>
           <div class="form-group">
@@ -51,98 +136,12 @@
             <input type="checkbox" id="hasSparePart" formControlName="hasSparePart" class="form-check-input">
             <label for="hasSparePart" class="form-check-label">Has spare part?</label>
           </div>
-          <button type="submit" class="btn btn-primary">Save</button>
         </form>
-  
-        <table class="table table-striped mt-4">
-          <thead>
-            <tr>
-              <th>Root Name</th>
-              <th>Priority</th>
-              <th>Name</th>
-              <th>Maker</th>
-              <th>Model</th>
-              <th>Tasks</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let vesselComponent of vesselComponents">
-              <td>{{ vesselComponent.vessel }}</td>
-              <td>{{ vesselComponent.priority }}</td>
-              <td>{{ vesselComponent.componentName }}</td>
-              <td>{{ vesselComponent.maker }}</td>
-              <td>{{ vesselComponent.model }}</td>
-              <td>
-                <button class="btn btn-info" (click)="onEdit(vesselComponent, editModal)">Edit</button>
-                <button class="btn btn-danger" (click)="onDelete(vesselComponent.id || 0)">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
-  
-      <ng-template #editModal let-modal>
-        <div class="modal-header">
-          <h4 class="modal-title">Edit Vessel Component</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="editForm">
-            <!-- Form fields identical to the add form -->
-            <div class="form-group">
-              <label for="vessel">Vessel</label>
-              <select id="vessel" formControlName="vessel" class="form-control">
-                <option value="">Choose Vessel</option>
-                <option *ngFor="let vessel of vessels" [value]="vessel.name">{{ vessel.name }}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="componentName">Component Name</label>
-              <input type="text" id="componentName" formControlName="componentName" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="maker">Maker</label>
-              <input type="text" id="maker" formControlName="maker" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="model">Model</label>
-              <input type="text" id="model" formControlName="model" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="serial">Serial</label>
-              <input type="text" id="serial" formControlName="serial" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="priority">Priority</label>
-              <select id="priority" formControlName="priority" class="form-control">
-                <option value="Normal">Normal</option>
-                <option value="Stand By">Stand By</option>
-                <option value="Critical Equipment">Critical Equipment</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="troubleshootingFile">Troubleshooting File</label>
-              <input type="file" id="troubleshootingFile" (change)="onFileChange($event)" class="form-control">
-            </div>
-            <div class="form-check">
-              <input type="checkbox" id="isExProof" formControlName="isExProof" class="form-check-input">
-              <label for="isExProof" class="form-check-label">Is component Ex-Proof?</label>
-            </div>
-            <div class="form-check">
-              <input type="checkbox" id="isClassRelated" formControlName="isClassRelated" class="form-check-input">
-              <label for="isClassRelated" class="form-check-label">Is component class related item?</label>
-            </div>
-            <div class="form-check">
-              <input type="checkbox" id="hasSparePart" formControlName="hasSparePart" class="form-check-input">
-              <label for="hasSparePart" class="form-check-label">Has spare part?</label>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
-          <button type="button" class="btn btn-primary" (click)="modal.close('Save click')">Save</button>
-        </div>
-      </ng-template>
-    </app-section>
-  </app-blank>
-  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close('Save click')" [disabled]="!canEdit">Save</button>
+      </div>
+    </ng-template>
+  </app-section>
+</app-blank>

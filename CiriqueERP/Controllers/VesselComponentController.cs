@@ -19,24 +19,29 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet("getComponents")]
-        public async Task<ActionResult<IEnumerable<VesselComponent>>> GetVesselComponents()
+        [HttpGet("getComponents/{compNo}")]
+        public async Task<ActionResult<IEnumerable<VesselComponent>>> GetVesselComponents(int compNo)
         {
-            return await _context.VesselComponents.ToListAsync();
+            return await _context.VesselComponents
+                .Where(vc => vc.compNo == compNo)
+                .ToListAsync();
         }
 
         [HttpPost("addComponent")]
         public async Task<ActionResult<VesselComponent>> PostVesselComponent(VesselComponent vesselComponent)
         {
+
             _context.VesselComponents.Add(vesselComponent);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetVesselComponents), new { id = vesselComponent.Id }, vesselComponent);
+            return CreatedAtAction(nameof(GetVesselComponents), new { compNo = vesselComponent.compNo, id = vesselComponent.Id }, vesselComponent);
         }
 
         [HttpPut("updateComponent/{id}")]
         public async Task<IActionResult> PutVesselComponent(int id, VesselComponent vesselComponent)
         {
-            if (id != vesselComponent.Id)
+            
+
+            if (id != vesselComponent.Id || vesselComponent.compNo == 0)
             {
                 return BadRequest();
             }
@@ -62,10 +67,15 @@ namespace CiriqueERP.Controllers
             return NoContent();
         }
 
-        [HttpDelete("deleteComponent/{id}")]
-        public async Task<IActionResult> DeleteVesselComponent(int id)
+        [HttpDelete("deleteComponent/{id}/{compNo}")]
+        public async Task<IActionResult> DeleteVesselComponent(int id, int compNo)
         {
-            var vesselComponent = await _context.VesselComponents.FindAsync(id);
+            
+
+            var vesselComponent = await _context.VesselComponents
+                .Where(vc => vc.Id == id && vc.compNo == compNo)
+                .FirstOrDefaultAsync();
+
             if (vesselComponent == null)
             {
                 return NotFound();
@@ -77,30 +87,6 @@ namespace CiriqueERP.Controllers
             return NoContent();
         }
 
-        [HttpPost("uploadFile")]
-        public async Task<IActionResult> UploadFile(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("No file uploaded.");
-            }
-
-            var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
-
-            if (!Directory.Exists(uploadsDir))
-            {
-                Directory.CreateDirectory(uploadsDir);
-            }
-
-            var filePath = Path.Combine(uploadsDir, file.FileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            return Ok(new { FilePath = filePath });
-        }
-
+        
     }
 }

@@ -19,18 +19,19 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet("GetAllCertificates")]
-        public async Task<ActionResult<IEnumerable<Certificate>>> GetAllCertificates()
+        [HttpGet("GetAllCertificates/{compNo}")]
+        public async Task<ActionResult<IEnumerable<Certificate>>> GetAllCertificates(int compNo)
         {
-            return await _context.Certificates.ToListAsync();
+            return await _context.Certificates.Where(c => c.compNo == compNo).ToListAsync();
         }
 
         [HttpPost("AddCertificate")]
         public async Task<ActionResult<Certificate>> AddCertificate(Certificate certificate)
         {
+
             _context.Certificates.Add(certificate);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetAllCertificates), new { id = certificate.Id }, certificate);
+            return CreatedAtAction(nameof(GetAllCertificates), new { id = certificate.Id, compNo = certificate.compNo }, certificate);
         }
 
         [HttpPut("UpdateCertificate/{id}")]
@@ -39,6 +40,14 @@ namespace CiriqueERP.Controllers
             if (id != certificate.Id)
             {
                 return BadRequest();
+            }
+
+            // Kullanıcının departmanını kontrol edin
+            var departmentId = User.Claims.FirstOrDefault(c => c.Type == "Departmant")?.Value;
+
+            if (departmentId != "2" && departmentId != "3")
+            {
+                return Forbid("You do not have permission to update this certificate.");
             }
 
             _context.Entry(certificate).State = EntityState.Modified;
@@ -62,13 +71,24 @@ namespace CiriqueERP.Controllers
             return NoContent();
         }
 
-        [HttpDelete("DeleteCertificate/{id}")]
-        public async Task<IActionResult> DeleteCertificate(int id)
+        [HttpDelete("DeleteCertificate/{id}/{compNo}")]
+        public async Task<IActionResult> DeleteCertificate(int id, int compNo)
         {
-            var certificate = await _context.Certificates.FindAsync(id);
+            var certificate = await _context.Certificates
+                .Where(c => c.Id == id && c.compNo == compNo)
+                .FirstOrDefaultAsync();
+
             if (certificate == null)
             {
                 return NotFound();
+            }
+
+            // Kullanıcının departmanını kontrol edin
+            var departmentId = User.Claims.FirstOrDefault(c => c.Type == "Departmant")?.Value;
+
+            if (departmentId != "2" && departmentId != "3")
+            {
+                return Forbid("You do not have permission to delete this certificate.");
             }
 
             _context.Certificates.Remove(certificate);

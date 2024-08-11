@@ -19,6 +19,7 @@ export class EquipmentCounterComponent implements OnInit {
   vessels: vesselModel[] = [];
   equipmentCounterForm: FormGroup;
   editForm: FormGroup;
+  canEdit: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -28,24 +29,32 @@ export class EquipmentCounterComponent implements OnInit {
     this.equipmentCounterForm = this.fb.group({
       vessel: ['', Validators.required],
       equipmentCounterName: ['', Validators.required],
-      compNo: [''] // compNo alanı eklendi
+      compNo: ['']
     });
 
     this.editForm = this.fb.group({
       id: [null],
       vessel: ['', Validators.required],
       equipmentCounterName: ['', Validators.required],
-      compNo: [''] // compNo alanı eklendi
+      compNo: ['']
     });
   }
 
   ngOnInit(): void {
     this.loadEquipmentCounters();
     this.loadVessels();
+    this.checkUserPermissions();
+  }
+
+  checkUserPermissions(): void {
+    const currentUser = this.mainService.currentUserValue;
+    const decodedToken = this.mainService.decodeToken(currentUser?.accessToken);
+    const departmentId = decodedToken?.Departmant;
+    this.canEdit = departmentId === '2' || departmentId === '3';
   }
 
   loadEquipmentCounters(): void {
-    const compNo = parseInt(localStorage.getItem('compNo') || '0', 10); // compNo'yu localStorage'dan çekip integer'a çevir
+    const compNo = parseInt(localStorage.getItem('compNo') || '0', 10);
     if (compNo > 0) {
       this.mainService.getEquipmentCounters(compNo).subscribe(data => {
         this.equipmentCounters = data;
@@ -54,10 +63,8 @@ export class EquipmentCounterComponent implements OnInit {
       });
     } else {
       console.error('Invalid company number');
-      // İsteğe bağlı olarak kullanıcıya bir hata mesajı gösterebilirsiniz.
     }
   }
-  
 
   loadVessels(): void {
     this.mainService.getAllVessels().subscribe(data => {
@@ -66,44 +73,50 @@ export class EquipmentCounterComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.equipmentCounterForm.valid) {
-      const compNo = localStorage.getItem('compNo'); // compNo'yu localStorage'dan al
+    if (this.canEdit && this.equipmentCounterForm.valid) {
+      const compNo = localStorage.getItem('compNo');
       const equipmentCounter: EquipmentCounter = { ...this.equipmentCounterForm.value, compNo };
 
       this.mainService.addEquipmentCounter(equipmentCounter).subscribe(() => {
         this.loadEquipmentCounters();
         this.equipmentCounterForm.reset();
       });
+    } else {
+      console.error('Permission denied or form invalid.');
     }
   }
 
   onEdit(equipmentCounter: EquipmentCounter, content: any): void {
-    this.editForm.patchValue(equipmentCounter);
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(() => {
-      if (this.editForm.valid) {
-        const updatedCounter: EquipmentCounter = this.editForm.value;
-  
-        // compNo'yu güvenli bir şekilde sayıya çevirme
-        const compNo = parseInt(localStorage.getItem('compNo') || '0', 10);
-        if (compNo > 0) {
-          updatedCounter.compNo = compNo;
-  
-          this.mainService.updateEquipmentCounter(updatedCounter.id!, updatedCounter).subscribe(() => {
-            this.loadEquipmentCounters();
-          });
-        } else {
-          console.error('Invalid or missing company number');
+    if (this.canEdit) {
+      this.editForm.patchValue(equipmentCounter);
+      this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(() => {
+        if (this.editForm.valid) {
+          const updatedCounter: EquipmentCounter = this.editForm.value;
+          const compNo = parseInt(localStorage.getItem('compNo') || '0', 10);
+          if (compNo > 0) {
+            updatedCounter.compNo = compNo;
+            this.mainService.updateEquipmentCounter(updatedCounter.id!, updatedCounter).subscribe(() => {
+              this.loadEquipmentCounters();
+            });
+          } else {
+            console.error('Invalid or missing company number');
+          }
         }
-      }
-    }, () => {
-      this.editForm.reset();
-    });
+      }, () => {
+        this.editForm.reset();
+      });
+    } else {
+      console.error('Permission denied.');
+    }
   }
-  
 
   onDelete(id: number): void {
-    this.mainService.deleteEquipmentCounter(id!).subscribe(() => {
-      this.loadEquipmentCounters();
-    });
+    if (this.canEdit) {
+      this.mainService.deleteEquipmentCounter(id!).subscribe(() => {
+        this.loadEquipmentCounters();
+      });
+    } else {
+      console.error('Permission denied.');
+    }
   }
 }

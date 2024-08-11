@@ -10,7 +10,7 @@ import { SharedModule } from '../../../../modules/shared.module';
 @Component({
   selector: 'app-vessel-component',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule,CommonModule, SharedModule],
+  imports: [ReactiveFormsModule, FormsModule, CommonModule, SharedModule],
   templateUrl: './vessel-component.component.html',
   styleUrls: ['./vessel-component.component.css']
 })
@@ -19,6 +19,8 @@ export class VesselComponentComponent implements OnInit {
   vessels: any[] = [];
   vesselComponentForm: FormGroup;
   editForm: FormGroup;
+  canEdit: boolean = false;
+  compNo: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -36,7 +38,8 @@ export class VesselComponentComponent implements OnInit {
       troubleshootingFile: [''],
       isExProof: [false],
       isClassRelated: [false],
-      hasSparePart: [false]
+      hasSparePart: [false],
+      compNo: [''] // compNo alanını forma ekledik
     });
 
     this.editForm = this.fb.group({
@@ -50,19 +53,33 @@ export class VesselComponentComponent implements OnInit {
       troubleshootingFile: [''],
       isExProof: [false],
       isClassRelated: [false],
-      hasSparePart: [false]
+      hasSparePart: [false],
+      compNo: [''] // compNo alanını forma ekledik
     });
   }
 
   ngOnInit(): void {
+    this.checkUserPermissions();
     this.loadVesselComponents();
     this.loadVessels();
   }
 
+  checkUserPermissions(): void {
+    const currentUser = this.mainService.currentUserValue;
+    const decodedToken = this.mainService.decodeToken(currentUser?.accessToken);
+    const departmentId = decodedToken?.Departmant;
+    this.compNo = decodedToken?.CompNo; // compNo'yu token'dan alıyoruz
+    this.canEdit = departmentId === '2' || departmentId === '3';
+  }
+
   loadVesselComponents(): void {
-    this.jobService.getVesselComponents().subscribe(data => {
-      this.vesselComponents = data;
-    });
+    if (this.compNo) {
+      this.jobService.getVesselComponents(this.compNo).subscribe(data => {
+        this.vesselComponents = data;
+      });
+    } else {
+      console.error('Invalid or missing company number.');
+    }
   }
 
   loadVessels(): void {
@@ -72,32 +89,43 @@ export class VesselComponentComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.vesselComponentForm.valid) {
-      const vesselComponent: VesselComponent = this.vesselComponentForm.value;
+    if (this.canEdit && this.compNo) {
+      const vesselComponent: VesselComponent = { ...this.vesselComponentForm.value, compNo: this.compNo };
       this.jobService.addVesselComponent(vesselComponent).subscribe(() => {
         this.loadVesselComponents();
         this.vesselComponentForm.reset();
       });
+    } else {
+      console.error('Permission denied, form invalid, or company number missing.');
     }
   }
 
   onEdit(vesselComponent: VesselComponent, content: any): void {
-    this.editForm.patchValue(vesselComponent);
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(() => {
-      if (this.editForm.valid) {
-        this.jobService.updateVesselComponent(this.editForm.value.id!, this.editForm.value).subscribe(() => {
-          this.loadVesselComponents();
-        });
-      }
-    }, () => {
-      this.editForm.reset();
-    });
+    if (this.canEdit && this.compNo) {
+      this.editForm.patchValue(vesselComponent);
+      this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(() => {
+        if (this.editForm.valid) {
+          const updatedComponent: VesselComponent = { ...this.editForm.value, compNo: this.compNo };
+          this.jobService.updateVesselComponent(updatedComponent.id!, updatedComponent).subscribe(() => {
+            this.loadVesselComponents();
+          });
+        }
+      }, () => {
+        this.editForm.reset();
+      });
+    } else {
+      console.error('Permission denied or company number missing.');
+    }
   }
 
   onDelete(id: number): void {
-    this.jobService.deleteVesselComponent(id).subscribe(() => {
-      this.loadVesselComponents();
-    });
+    if (this.canEdit && this.compNo) {
+      this.jobService.deleteVesselComponent(id, this.compNo).subscribe(() => {
+        this.loadVesselComponents();
+      });
+    } else {
+      console.error('Permission denied or company number missing.');
+    }
   }
 
   onFileChange(event: any): void {

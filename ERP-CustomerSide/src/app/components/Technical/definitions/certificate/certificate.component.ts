@@ -18,6 +18,7 @@ export class CertificateComponent implements OnInit {
   certificateForm: FormGroup;
   editForm: FormGroup;
   closeResult = '';
+  canEdit: boolean = false;
 
   @ViewChild('editModal', { static: true }) editModal!: TemplateRef<any>;
 
@@ -36,7 +37,8 @@ export class CertificateComponent implements OnInit {
       renewal: [0, Validators.required],
       annual: [0, Validators.required],
       intermediate: [0, Validators.required],
-      comment: ['']
+      comment: [''],
+      compNo: 0
     });
 
     this.editForm = this.fb.group({
@@ -49,73 +51,93 @@ export class CertificateComponent implements OnInit {
       renewal: [0, Validators.required],
       annual: [0, Validators.required],
       intermediate: [0, Validators.required],
-      comment: ['']
+      comment: [''],
+      compNo: 0
     });
   }
 
   ngOnInit(): void {
+    const currentUser = this.certificateService.currentUserValue;
+    const decodedToken = this.certificateService.decodeToken(currentUser?.accessToken);
+    const departmentId = decodedToken?.Departmant;
+    this.canEdit = departmentId === '2' || departmentId === '3';
+
     this.loadCertificates();
   }
 
   loadCertificates(): void {
-    this.certificateService.getCertificates().subscribe(data => {
+    const currentUser = this.certificateService.currentUserValue;
+    const decodedToken = this.certificateService.decodeToken(currentUser?.accessToken);
+    const compNo = decodedToken?.CompNo;
+
+    this.certificateService.getCertificates(compNo).subscribe(data => {
       this.certificates = data;
     });
   }
 
   onSubmit(): void {
-    if (this.certificateForm.valid) {
+    if (this.canEdit && this.certificateForm.valid) {
       const certificate: Certificate = this.certificateForm.value;
-      console.log('Form Submitted:', certificate);
+      const currentUser = this.certificateService.currentUserValue;
+      const decodedToken = this.certificateService.decodeToken(currentUser?.accessToken);
+      const compNo = decodedToken?.CompNo;
 
       if (certificate.id) {
-        this.certificateService.updateCertificate(certificate.id, certificate).subscribe(() => {
+        this.certificateService.updateCertificate(certificate.id, certificate, compNo).subscribe(() => {
           this.loadCertificates();
           this.certificateForm.reset();
         });
       } else {
-        this.certificateService.addCertificate(certificate).subscribe(() => {
+        this.certificateService.addCertificate(certificate, compNo).subscribe(() => {
           this.loadCertificates();
           this.certificateForm.reset();
         });
       }
-    } else {
-      console.log('Form is invalid');
     }
   }
 
   onEdit(certificate: Certificate): void {
-    this.editForm.patchValue(certificate);
-    this.modalService.open(this.editModal).result.then(
-      result => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      reason => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
+    if (this.canEdit) {
+      this.editForm.patchValue(certificate);
+      this.modalService.open(this.editModal).result.then(
+        result => {
+          this.closeResult = `Closed with: ${result}`;
+        },
+        reason => {
+          this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        }
+      );
+    }
   }
 
   onUpdate(modal: any): void {
-    if (this.editForm.valid) {
+    if (this.canEdit && this.editForm.valid) {
       const certificate: Certificate = this.editForm.value;
+      const currentUser = this.certificateService.currentUserValue;
+      const decodedToken = this.certificateService.decodeToken(currentUser?.accessToken);
+      const compNo = decodedToken?.CompNo;
+
       if (certificate.id !== undefined) {
-        this.certificateService.updateCertificate(certificate.id, certificate).subscribe(() => {
+        this.certificateService.updateCertificate(certificate.id, certificate, compNo).subscribe(() => {
           this.loadCertificates();
           modal.close();
         });
       } else {
         console.error('ID is undefined');
       }
-    } else {
-      console.log('Edit form is invalid');
     }
   }
 
   onDelete(id: number): void {
-    this.certificateService.deleteCertificate(id).subscribe(() => {
-      this.loadCertificates();
-    });
+    const currentUser = this.certificateService.currentUserValue;
+    const decodedToken = this.certificateService.decodeToken(currentUser?.accessToken);
+    const compNo = decodedToken?.CompNo;
+
+    if (this.canEdit) {
+      this.certificateService.deleteCertificate(id, compNo).subscribe(() => {
+        this.loadCertificates();
+      });
+    }
   }
 
   private getDismissReason(reason: any): string {

@@ -43,34 +43,34 @@ export class JobService {
     );
   }
 
-  getVesselComponents(): Observable<VesselComponent[]> {
-    return this.http.get<VesselComponent[]>(`${this.apiUrl}/vessel-components/getComponents`, this.httpOptions).pipe(
+  getVesselComponents(compNo: number): Observable<VesselComponent[]> {
+    return this.http.get<VesselComponent[]>(`${this.apiUrl}/vessel-components/getComponents/${compNo}`, this.httpOptions).pipe(
       catchError(this.handleError)
     );
   }
-
+  
   addVesselComponent(vesselComponent: VesselComponent): Observable<VesselComponent> {
     return this.http.post<VesselComponent>(`${this.apiUrl}/vessel-components/addComponent`, vesselComponent, this.httpOptions).pipe(
       catchError(this.handleError)
     );
   }
-
+  
   updateVesselComponent(id: number, vesselComponent: VesselComponent): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/vessel-components/updateComponent/${id}`, vesselComponent, this.httpOptions).pipe(
       catchError(this.handleError)
     );
   }
-
-  deleteVesselComponent(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/vessel-components/deleteComponent/${id}`, this.httpOptions).pipe(
+  
+  deleteVesselComponent(id: number, compNo: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/vessel-components/deleteComponent/${id}/${compNo}`, this.httpOptions).pipe(
       catchError(this.handleError)
     );
   }
-
+  
   uploadFile(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
-
+  
     return this.http.post(`${this.apiUrl}/vessel-components/uploadFile`, formData, {
       headers: new HttpHeaders({
         'Accept': 'application/json'
@@ -79,6 +79,7 @@ export class JobService {
       catchError(this.handleError)
     );
   }
+  
 
   private handleError(error: any) {
     console.error('An error occurred:', error);

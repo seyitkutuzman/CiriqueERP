@@ -2,6 +2,9 @@
 using CiriqueERP.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace CiriqueERP.Controllers
 {
@@ -16,10 +19,10 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet("GetAllDocSections")]
-        public async Task<ActionResult<IEnumerable<DocumentSection>>> GetDocumentSections()
+        [HttpGet("GetAllDocSections/{compNo}")]
+        public async Task<ActionResult<IEnumerable<DocumentSection>>> GetDocumentSections(int compNo)
         {
-            return await _context.DocumentSections.ToListAsync();
+            return await _context.DocumentSections.Where(ds => ds.compNo == compNo).ToListAsync();
         }
 
         [HttpPost("AddDocSection")]
@@ -27,8 +30,10 @@ namespace CiriqueERP.Controllers
         {
             _context.DocumentSections.Add(documentSection);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetDocumentSections), new { id = documentSection.Id }, documentSection);
+            return Created($"/api/controller/GetAllDocSections/{documentSection.Id}", documentSection);
         }
+
+
 
         [HttpPut("UpdateDocSection/{id}")]
         public async Task<IActionResult> PutDocumentSection(int id, DocumentSection documentSection)
@@ -59,10 +64,13 @@ namespace CiriqueERP.Controllers
             return NoContent();
         }
 
-        [HttpDelete("DeleteDocSection/{id}")]
-        public async Task<IActionResult> DeleteDocumentSection(int id)
+        [HttpDelete("DeleteDocSection/{id}/{compNo}")]
+        public async Task<IActionResult> DeleteDocumentSection(int id, int compNo)
         {
-            var documentSection = await _context.DocumentSections.FindAsync(id);
+            var documentSection = await _context.DocumentSections
+                .Where(ds => ds.Id == id && ds.compNo == compNo)
+                .FirstOrDefaultAsync();
+
             if (documentSection == null)
             {
                 return NotFound();

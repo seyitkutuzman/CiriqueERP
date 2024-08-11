@@ -38,8 +38,8 @@ export class DrydockPlanningService {
       .pipe(catchError(this.handleError));
   }
 
-  getDrydockJobs(): Observable<DrydockJob[]> {
-    return this.http.get<DrydockJob[]>(`${this.apiUrl}/drydockjobs/getJobs`, this.httpOptions)
+  getDrydockJobs(compNo: number): Observable<DrydockJob[]> {
+    return this.http.get<DrydockJob[]>(`${this.apiUrl}/drydockjobs/getJobs/${compNo}`, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
   
@@ -53,11 +53,11 @@ export class DrydockPlanningService {
       .pipe(catchError(this.handleError));
   }
   
-  deleteDrydockJob(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/drydockjobs/deleteJob/${id}`, this.httpOptions)
+  deleteDrydockJob(id: number, compNo: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/drydockjobs/deleteJob/${id}/${compNo}`, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
+  
   private handleError(error: any) {
     console.error('An error occurred:', error);
     return throwError(error);

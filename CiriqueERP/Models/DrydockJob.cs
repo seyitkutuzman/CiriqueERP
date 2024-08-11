@@ -11,5 +11,8 @@ namespace CiriqueERP.Models
         public string JobTitle { get; set; }
         public string UnitType { get; set; }
         public string Description { get; set; }
+        
+        public int compNo { get; set; }
+
     }
 }

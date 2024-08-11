@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using CiriqueERP.Data;
 
 namespace CiriqueERP.Controllers
@@ -20,10 +19,10 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet("GetAllDocTypes")]
-        public async Task<ActionResult<IEnumerable<DocumentTypes>>> GetDocumentTypes()
+        [HttpGet("GetAllDocTypes/{compNo}")]
+        public async Task<ActionResult<IEnumerable<DocumentTypes>>> GetDocumentTypes(int compNo)
         {
-            return await _context.DocumentTypes.ToListAsync();
+            return await _context.DocumentTypes.Where(dt => dt.compNo == compNo).ToListAsync();
         }
 
         [HttpPost("AddDocType")]
@@ -31,13 +30,13 @@ namespace CiriqueERP.Controllers
         {
             _context.DocumentTypes.Add(documentType);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetDocumentTypes), new { id = documentType.Id }, documentType);
+            return CreatedAtAction(nameof(GetDocumentTypes), new { id = documentType.Id, compNo = documentType.compNo }, documentType);
         }
 
-        [HttpPut("UpdateDocType/{id}")]
-        public async Task<IActionResult> PutDocumentType(int id, DocumentTypes documentType)
+        [HttpPut("UpdateDocType/{id}/{compNo}")]
+        public async Task<IActionResult> PutDocumentType(int id, int compNo, DocumentTypes documentType)
         {
-            if (id != documentType.Id)
+            if (id != documentType.Id || compNo != documentType.compNo)
             {
                 return BadRequest();
             }
@@ -63,10 +62,13 @@ namespace CiriqueERP.Controllers
             return NoContent();
         }
 
-        [HttpDelete("DeleteDocType/{id}")]
-        public async Task<IActionResult> DeleteDocumentType(int id)
+        [HttpDelete("DeleteDocType/{id}/{compNo}")]
+        public async Task<IActionResult> DeleteDocumentType(int id, int compNo)
         {
-            var documentType = await _context.DocumentTypes.FindAsync(id);
+            var documentType = await _context.DocumentTypes
+                .Where(dt => dt.Id == id && dt.compNo == compNo)
+                .FirstOrDefaultAsync();
+
             if (documentType == null)
             {
                 return NotFound();

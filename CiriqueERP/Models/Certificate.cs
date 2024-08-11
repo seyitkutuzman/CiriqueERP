@@ -22,5 +22,6 @@ namespace CiriqueERP.Models
         public int? Intermediate { get; set; }
         public int? IntermediateTw { get; set; }
         public string Comment { get; set; }
+        public int compNo { get; set; }
     }
 }
