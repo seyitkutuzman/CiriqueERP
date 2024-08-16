@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DrydockJob } from '../../../../models/DrydockJob.model';
 import { DrydockPlanningService } from '../../../../service/DrydockPlanningService';
@@ -11,7 +11,7 @@ import { MainService } from '../../../../service/MainService.service';
   templateUrl: './drydock-job.component.html',
   styleUrls: ['./drydock-job.component.css'],
   standalone: true,
-  imports: [SharedModule, ReactiveFormsModule]
+  imports: [SharedModule, ReactiveFormsModule, FormsModule]
 })
 export class DrydockJobsComponent implements OnInit {
   jobs: DrydockJob[] = [];
@@ -19,6 +19,7 @@ export class DrydockJobsComponent implements OnInit {
   editForm: FormGroup;
   newForm: FormGroup;
   canEdit: boolean = false;
+  canAdd: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -61,7 +62,10 @@ export class DrydockJobsComponent implements OnInit {
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     const decodedToken = this.mainService.decodeToken(currentUser?.accessToken);
     const departmentId = decodedToken?.Departmant;
+
+    // Sadece departman 2 veya 3 ise ekleme ve güncelleme izinlerini veririz
     this.canEdit = departmentId === '2' || departmentId === '3';
+    this.canAdd = this.canEdit;  // canAdd de aynı kontrolü kullanır
   }
 
   loadJobs(): void {
@@ -89,7 +93,7 @@ export class DrydockJobsComponent implements OnInit {
   }
 
   openNewModal(content: any): void {
-    if (this.canEdit) {
+    if (this.canAdd) {
       this.modalService.open(content);
     } else {
       console.error('Permission denied.');
@@ -110,23 +114,34 @@ export class DrydockJobsComponent implements OnInit {
       console.error('Permission denied.');
     }
   }
-  
 
   onUpdate(modal: any): void {
-    if (this.editForm.valid) {
+    if (this.canEdit) {
+      console.log('Updated Form Data:', this.editForm.value);
       this.jobService.updateDrydockJob(this.editForm.value.id!, this.editForm.value).subscribe(() => {
         this.loadJobs();
         modal.close();
+      }, error => {
+        console.error('Error updating job:', error);
       });
+    } else {
+      console.error('Form is invalid');
     }
   }
+  
 
   onAdd(modal: any): void {
-    if (this.newForm.valid) {
+    if (this.canAdd) {
+      console.log('Form Data:', this.newForm.value);
       this.jobService.addDrydockJob(this.newForm.value).subscribe(() => {
         this.loadJobs();
         modal.close();
+      }, error => {
+        console.error('Error adding job:', error);
       });
+    } else {
+      console.error('Form is invalid');
     }
   }
+  
 }

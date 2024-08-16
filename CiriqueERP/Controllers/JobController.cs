@@ -5,6 +5,8 @@ using CiriqueERP.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace CiriqueERP.Controllers
 {
@@ -19,10 +21,12 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet("getJobs/{compNo}")]
-        public async Task<ActionResult<IEnumerable<Job>>> GetJobs(int compNo)
+        [HttpGet("getJobs/{CompNo}")]
+        public async Task<ActionResult<IEnumerable<Job>>> GetJobs(int CompNo)
         {
-            return await _context.Jobs.Where(j => j.CompNo == compNo).ToListAsync();
+            return await _context.Jobs
+                .Where(job => job.CompNo == CompNo)
+                .ToListAsync();
         }
 
         [HttpPost("addJob")]
@@ -30,13 +34,13 @@ namespace CiriqueERP.Controllers
         {
             _context.Jobs.Add(job);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetJobs), new { id = job.Id }, job);
+            return CreatedAtAction(nameof(GetJobs), new { CompNo = job.CompNo, id = job.Id }, job);
         }
 
         [HttpPut("updateJob/{id}")]
         public async Task<IActionResult> PutJob(int id, Job job)
         {
-            if (id != job.Id)
+            if (id != job.Id || job.CompNo == 0)
             {
                 return BadRequest();
             }
@@ -62,10 +66,13 @@ namespace CiriqueERP.Controllers
             return NoContent();
         }
 
-        [HttpDelete("deleteJob/{id}")]
-        public async Task<IActionResult> DeleteJob(int id)
+        [HttpDelete("deleteJob/{id}/{CompNo}")]
+        public async Task<IActionResult> DeleteJob(int id, int CompNo)
         {
-            var job = await _context.Jobs.FindAsync(id);
+            var job = await _context.Jobs
+                .Where(job => job.Id == id && job.CompNo == CompNo)
+                .FirstOrDefaultAsync();
+
             if (job == null)
             {
                 return NotFound();
@@ -75,6 +82,24 @@ namespace CiriqueERP.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPost("uploadFile")]
+        public async Task<IActionResult> UploadFile(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            var filePath = Path.Combine("uploads", file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok(new { filePath });
         }
     }
 }

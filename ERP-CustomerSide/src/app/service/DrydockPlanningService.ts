@@ -18,8 +18,8 @@ export class DrydockPlanningService {
 
   constructor(private http: HttpClient) {}
 
-  getDrydockPlannings(): Observable<DrydockPlanning[]> {
-    return this.http.get<DrydockPlanning[]>(`${this.apiUrl}/drydock-planning/getPlannings`, this.httpOptions)
+  getDrydockPlannings(compNo: number): Observable<DrydockPlanning[]> {
+    return this.http.get<DrydockPlanning[]>(`${this.apiUrl}/drydock-planning/getPlannings/${compNo}`, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
   
@@ -33,8 +33,8 @@ export class DrydockPlanningService {
       .pipe(catchError(this.handleError));
   }
   
-  deleteDrydockPlanning(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/drydock-planning/deletePlanning/${id}`, this.httpOptions)
+  deleteDrydockPlanning(id: number, compNo: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/drydock-planning/deletePlanning/${id}/${compNo}`, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
@@ -62,5 +62,4 @@ export class DrydockPlanningService {
     console.error('An error occurred:', error);
     return throwError(error);
   }
-
 }

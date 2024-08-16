@@ -11,10 +11,10 @@ import { DocumentSectionComponent } from './components/Technical/definitions/doc
 import { DocumentTypeComponent } from './components/Technical/definitions/document-type/document-type.component';
 import { CertificateComponent } from './components/Technical/definitions/certificate/certificate.component';
 import { EquipmentCounterComponent } from './components/Technical/definitions/equipment-counter/equipment-counter.component';
-import { JobsComponent } from './components/Technical/definitions/jobs/jobs.component';
 import { VesselComponentComponent } from './components/Technical/definitions/vessel-component/vessel-component.component';
 import { DrydockPlanningComponent } from './components/Technical/drydock/drydock-planning/drydock-planning.component';
-import { DrydockJobsComponent } from './components/Technical/drydock/drydock-job/drydock-job.component';
+import { DrydockJobsComponent } from './components/Technical/drydock/drydock-job/drydock-jobDefiniton.component';
+import { JobComponent } from './components/Technical/definitions/job/job.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -28,10 +28,10 @@ export const routes: Routes = [
     {path: 'docType', component: DocumentTypeComponent},
     {path: 'certificate', component:CertificateComponent},
     {path: 'counter', component:EquipmentCounterComponent},
-    {path: 'jobs', component:JobsComponent},
     {path: 'vesselComponent', component:VesselComponentComponent},
     {path: 'drydock-planning', component:DrydockPlanningComponent},
-    {path: 'drydock-job', component:DrydockJobsComponent}
+    {path: 'drydock-job', component:DrydockJobsComponent},
+    {path: 'jobs', component:JobComponent}
   ] },
   { path: '**', redirectTo: '' }
 ];

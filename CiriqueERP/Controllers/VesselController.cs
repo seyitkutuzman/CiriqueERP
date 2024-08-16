@@ -142,6 +142,7 @@ namespace CiriqueERP.Controllers
                 .Where(v => v.CompNo == model.CompNo)
                 .Select(v => new
                 {
+                    v.Id,
                     v.VesselName
                 })
                 .ToList();

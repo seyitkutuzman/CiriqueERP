@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Job } from '../models/job.model';
 import { vesselModel } from '../models/vesselModel';
 import { VesselComponent } from '../models/VesselComponent.model';
+import { Job } from '../models/jobs.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,26 +19,36 @@ export class JobService {
 
   constructor(private http: HttpClient) {}
 
+  
   getJobs(compNo: number): Observable<Job[]> {
-    return this.http.get<Job[]>(`${this.apiUrl}/jobs/getJobs/${compNo}`, this.httpOptions).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get<Job[]>(`${this.apiUrl}/jobs/getJobs/${compNo}`, this.httpOptions)
+      .pipe(catchError(this.handleError));
   }
 
   addJob(job: Job): Observable<Job> {
-    return this.http.post<Job>(`${this.apiUrl}/jobs/addJob`, job, this.httpOptions).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.post<Job>(`${this.apiUrl}/jobs/addJob`, job, this.httpOptions)
+      .pipe(catchError(this.handleError));
   }
 
   updateJob(id: number, job: Job): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/jobs/updateJob/${id}`, job, this.httpOptions).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.put<void>(`${this.apiUrl}/jobs/updateJob/${id}`, job, this.httpOptions)
+      .pipe(catchError(this.handleError));
   }
 
-  deleteJob(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/jobs/deleteJob/${id}`, this.httpOptions).pipe(
+  deleteJob(id: number, compNo: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/jobs/deleteJob/${id}/${compNo}`, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  uploadJobFile(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post(`${this.apiUrl}/jobs/uploadFile`, formData, {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      })
+    }).pipe(
       catchError(this.handleError)
     );
   }

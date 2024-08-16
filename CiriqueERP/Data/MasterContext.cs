@@ -56,9 +56,7 @@ public partial class MasterContext : DbContext
     public DbSet<DrydockPlanning> DrydockPlannings { get; set; }
     public DbSet<DrydockJob> DrydockJobs { get; set; }
 
-    public DbSet<Job> Jobs { get; set; }
-
-
+    public virtual DbSet<Job> Jobs { get; set; }
 
 
 

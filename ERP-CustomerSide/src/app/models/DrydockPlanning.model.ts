@@ -8,5 +8,6 @@ export interface DrydockPlanning {
     endDate: string;
     currency: string;
     comment: string;
+    compNo: number;
   }
   
