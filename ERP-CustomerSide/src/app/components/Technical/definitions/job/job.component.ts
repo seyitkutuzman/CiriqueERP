@@ -6,6 +6,7 @@ import { MainService } from '../../../../service/MainService.service';
 import { Job } from '../../../../models/jobs.model';
 import { vesselModel } from '../../../../models/vesselModel';
 import { SharedModule } from '../../../../modules/shared.module';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-job',
@@ -21,6 +22,8 @@ export class JobComponent implements OnInit {
   jobForm: FormGroup;
   compNo: number | null = null;
   selectedJob: Job | null = null;
+  departmentId: any | null = null;
+  hasEditPermission: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -34,7 +37,6 @@ export class JobComponent implements OnInit {
       jobType: ['All'],
       priority: ['All'],
       jobTitle: [''],
-      filterReportedJobs: [false],
       filterRASRequiredJobs: [false],
       filterCEShutdownRequiredJobs: [false],
       filterMajorOverhaulJobs: [false],
@@ -52,9 +54,9 @@ export class JobComponent implements OnInit {
       tasks: ['', Validators.required],
       descFile: [''],
       instructionFile: [''],
-      ras: [false],  // Checkbox alanını false olarak başlatıyoruz
-      ce: [false],   // Checkbox alanını false olarak başlatıyoruz
-      compNo: ['']   // compNo'yu burada ayarlayacağız
+      ras: [false],
+      ce: [false],
+      compNo: ['']
     });
   }
 
@@ -62,27 +64,44 @@ export class JobComponent implements OnInit {
     this.loadJobs();
     this.loadVessels();
     this.setCompNo(); // compNo'yu ayarla
+    this.setDepartmentId(); // Departman ID'sini al ve yetkileri belirle
   }
 
   setCompNo(): void {
     const currentUser = this.mainService.currentUserValue;
     const decodedToken = this.mainService.decodeToken(currentUser?.accessToken);
     this.compNo = decodedToken?.CompNo;
-    this.jobForm.patchValue({ compNo: this.compNo }); // compNo'yu formda ayarla
+    this.jobForm.patchValue({ compNo: this.compNo });
+  }
+
+  setDepartmentId(): void {
+    const currentUser = this.mainService.currentUserValue;
+    const decodedToken = this.mainService.decodeToken(currentUser?.accessToken);
+    this.departmentId = decodedToken?.Departmant;
+    this.hasEditPermission = !(this.departmentId === '1' || this.departmentId === '4' || this.departmentId === '5');
   }
 
   loadJobs(): void {
     if (this.compNo) {
       this.jobService.getJobs(this.compNo).subscribe((jobs) => {
-        // Dosya URL'lerini manuel olarak oluşturuyoruz
         this.jobs = jobs.map(job => ({
           ...job,
-          descFileUrl: job.descFile ? `/uploads/${job.descFile}` : null,
-          instructionFileUrl: job.instructionFile ? `/uploads/${job.instructionFile}` : null,
+          descFileUrl: job.descFile ? `https://localhost:7071/uploads/${job.descFile}` : null,
+          instructionFileUrl: job.instructionFile ? `https://localhost:7071/uploads/${job.instructionFile}` : null,
         }));
       });
     }
   }
+
+  onDownloadFile(fileUrl: string): void {
+    const fileName = fileUrl.split('/').pop(); // Sadece dosya adını almak için
+    this.jobService.downloadFile(fileName!).subscribe((blob: Blob) => {
+        saveAs(blob, fileName!);
+    }, error => {
+        console.error('Dosya indirme hatası:', error);
+    });
+}
+
 
   loadVessels(): void {
     this.mainService.getAllVessels().subscribe((vessels) => {
@@ -104,18 +123,31 @@ export class JobComponent implements OnInit {
   }
 
   openJobModal(content: any): void {
+    if (!this.hasEditPermission) {
+      alert("You don't have permission to add or edit jobs.");
+      return;
+    }
     this.selectedJob = null;
     this.jobForm.reset();
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
   }
 
   onEdit(job: Job, content: any): void {
+    if (!this.hasEditPermission) {
+      alert("You don't have permission to edit jobs.");
+      return;
+    }
     this.selectedJob = job;
     this.jobForm.patchValue(job);
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
   }
 
   saveJob(): void {
+    if (!this.hasEditPermission) {
+      alert("You don't have permission to save jobs.");
+      return;
+    }
+
     if (this.jobForm.invalid) {
       return;
     }
@@ -137,6 +169,11 @@ export class JobComponent implements OnInit {
   }
 
   onDelete(id: number): void {
+    if (!this.hasEditPermission) {
+      alert("You don't have permission to delete jobs.");
+      return;
+    }
+
     if (confirm('Are you sure you want to delete this job?')) {
       this.jobService.deleteJob(id, this.compNo!).subscribe(() => {
         this.loadJobs();

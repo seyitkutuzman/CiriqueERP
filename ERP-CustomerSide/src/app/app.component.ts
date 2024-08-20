@@ -9,20 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';  // NgbModal import edin
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet],
-  template: `<router-outlet></router-outlet>
-             <ng-template #content let-modal>
-               <div class="modal-header">
-                 <h4 class="modal-title" id="modal-basic-title">Modal title</h4>
-                 <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-               </div>
-               <div class="modal-body">
-                 <p>Hello, world!</p>
-               </div>
-               <div class="modal-footer">
-                 <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
-               </div>
-             </ng-template>
-             <button class="btn btn-lg btn-outline-primary" (click)="open(content)">Launch demo modal</button>`
+  template: `<router-outlet></router-outlet>`
 })
 export class AppComponent implements OnInit {
   title = 'ERP-BackOffice';

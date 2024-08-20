@@ -16,6 +16,7 @@ import { DrydockPlanningComponent } from './components/Technical/drydock/drydock
 import { DrydockJobsComponent } from './components/Technical/drydock/drydock-job/drydock-jobDefiniton.component';
 import { JobComponent } from './components/Technical/definitions/job/job.component';
 
+
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', component: LayoutsComponent, children: [

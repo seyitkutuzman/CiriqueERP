@@ -52,6 +52,14 @@ export class JobService {
       catchError(this.handleError)
     );
   }
+  downloadFile(fileName: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/jobs/downloadFile?fileName=${fileName}`, {
+        responseType: 'blob'
+    }).pipe(
+        catchError(this.handleError)
+    );
+}
+
 
   getVesselComponents(compNo: number): Observable<VesselComponent[]> {
     return this.http.get<VesselComponent[]>(`${this.apiUrl}/vessel-components/getComponents/${compNo}`, this.httpOptions).pipe(

@@ -14,10 +14,10 @@ import { DocumentEquipmentComponent } from './components/Technical/definitions/d
 import { DocumentSectionComponent } from './components/Technical/definitions/document-section/document-section.component';
 import { DocumentTypeComponent } from './components/Technical/definitions/document-type/document-type.component';
 import { CertificateComponent } from './components/Technical/definitions/certificate/certificate.component';
-import { JobsComponent } from './components/Technical/definitions/jobs/jobs.component';
+import { JobComponent } from './components/Technical/definitions/job/job.component';
 import { VesselComponentComponent } from './components/Technical/definitions/vessel-component/vessel-component.component';
 import { DrydockPlanningComponent } from './components/Technical/drydock/drydock-planning/drydock-planning.component';
-import { DrydockJobsComponent } from './components/Technical/drydock/drydock-job/drydock-job.component';
+import { DrydockJobsComponent } from './components/Technical/drydock/drydock-job/drydock-jobDefiniton.component';
 
 @NgModule({
   imports: [
@@ -35,10 +35,10 @@ import { DrydockJobsComponent } from './components/Technical/drydock/drydock-job
     DocumentSectionComponent,
     DocumentTypeComponent,
     CertificateComponent,
-    JobsComponent,
+    JobComponent,
     VesselComponentComponent, DrydockPlanningComponent, DrydockJobsComponent
   ],
-  providers: [
+    providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     MainService
   ],

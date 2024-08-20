@@ -89,10 +89,19 @@ namespace CiriqueERP.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                return BadRequest("No file uploaded.");
+                return BadRequest("Dosya yüklenmedi.");
             }
 
-            var filePath = Path.Combine("uploads", file.FileName);
+            // Projenin çalıştığı dizine göre uploads klasörüne yol oluşturma
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+
+            // Eğer uploads klasörü yoksa oluştur
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var filePath = Path.Combine(uploadsFolder, file.FileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -101,5 +110,23 @@ namespace CiriqueERP.Controllers
 
             return Ok(new { filePath });
         }
+
+        [HttpGet("downloadFile")]
+        public ActionResult DownloadFile([FromQuery] string fileName)
+        {
+            // Sadece dosya adını kullanarak tam dosya yolunu oluşturma
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", fileName);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound("Dosya bulunamadı.");
+            }
+
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return File(fileBytes, "application/octet-stream", fileName);
+        }
+
+
+
     }
 }
