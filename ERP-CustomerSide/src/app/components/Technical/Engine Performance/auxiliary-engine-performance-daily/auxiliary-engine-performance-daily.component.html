@@ -1,0 +1,103 @@
+<app-blank>
+    <app-section>
+        <div class="container">
+            <h2>Auxiliary Engine Performance - Daily</h2>
+            <form>
+                <!-- Genel Bilgiler -->
+                <fieldset>
+                    <legend>General Data</legend>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="vessel">Vessel</label>
+                            <select id="vessel" [(ngModel)]="performance.vessel" name="vessel" class="form-control">
+                                <option value="" disabled selected>Select a Vessel</option>
+                                <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{vessel.vesselName}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="date">Form Date</label>
+                            <input id="date" type="datetime-local" [(ngModel)]="performance.date" name="date" class="form-control">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="personnel">Personnel</label>
+                            <input id="personnel" type="text" [(ngModel)]="performance.personnel" name="personnel" class="form-control">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="engineNo">Engine No</label>
+                            <select id="engineNo" [(ngModel)]="performance.engineNo" name="engineNo" class="form-control">
+                                <option value="" disabled selected>Select an Engine No</option>
+                                <option *ngFor="let number of engineNumbers" [value]="number">Engine No: {{number}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Teknik Veriler -->
+                <fieldset>
+                    <legend>Technical Data</legend>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="averageSpeed">Average Speed T/C</label>
+                            <input id="averageSpeed" type="number" [(ngModel)]="performance.averageSpeed" name="averageSpeed" class="form-control">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="engineLoad">Engine Load</label>
+                            <input id="engineLoad" type="number" [(ngModel)]="performance.engineLoad" name="engineLoad" class="form-control">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="engineKW">Engine KW</label>
+                            <input id="engineKW" type="number" [(ngModel)]="performance.engineKW" name="engineKW" class="form-control">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Silindir Verileri -->
+                <fieldset>
+                    <legend>Technical Data</legend>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="coolingWaterTemp">Cyl. Cooling Water Temp.</label>
+                            <input id="coolingWaterTemp" type="number" [(ngModel)]="performance.coolingWaterTemp" name="coolingWaterTemp" class="form-control">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="luboilTemp">Cyl. Luboil Temp.</label>
+                            <input id="luboilTemp" type="number" [(ngModel)]="performance.luboilTemp" name="luboilTemp" class="form-control">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="coolingWaterPress">Cyl. Cooling Water Press.</label>
+                            <input id="coolingWaterPress" type="number" [(ngModel)]="performance.coolingWaterPress" name="coolingWaterPress" class="form-control">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="luboilPress">Cyl. Luboil Press.</label>
+                            <input id="luboilPress" type="number" [(ngModel)]="performance.luboilPress" name="luboilPress" class="form-control">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Egzoz Gaz Sıcaklıkları -->
+                <fieldset>
+                    <legend>Cylinder No Exhaust Gas Temp. (C)</legend>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Cylinder No</th>
+                                <th scope="col">Exh. Gas. Temp. (C)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let cylinder of performance.cylinderExhaustGasTemps">
+                                <td>{{cylinder.cylinderNo}}</td>
+                                <td><input type="number" [(ngModel)]="cylinder.exhaustGasTemp" name="exhaustGasTemp" class="form-control"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-save btn-success" (click)="save()">Save</button>
+                    <button type="button" class="btn btn-cancel btn-danger" (click)="cancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </app-section>
+</app-blank>

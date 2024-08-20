@@ -9,5 +9,6 @@ namespace CiriqueERP.Models
 
         [Required]
         public string SectionName { get; set; }
+        public int compNo { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './navbar/navbar.component';
 import { MainSidebarComponent } from './main-sidebar/main-sidebar.component';
 import { ControlSidebarComponent } from './control-sidebar/control-sidebar.component';
 import { FooterComponent } from './footer/footer.component';
@@ -12,7 +11,7 @@ import { CocMowComponent } from '../Technical/coc-mow/coc-mow.component';
 @Component({
   selector: 'app-layouts',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, MainSidebarComponent,ControlSidebarComponent,FooterComponent,CocMowComponent],
+  imports: [RouterOutlet, MainSidebarComponent,ControlSidebarComponent,FooterComponent,CocMowComponent],
   templateUrl: './layouts.component.html',
   styleUrl: './layouts.component.css'
 })

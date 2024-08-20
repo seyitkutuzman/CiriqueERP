@@ -1,54 +1,55 @@
 <app-blank>
-    <app-section>
-      <div class="container">
-        <h2>Document Type</h2>
+  <app-section>
+    <div class="container">
+      <h2>Document Type</h2>
       
-        <form [formGroup]="documentTypeForm" (ngSubmit)="onSubmit()">
+      <!-- Ekleme ve güncelleme için form -->
+      <form [formGroup]="documentTypeForm" (ngSubmit)="onSubmit()" *ngIf="canEdit">
+        <div class="form-group">
+          <label for="documentType">Document Type</label>
+          <input type="text" id="documentType" formControlName="documentType" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </form>
+
+      <!-- Sadece listeleme için kullanıcılar formu göremez -->
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>Document Type</th>
+            <th *ngIf="canEdit">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let documentType of documentTypes">
+            <td>{{ documentType.documentType }}</td>
+            <td *ngIf="canEdit">
+              <button class="btn btn-info" (click)="onEdit(documentType)">Edit</button>
+              <button class="btn btn-danger" (click)="onDelete(documentType.id!)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Edit Modal -->
+    <ng-template #content let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Edit Document Type</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="documentTypeForm">
           <div class="form-group">
             <label for="documentType">Document Type</label>
             <input type="text" id="documentType" formControlName="documentType" class="form-control">
           </div>
-          <button type="submit" class="btn btn-primary">Save</button>
         </form>
-      
-        <table class="table table-striped mt-4">
-          <thead>
-            <tr>
-              <th>Document Type</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let documentType of documentTypes">
-              <td>{{ documentType.documentType }}</td>
-              <td>
-                <button class="btn btn-info" (click)="onEdit(documentType)">Edit</button>
-                <button class="btn btn-danger" (click)="onDelete(documentType.id!)">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
-      
-      <!-- Edit Modal -->
-      <ng-template #content let-modal>
-        <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">Edit Document Type</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="documentTypeForm">
-            <div class="form-group">
-              <label for="documentType">Document Type</label>
-              <input type="text" id="documentType" formControlName="documentType" class="form-control">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel')">Cancel</button>
-          <button type="button" class="btn btn-primary" (click)="modal.close('Save')" [disabled]="!documentTypeForm.valid">Save</button>
-        </div>
-      </ng-template>
-    </app-section>
-  </app-blank>
-  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel')">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close('Save')" [disabled]="!documentTypeForm.valid">Save</button>
+      </div>
+    </ng-template>
+  </app-section>
+</app-blank>

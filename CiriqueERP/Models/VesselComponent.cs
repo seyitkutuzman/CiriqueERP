@@ -18,5 +18,7 @@ namespace CiriqueERP.Models
         public bool IsExProof { get; set; }
         public bool IsClassRelated { get; set; }
         public bool HasSparePart { get; set; }
+
+        public int compNo { get; set; }
     }
 }

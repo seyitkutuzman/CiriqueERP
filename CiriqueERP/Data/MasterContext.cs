@@ -55,10 +55,8 @@ public partial class MasterContext : DbContext
 
     public DbSet<DrydockPlanning> DrydockPlannings { get; set; }
     public DbSet<DrydockJob> DrydockJobs { get; set; }
-
-    public DbSet<Job> Jobs { get; set; }
-
-
+    public virtual DbSet<Job> Jobs { get; set; }
+    public virtual DbSet<AuxiliaryEnginePerformance> AuxiliaryEnginePerformancesDaily { get; set; }
 
 
 
@@ -633,6 +631,16 @@ public partial class MasterContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("sectionName");
         });
+        modelBuilder.Entity<AuxiliaryEnginePerformance>()
+        .HasMany(aep => aep.CylinderExhaustGasTemps)
+        .WithOne(c => c.AuxiliaryEnginePerformance)
+        .HasForeignKey(c => c.AuxiliaryEnginePerformanceId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<CylinderExhaustGasTemp>()
+        .HasOne(c => c.AuxiliaryEnginePerformance)
+        .WithMany(a => a.CylinderExhaustGasTemps)
+        .HasForeignKey(c => c.AuxiliaryEnginePerformanceId);
 
         OnModelCreatingPartial(modelBuilder);
     }

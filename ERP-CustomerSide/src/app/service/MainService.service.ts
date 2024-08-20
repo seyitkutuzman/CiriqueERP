@@ -255,100 +255,101 @@
       );
     }
     
-    getDocumentSections(): Observable<DocumentSection[]> {
-      console.log('Fetching all Document Sections');
-      return this.http.get<DocumentSection[]>(`${this.apiUrl}/controller/GetAllDocSections`).pipe(
-          catchError(this.handleError)
+    getDocumentSections(compNo: number): Observable<DocumentSection[]> {
+      return this.http.get<DocumentSection[]>(`${this.apiUrl}/controller/GetAllDocSections/${compNo}`, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    addDocumentSection(documentSection: DocumentSection): Observable<DocumentSection> {
+      return this.http.post<DocumentSection>(`${this.apiUrl}/controller/AddDocSection`, documentSection, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    updateDocumentSection(id: number, documentSection: DocumentSection): Observable<void> {
+      return this.http.put<void>(`${this.apiUrl}/controller/UpdateDocSection/${id}`, documentSection, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    deleteDocumentSection(id: number, compNo: number): Observable<void> {
+      return this.http.delete<void>(`${this.apiUrl}/controller/DeleteDocSection/${id}/${compNo}`, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    getDocumentTypes(compNo: string): Observable<DocumentType[]> {
+      console.log('Fetching all Document Types for compNo:', compNo);
+      return this.http.get<DocumentType[]>(`${this.apiUrl}/controller/GetAllDocTypes/${compNo}`, {
+        headers: { 'Content-Type': 'application/json' }
+      }).pipe(
+        catchError(this.handleError)
       );
-  }
-
-  addDocumentSection(documentSection: DocumentSection): Observable<DocumentSection> {
-      console.log('Add Document Section Payload:', documentSection);
-      return this.http.post<DocumentSection>(`${this.apiUrl}/controller/AddDocSection`, documentSection).pipe(
-          catchError(this.handleError)
+    }
+    
+    addDocumentType(documentType: DocumentType, compNo: number): Observable<DocumentType> {
+      documentType.compNo = compNo; // compNo'yu documentType'a ekliyoruz
+      console.log('Add Document Type Payload:', documentType);
+      return this.http.post<DocumentType>(`${this.apiUrl}/controller/AddDocType`, documentType, {
+        headers: { 'Content-Type': 'application/json' }
+      }).pipe(
+        catchError(this.handleError)
+        );
+    }
+    
+    updateDocumentType(id: number, documentType: DocumentType, compNo: number): Observable<void> {
+      documentType.compNo = compNo; // compNo'yu documentType'a ekliyoruz
+      console.log('Update Document Type ID:', id, 'Payload:', documentType);
+      return this.http.put<void>(`${this.apiUrl}/controller/UpdateDocType/${id}/${compNo}`, documentType, {
+        headers: { 'Content-Type': 'application/json' }
+      }).pipe(
+        catchError(this.handleError)
       );
-  }
-
-  updateDocumentSection(id: number, documentSection: DocumentSection): Observable<void> {
-      console.log('Update Document Section ID:', id, 'Payload:', documentSection);
-      return this.http.put<void>(`${this.apiUrl}/controller/UpdateDocSection/${id}`, documentSection).pipe(
-          catchError(this.handleError)
+    }
+    
+    deleteDocumentType(id: number, compNo: string): Observable<void> {
+      console.log('Delete Document Type ID:', id, 'compNo:', compNo);
+      return this.http.delete<void>(`${this.apiUrl}/controller/DeleteDocType/${id}/${compNo}`, {
+        headers: { 'Content-Type': 'application/json' }
+      }).pipe(
+        catchError(this.handleError)
       );
-  }
+    }
+    
 
-  deleteDocumentSection(id: number): Observable<void> {
-      console.log('Delete Document Section ID:', id);
-      return this.http.delete<void>(`${this.apiUrl}/controller/DeleteDocSection/${id}`).pipe(
-          catchError(this.handleError)
+    getCertificates(compNo: string): Observable<Certificate[]> {
+      return this.http.get<Certificate[]>(`${this.apiUrl}/controller/GetAllCertificates/${compNo}`, {
+        headers: { 'Content-Type': 'application/json' }
+      }).pipe(
+        catchError(this.handleError)
       );
-  }
-  getDocumentTypes(): Observable<DocumentType[]> {
-    console.log('Fetching all Document Types');
-    return this.http.get<DocumentType[]>(`${this.apiUrl}/controller/GetAllDocTypes`, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addDocumentType(documentType: DocumentType): Observable<DocumentType> {
-    console.log('Add Document Type Payload:', documentType);
-    return this.http.post<DocumentType>(`${this.apiUrl}/controller/AddDocType`, documentType, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  updateDocumentType(id: number, documentType: DocumentType): Observable<void> {
-    console.log('Update Document Type ID:', id, 'Payload:', documentType);
-    return this.http.put<void>(`${this.apiUrl}/controller/UpdateDocType/${id}`, documentType, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  deleteDocumentType(id: number): Observable<void> {
-    console.log('Delete Document Type ID:', id);
-    return this.http.delete<void>(`${this.apiUrl}/controller/DeleteDocType/${id}`, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  getCertificates(): Observable<Certificate[]> {
-    return this.http.get<Certificate[]>(`${this.apiUrl}/controller/GetAllCertificates`, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  addCertificate(certificate: Certificate): Observable<Certificate> {
-    return this.http.post<Certificate>(`${this.apiUrl}/controller/AddCertificate`, certificate, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  updateCertificate(id: number, certificate: Certificate): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/controller/UpdateCertificate/${id}`, certificate, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  deleteCertificate(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/controller/DeleteCertificate/${id}`, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
+    }
+  
+    addCertificate(certificate: Certificate, compNo: number): Observable<Certificate> {
+      certificate.compNo = compNo; // CompNo'yu certificate objesine ekliyoruz
+      return this.http.post<Certificate>(`${this.apiUrl}/controller/AddCertificate`, certificate, {
+        headers: { 'Content-Type': 'application/json' }
+      }).pipe(
+        catchError(this.handleError)
+      );
+    }
+  
+    updateCertificate(id: number, certificate: Certificate, compNo: number): Observable<void> {
+      certificate.compNo = compNo; // CompNo'yu certificate objesine ekliyoruz
+      return this.http.put<void>(`${this.apiUrl}/controller/UpdateCertificate/${id}`, certificate, {
+        headers: { 'Content-Type': 'application/json' }
+      }).pipe(
+        catchError(this.handleError)
+      );
+    }
+  
+    deleteCertificate(id: number, compNo: string): Observable<void> {
+      return this.http.delete<void>(`${this.apiUrl}/controller/DeleteCertificate/${id}/${compNo}`, {
+        headers: { 'Content-Type': 'application/json' }
+      }).pipe(
+        catchError(this.handleError)
+      );
+    }
   getEquipmentCounters(compNo: number): Observable<EquipmentCounter[]> {
   return this.http.get<EquipmentCounter[]>(`${this.apiUrl}/controller/getCounters/${compNo}`, this.httpOptions)
     .pipe(catchError(this.handleError));

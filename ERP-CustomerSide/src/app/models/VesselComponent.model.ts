@@ -10,5 +10,6 @@ export interface VesselComponent {
     isExProof?: boolean;
     isClassRelated?: boolean;
     hasSparePart?: boolean;
+    compNo: number;
   }
   

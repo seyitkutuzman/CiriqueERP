@@ -6,7 +6,7 @@ namespace CiriqueERP.Models
     {
         [ForeignKey("VesselId")]
 
-        public virtual VesselList Vessel { get; set; }
+        public virtual VesselList? Vessel { get; set; }
 
         public int Id { get; set; }
         public int? VesselId { get; set; }
@@ -17,6 +17,7 @@ namespace CiriqueERP.Models
         public DateTime? EndDate { get; set; }
         public string Currency { get; set; }
         public string Comment { get; set; }
+        public int compNo { get; set; }
 
     }
 

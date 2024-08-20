@@ -1,0 +1,163 @@
+<app-blank>
+  <app-section>
+    <div class="container">
+      <h2>Jobs</h2>
+
+      <form [formGroup]="filterForm" (ngSubmit)="onSearch()">
+        <div class="form-group">
+          <label for="vesselFilter">Vessel</label>
+          <select id="vesselFilter" formControlName="vessel" class="form-control">
+            <option value="">All</option>
+            <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="jobTypeFilter">Job Type</label>
+          <select id="jobTypeFilter" formControlName="jobType" class="form-control">
+            <option value="All">All</option>
+            <option value="Periodical">Periodical</option>
+            <option value="Counter">Counter</option>
+            <option value="Periodical Or Counter">Periodical Or Counter</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="priorityFilter">Priority</label>
+          <select id="priorityFilter" formControlName="priority" class="form-control">
+            <option value="All">All</option>
+            <option value="Normal">Normal</option>
+            <option value="Stand By">Stand By</option>
+            <option value="Critical Equipment">Critical Equipment</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="jobTitleFilter">Job Title</label>
+          <input type="text" id="jobTitleFilter" formControlName="jobTitle" class="form-control">
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="filterRASRequiredJobs" formControlName="filterRASRequiredJobs" class="form-check-input">
+          <label for="filterRASRequiredJobs" class="form-check-label">Filter RAS Required Jobs</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="filterCEShutdownRequiredJobs" formControlName="filterCEShutdownRequiredJobs" class="form-check-input">
+          <label for="filterCEShutdownRequiredJobs" class="form-check-label">Filter CE Shutdown Required Jobs</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="button" class="btn btn-secondary" (click)="openJobModal(jobModal)">New</button>
+      </form>
+
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>Job Code</th>
+            <th>Job Title</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Tasks</th>
+            <th>RAS?</th>
+            <th>CE?</th>
+            <th>Desc. File</th>
+            <th>Instruction File</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let job of jobs">
+            <td>{{ job.jobCode }}</td>
+            <td>{{ job.jobTitle }}</td>
+            <td>{{ job.description }}</td>
+            <td>{{ job.priority }}</td>
+            <td>{{ job.tasks }}</td>
+            <td>{{ job.ras ? 'Yes' : 'No' }}</td>
+            <td>{{ job.ce ? 'Yes' : 'No' }}</td>
+            <td>
+              <button (click)="onDownloadFile(job.descFileUrl ?? '')">İndir</button>
+            </td>
+            <td>
+              <button (click)="onDownloadFile(job.instructionFileUrl ?? '')">İndir</button>
+            </td>        
+            <td>
+              <button class="btn btn-info" (click)="onEdit(job, jobModal)">Edit</button>
+              <button class="btn btn-danger" (click)="onDelete(job.id ?? 0)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #jobModal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title">Job Detail Information</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="jobForm">
+          <div class="form-group">
+            <label for="vessel">Vessel</label>
+            <select id="vessel" formControlName="vessel" class="form-control" required>
+              <option value="">Select Vessel</option>
+              <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="component">Component</label>
+            <input type="text" id="component" formControlName="component" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="jobTitle">Job Title</label>
+            <input type="text" id="jobTitle" formControlName="jobTitle" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="jobCode">Job Code</label>
+            <input type="text" id="jobCode" formControlName="jobCode" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="jobType">Job Type</label>
+            <select id="jobType" formControlName="jobType" class="form-control">
+              <option value="Periodical">Periodical</option>
+              <option value="Counter">Counter</option>
+              <option value="Periodical Or Counter">Periodical Or Counter</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="priority">Priority</label>
+            <select id="priority" formControlName="priority" class="form-control">
+              <option value="Normal">Normal</option>
+              <option value="Stand By">Stand By</option>
+              <option value="Critical Equipment">Critical Equipment</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" class="form-control" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="tasks">Tasks</label>
+            <textarea id="tasks" formControlName="tasks" class="form-control" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="descFile">Desc. File</label>
+            <input type="file" id="descFile" (change)="onFileChange($event, 'descFile')" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="instructionFile">Instruction File</label>
+            <input type="file" id="instructionFile" (change)="onFileChange($event, 'instructionFile')" class="form-control">
+          </div>
+
+          <div class="form-check">
+            <input type="checkbox" id="ras" formControlName="ras" class="form-check-input">
+            <label for="ras" class="form-check-label">RAS?</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="ce" formControlName="ce" class="form-check-input">
+            <label for="ce" class="form-check-label">CE?</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="saveJob()">Save</button>
+      </div>
+    </ng-template>
+  </app-section>
+</app-blank>

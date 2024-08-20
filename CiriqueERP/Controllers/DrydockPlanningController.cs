@@ -19,11 +19,14 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet("getPlannings")]
-        public async Task<ActionResult<IEnumerable<DrydockPlanning>>> GetPlannings()
+        [HttpGet("getPlannings/{compNo}")]
+        public async Task<ActionResult<IEnumerable<DrydockPlanning>>> GetPlannings(int compNo)
         {
-            return await _context.DrydockPlannings.ToListAsync();
+            return await _context.DrydockPlannings
+                .Where(dp => dp.compNo == compNo)
+                .ToListAsync();
         }
+
         [HttpPost("addPlanning")]
         public async Task<IActionResult> AddPlanning([FromBody] DrydockPlanning planning)
         {
@@ -33,20 +36,10 @@ namespace CiriqueERP.Controllers
             }
 
             _context.DrydockPlannings.Add(planning);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error: " + ex.Message);
-            }
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
-
-
-
 
         [HttpPut("updatePlanning/{id}")]
         public async Task<IActionResult> UpdatePlanning(int id, DrydockPlanning planning)
@@ -77,10 +70,13 @@ namespace CiriqueERP.Controllers
             return NoContent();
         }
 
-        [HttpDelete("deletePlanning/{id}")]
-        public async Task<IActionResult> DeletePlanning(int id)
+        [HttpDelete("deletePlanning/{id}/{compNo}")]
+        public async Task<IActionResult> DeletePlanning(int id, int compNo)
         {
-            var planning = await _context.DrydockPlannings.FindAsync(id);
+            var planning = await _context.DrydockPlannings
+                .Where(dp => dp.Id == id && dp.compNo == compNo)
+                .FirstOrDefaultAsync();
+
             if (planning == null)
             {
                 return NotFound();
@@ -92,4 +88,5 @@ namespace CiriqueERP.Controllers
             return NoContent();
         }
     }
+
 }

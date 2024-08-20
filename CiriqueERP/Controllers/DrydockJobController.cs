@@ -19,23 +19,29 @@ namespace CiriqueERP.Controllers
             _context = context;
         }
 
-        [HttpGet("getJobs")]
-        public async Task<ActionResult<IEnumerable<DrydockJob>>> GetJobs()
+        [HttpGet("getJobs/{compNo}")]
+        public async Task<ActionResult<IEnumerable<DrydockJob>>> GetJobs(int compNo)
         {
-            return await _context.DrydockJobs.ToListAsync();
+            return await _context.DrydockJobs
+                .Where(j => j.compNo == compNo)
+                .ToListAsync();
         }
 
         [HttpPost("addJob")]
         public async Task<ActionResult<DrydockJob>> PostJob(DrydockJob job)
         {
+            
+
             _context.DrydockJobs.Add(job);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetJobs), new { id = job.Id }, job);
+            return CreatedAtAction(nameof(GetJobs), new { compNo = job.compNo, id = job.Id }, job);
         }
 
         [HttpPut("updateJob/{id}")]
         public async Task<IActionResult> PutJob(int id, DrydockJob job)
         {
+          
+
             if (id != job.Id)
             {
                 return BadRequest();
@@ -49,7 +55,7 @@ namespace CiriqueERP.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.DrydockJobs.Any(e => e.Id == id))
+                if (!JobExists(id))
                 {
                     return NotFound();
                 }
@@ -62,10 +68,14 @@ namespace CiriqueERP.Controllers
             return NoContent();
         }
 
-        [HttpDelete("deleteJob/{id}")]
-        public async Task<IActionResult> DeleteJob(int id)
+        [HttpDelete("deleteJob/{id}/{compNo}")]
+        public async Task<IActionResult> DeleteJob(int id, int compNo)
         {
-            var job = await _context.DrydockJobs.FindAsync(id);
+
+            var job = await _context.DrydockJobs
+                .Where(j => j.Id == id && j.compNo == compNo)
+                .FirstOrDefaultAsync();
+
             if (job == null)
             {
                 return NotFound();
@@ -76,5 +86,12 @@ namespace CiriqueERP.Controllers
 
             return NoContent();
         }
+
+        private bool JobExists(int id)
+        {
+            return _context.DrydockJobs.Any(e => e.Id == id);
+        }
+
+        
     }
 }

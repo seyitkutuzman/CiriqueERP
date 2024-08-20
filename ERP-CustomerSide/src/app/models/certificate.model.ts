@@ -12,5 +12,6 @@ export interface Certificate {
     intermediate?: number;
     intermediateTw?: number;
     comment: string;
+    compNo: number;
   }
   
