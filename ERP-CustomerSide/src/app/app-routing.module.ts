@@ -15,6 +15,7 @@ import { VesselComponentComponent } from './components/Technical/definitions/ves
 import { DrydockPlanningComponent } from './components/Technical/drydock/drydock-planning/drydock-planning.component';
 import { DrydockJobsComponent } from './components/Technical/drydock/drydock-job/drydock-jobDefiniton.component';
 import { JobComponent } from './components/Technical/definitions/job/job.component';
+import { AuxiliaryEnginePerformanceDailyComponent } from './components/Technical/Engine Performance/auxiliary-engine-performance-daily/auxiliary-engine-performance-daily.component';
 
 
 export const routes: Routes = [
@@ -32,7 +33,8 @@ export const routes: Routes = [
     {path: 'vesselComponent', component:VesselComponentComponent},
     {path: 'drydock-planning', component:DrydockPlanningComponent},
     {path: 'drydock-job', component:DrydockJobsComponent},
-    {path: 'jobs', component:JobComponent}
+    {path: 'jobs', component:JobComponent},
+    {path: 'auxiliaryDaily', component: AuxiliaryEnginePerformanceDailyComponent}
   ] },
   { path: '**', redirectTo: '' }
 ];
