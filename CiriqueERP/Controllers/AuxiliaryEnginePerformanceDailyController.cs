@@ -18,14 +18,23 @@ namespace YourProjectNamespace.Controllers
         }
 
         // Performans verilerini getiren metot
-        [HttpGet("{compNo}")]
-        public async Task<ActionResult<IEnumerable<AuxiliaryEnginePerformance>>> GetAuxiliaryEnginePerformances(int compNo, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        // Tarih parametrelerini kaldırarak tüm kayıtları getirmeyi deneyin
+        [HttpGet("getAuxiliary/{compNo}")]
+        public async Task<ActionResult<IEnumerable<AuxiliaryEnginePerformance>>> GetAuxiliaryEnginePerformances(int compNo)
         {
-            return await _context.AuxiliaryEnginePerformancesDaily
-                                 .Where(a => a.CompNo == compNo && a.Date >= startDate && a.Date <= endDate)
-                                 .Include(a => a.CylinderExhaustGasTemps)
-                                 .ToListAsync();
+            var performances = await _context.AuxiliaryEnginePerformancesDaily
+                .Include(a => a.CylinderExhaustGasTemps)
+                .Where(a => a.CompNo == compNo) // Sadece CompNo ile filtrele
+                .ToListAsync();
+
+            // Sonuçları kontrol etmek için konsola yazdırın
+            Console.WriteLine($"Records found: {performances.Count}");
+
+            return Ok(performances);
         }
+
+
+
 
         // Performans detayını getiren metot
         [HttpGet("{id}")]
@@ -54,6 +63,13 @@ namespace YourProjectNamespace.Controllers
 
             _context.Entry(performance).State = EntityState.Modified;
 
+            // İlişkili CylinderExhaustGasTemps nesnelerini güncelleyin
+            foreach (var cylinder in performance.CylinderExhaustGasTemps)
+            {
+                cylinder.AuxiliaryEnginePerformanceId = performance.Id; // Foreign Key ilişkisini ayarlıyoruz
+                _context.Entry(cylinder).State = EntityState.Modified;
+            }
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -73,6 +89,7 @@ namespace YourProjectNamespace.Controllers
             return NoContent();
         }
 
+
         // Yeni performans verisi ekleyen metot
         [HttpPost]
         public async Task<ActionResult<AuxiliaryEnginePerformance>> PostAuxiliaryEnginePerformance(AuxiliaryEnginePerformance performance)
@@ -86,10 +103,13 @@ namespace YourProjectNamespace.Controllers
             {
                 cylinder.AuxiliaryEnginePerformanceId = performance.Id; // Foreign Key ilişkisini ayarlıyoruz
             }
+
+            // CylinderExhaustGasTemps güncellemelerini kaydedin
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetAuxiliaryEnginePerformanceDetail), new { id = performance.Id }, performance);
         }
+
 
 
 

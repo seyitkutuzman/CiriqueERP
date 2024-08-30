@@ -6,6 +6,7 @@ import { MainService } from '../../../../service/MainService.service';
 import { vesselModel } from '../../../../models/vesselModel';
 import { SharedModule } from '../../../../modules/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-auxiliary-engine-performance-daily',
@@ -22,6 +23,8 @@ export class AuxiliaryEnginePerformanceDailyComponent implements OnInit {
   performances: AuxiliaryEnginePerformanceDaily[] = [];
   performance: AuxiliaryEnginePerformanceDaily = {} as AuxiliaryEnginePerformanceDaily;
   engineNumbers: number[] = [1, 2, 3, 4, 5]; // Motor numaraları listesi
+  cylinderCount: number = 5; // Başlangıçta 5 cylinder varsayılan olarak ayarlanmış
+  modalInstance: any; // Modal instance tanımı
 
   constructor(
     private enginePerformanceService: EnginePerformanceService,
@@ -32,13 +35,68 @@ export class AuxiliaryEnginePerformanceDailyComponent implements OnInit {
   ngOnInit(): void {
     this.loadVessels();
     this.initializePerformance();
+    this.loadPerformances();
+  }
+
+  loadPerformances(): void {
+    this.enginePerformanceService.getAuxiliaryEnginePerformances().subscribe(
+      data => {
+        console.log('Fetched Performances:', data); // Performans verilerini loglayın
+        this.performances = data;
+      },
+      error => {
+        console.error('Error loading performances:', error); // Eğer hata varsa log alın
+      }
+    );
+  }
+
+  openModal(): void {
+    const modalElement = document.getElementById('performanceModal');
+    if (modalElement) {
+      this.modalInstance = new bootstrap.Modal(modalElement); // Modal instance'ı kaydediyoruz
+      this.modalInstance.show();
+    }
+  }
+
+  closeModal(): void {
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+    }
+  }
+
+  editPerformance(performance: AuxiliaryEnginePerformanceDaily): void {
+    this.enginePerformanceService.getAuxiliaryEnginePerformanceDetail(performance.id).subscribe({
+      next: (data) => {
+        this.performance = { ...data }; // Performansı backend'den tam haliyle alıyoruz
+        this.openModal(); // Modalı açıyoruz
+      },
+      error: (error) => {
+        console.error('Error fetching performance details:', error);
+      }
+    });
+  }
+
+  updatePerformance(): void {
+    if (this.performance.id) {
+      // Performansı güncelle
+      this.enginePerformanceService.updateAuxiliaryEnginePerformance(this.performance.id, this.performance).subscribe({
+        next: () => {
+          console.log('Performance updated successfully.');
+          this.closeModal();
+          this.loadPerformances();
+        },
+        error: (error) => {
+          console.error('Error updating performance:', error);
+        }
+      });
+    }
   }
 
   loadVessels(): void {
     this.mainService.getAllVessels().subscribe(data => {
       this.vessels = data;
       if (this.vessels.length > 0) {
-        this.performance.vessel = this.vessels[0].vesselName; // İlk gemiyi varsayılan olarak seçmek
+        this.performance.vessel = this.vessels[0].vesselName;
       }
     });
   }
@@ -51,7 +109,7 @@ export class AuxiliaryEnginePerformanceDailyComponent implements OnInit {
       compNo: 0,
       vessel: '',
       personnel: '',
-      engineNo: this.engineNumbers[0], // İlk motor numarasını varsayılan olarak seçmek
+      engineNo: this.engineNumbers[0],
       date: new Date(),
       averageSpeed: 0,
       engineLoad: 0,
@@ -60,50 +118,57 @@ export class AuxiliaryEnginePerformanceDailyComponent implements OnInit {
       luboilTemp: 0,
       coolingWaterPress: 0,
       luboilPress: 0,
-      cylinderExhaustGasTemps: this.engineNumbers.map(number => ({
-        cylinderNo: number,
-        exhaustGasTemp: 0,
-        auxiliaryEnginePerformanceId: this.performance.id,
-        AuxiliaryEnginePerformance: this.performance}))
+      cylinderExhaustGasTemps: this.generateCylinderTemps()
     };
   }
 
+  updateCylinders(): void {
+    // Kullanıcının seçtiği silindir sayısına göre verileri güncelle
+    this.performance.cylinderExhaustGasTemps = this.generateCylinderTemps();
+  }
+
+  generateCylinderTemps(): { cylinderNo: number, exhaustGasTemp: number, auxiliaryEnginePerformanceId: number }[] {
+    return Array.from({ length: this.cylinderCount }, (_, i) => ({
+      cylinderNo: i + 1,
+      exhaustGasTemp: 0,
+      auxiliaryEnginePerformanceId: this.performance.id
+    }));
+  }
+
   save(): void {
-    // Performans verilerini API'ye göndermeden önce foreign key ve navigasyon özelliklerini ayarlıyoruz
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const decodedToken = this.mainService.decodeToken(currentUser?.accessToken);
+    const compNo = decodedToken?.CompNo;
+
+    if (!compNo) {
+      console.error("Company number is not available");
+      return;
+    }
+
     this.performance.cylinderExhaustGasTemps.forEach(cylinder => {
-        cylinder.auxiliaryEnginePerformanceId = this.performance.id; // Foreign Key olarak set ediliyor
-        cylinder.AuxiliaryEnginePerformance = this.performance; // Navigasyon özelliği set ediliyor
+      cylinder.auxiliaryEnginePerformanceId = this.performance.id;
     });
 
-    // Döngüsel referansı geçici olarak kaldırıyoruz
-    const performanceToSave = {...this.performance};
-    performanceToSave.cylinderExhaustGasTemps = performanceToSave.cylinderExhaustGasTemps.map(cylinder => {
-        const cylinderCopy = {...cylinder};
-        delete cylinderCopy.AuxiliaryEnginePerformance; // delete operatörünü kullanıyoruz
-        return cylinderCopy;
+    const performanceToSave = { ...this.performance, compNo };
+
+    performanceToSave.cylinderExhaustGasTemps.forEach(cylinder => {
+      delete cylinder.AuxiliaryEnginePerformance;
     });
 
     if (performanceToSave.id) {
-        this.enginePerformanceService.updateAuxiliaryEnginePerformance(performanceToSave.id, performanceToSave).subscribe(() => {
-            this.router.navigate(['/auxiliary-engine-performance-daily']);
-        });
+      this.enginePerformanceService.updateAuxiliaryEnginePerformance(performanceToSave.id, performanceToSave).subscribe(() => {
+        this.closeModal();
+        this.loadPerformances();
+      });
     } else {
-        this.enginePerformanceService.addAuxiliaryEnginePerformance(performanceToSave).subscribe(() => {
-            this.router.navigate(['/auxiliary-engine-performance-daily']);
-        });
+      this.enginePerformanceService.addAuxiliaryEnginePerformance(performanceToSave).subscribe(() => {
+        this.closeModal();
+        this.loadPerformances();
+      });
     }
-}
-
-
-
-
-
-
-
-
-
+  }
 
   cancel(): void {
-    this.router.navigate(['/auxiliary-engine-performance-daily']);
+    this.closeModal();
   }
 }
