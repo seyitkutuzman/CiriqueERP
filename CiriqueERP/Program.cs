@@ -4,17 +4,25 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CiriqueERP.Data;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    });
 
+// Veritabanı bağlantısını yapılandırma
 builder.Services.AddDbContext<MasterContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
+// JWT kimlik doğrulama ayarları
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -31,20 +39,19 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = true,
         ValidateAudience = true,
+        ValidateLifetime = true, // Token süresini doğrular
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"]
     };
 });
 
-// IdentityModelEventSource.ShowPII ayarını ekleyin
-IdentityModelEventSource.ShowPII = true; // Yalnızca geliştirme ortamında
-
+// CORS yapılandırması
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
         builder =>
         {
-            builder.WithOrigins("http://localhost:4200")
+            builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials();
@@ -53,15 +60,16 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseCors("AllowSpecificOrigins");
-
-app.UseHttpsRedirection();
+app.UseCors("AllowSpecificOrigins"); // CORS politikasını pipeline'da erkene alın
 
 app.UseAuthentication();
 app.UseAuthorization();
