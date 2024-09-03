@@ -4,11 +4,13 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CiriqueERP.Data;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers()
+<<<<<<< HEAD
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
@@ -17,11 +19,27 @@ builder.Services.AddControllers()
 
 
 // Configure DbContext with SQL Server
-builder.Services.AddDbContext<MasterContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+=======
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    });
 
+// Veritabanı bağlantısını yapılandırma
+>>>>>>> 4e51ff54b66d9c700cef291131c84d515f698090
+builder.Services.AddDbContext<MasterContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+<<<<<<< HEAD
 // Configure JWT Authentication
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+=======
+// JWT kimlik doğrulama ayarları
+var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+
+>>>>>>> 4e51ff54b66d9c700cef291131c84d515f698090
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -37,38 +55,51 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = true,
         ValidateAudience = true,
+        ValidateLifetime = true, // Token süresini doğrular
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"]
     };
 });
 
+<<<<<<< HEAD
 // Enable PII logging for development purposes
 IdentityModelEventSource.ShowPII = true; // Enable this only in development environments
 
 // Configure CORS to allow specific origins
+=======
+// CORS yapılandırması
+>>>>>>> 4e51ff54b66d9c700cef291131c84d515f698090
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
         policyBuilder =>
         {
+<<<<<<< HEAD
             policyBuilder.WithOrigins("http://localhost:4200")
                          .AllowAnyHeader()
                          .AllowAnyMethod()
                          .AllowCredentials();
+=======
+            builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .AllowCredentials();
+>>>>>>> 4e51ff54b66d9c700cef291131c84d515f698090
         });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseCors("AllowSpecificOrigins");
-
-app.UseHttpsRedirection();
+app.UseCors("AllowSpecificOrigins"); // CORS politikasını pipeline'da erkene alın
 
 app.UseAuthentication();
 app.UseAuthorization();

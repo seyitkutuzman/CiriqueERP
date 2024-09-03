@@ -6,7 +6,7 @@ namespace CiriqueERP.Models
     public class AuxiliaryEnginePerformance
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Id otomatik olarak oluşturulacak
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Vessel { get; set; }
         public string Personnel { get; set; }
@@ -16,8 +16,8 @@ namespace CiriqueERP.Models
         public bool TasksCompleted { get; set; }
         public int CompNo { get; set; }
 
-        // Yeni Eklenen Özellikler
-        public decimal AverageSpeed { get; set; }
+        // Alanların veritabanı ile uyumlu olduğundan emin olun
+        public decimal AverageSpeed { get; set; }  // Decimal'den Double'a geçiş yapılabilir
         public decimal EngineLoad { get; set; }
         public decimal EngineKW { get; set; }
         public decimal CoolingWaterTemp { get; set; }
@@ -31,13 +31,15 @@ namespace CiriqueERP.Models
     public class CylinderExhaustGasTemp
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Id otomatik olarak oluşturulacak
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int CylinderNo { get; set; }
-        public double ExhaustGasTemp { get; set; }
+        public decimal ExhaustGasTemp { get; set; }
 
-        public int AuxiliaryEnginePerformanceId { get; set; } // Yabancı anahtar null olamaz
+        public int AuxiliaryEnginePerformanceId { get; set; }
+
         [ForeignKey("AuxiliaryEnginePerformanceId")]
-        public AuxiliaryEnginePerformance AuxiliaryEnginePerformance { get; set; } // Navigasyon özelliği
+        public AuxiliaryEnginePerformance? AuxiliaryEnginePerformance { get; set; } // Navigasyon özelliği opsiyonel
     }
+
 }

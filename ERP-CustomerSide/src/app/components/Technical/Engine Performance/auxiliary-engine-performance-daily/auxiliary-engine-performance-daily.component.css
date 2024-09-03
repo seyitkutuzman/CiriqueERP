@@ -64,3 +64,18 @@ form legend {
 .btn-cancel:hover {
     background-color: #c82333;
 }
+
+/* Modal genişliği için özel sınıf */
+.modal-lg {
+    max-width: 90%; /* Modal genişliğini %90 olarak ayarlayın, ihtiyaca göre artırabilirsiniz */
+  }
+  
+  .modal-content {
+    border-radius: 10px; /* Modal köşelerini yuvarlatma (isteğe bağlı) */
+  }
+  .btn-link {
+    font-size: 14px; /* Buton boyutunu küçültür */
+    color: #007bff; /* Buton rengini mavi yapar, isteğe bağlı */
+    border: none; /* Butonun çerçevesini kaldırır */
+  }
+  
