@@ -8,14 +8,20 @@ using CiriqueERP.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
 
+
+// Configure DbContext with SQL Server
 builder.Services.AddDbContext<MasterContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Configure JWT Authentication
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
-
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -36,18 +42,19 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// IdentityModelEventSource.ShowPII ayarını ekleyin
-IdentityModelEventSource.ShowPII = true; // Yalnızca geliştirme ortamında
+// Enable PII logging for development purposes
+IdentityModelEventSource.ShowPII = true; // Enable this only in development environments
 
+// Configure CORS to allow specific origins
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
-        builder =>
+        policyBuilder =>
         {
-            builder.WithOrigins("http://localhost:4200")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod()
-                   .AllowCredentials();
+            policyBuilder.WithOrigins("http://localhost:4200")
+                         .AllowAnyHeader()
+                         .AllowAnyMethod()
+                         .AllowCredentials();
         });
 });
 

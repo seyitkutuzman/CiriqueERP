@@ -57,11 +57,17 @@ public partial class MasterContext : DbContext
     public DbSet<DrydockJob> DrydockJobs { get; set; }
     public virtual DbSet<Job> Jobs { get; set; }
     public virtual DbSet<AuxiliaryEnginePerformance> AuxiliaryEnginePerformancesDaily { get; set; }
+    public  DbSet<AuxiliaryEnginePerformanceMonthly> AuxiliaryEnginePerformanceMonthly { get; set; }
+    public  DbSet<CylinderExhaustGasTempMonthly> CylinderExhaustGasTempMonthly { get; set; }
+
+
 
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Data Source=cirique-erp.database.windows.net;Initial Catalog=CiriqueERP;Persist Security Info=True;User ID=catalcali;password=Seyit2346;Trust Server Certificate=True");
+        => optionsBuilder
+        .UseSqlServer("Data Source=cirique-erp.database.windows.net;Initial Catalog=CiriqueERP;Persist Security Info=True;User ID=catalcali;password=Seyit2346;Trust Server Certificate=True")
+        .EnableSensitiveDataLogging();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -641,6 +647,19 @@ public partial class MasterContext : DbContext
         .HasOne(c => c.AuxiliaryEnginePerformance)
         .WithMany(a => a.CylinderExhaustGasTemps)
         .HasForeignKey(c => c.AuxiliaryEnginePerformanceId);
+
+        modelBuilder.Entity<AuxiliaryEnginePerformanceMonthly>()
+        .HasMany(aep => aep.CylinderExhaustGasTemps)
+        .WithOne(c => c.AuxiliaryEnginePerformance)
+        .HasForeignKey(c => c.AuxiliaryEnginePerformanceId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+
+        modelBuilder.Entity<CylinderExhaustGasTempMonthly>()
+        .HasOne(c => c.AuxiliaryEnginePerformance)
+        .WithMany(a => a.CylinderExhaustGasTemps)
+        .HasForeignKey(c => c.AuxiliaryEnginePerformanceId);
+
 
         OnModelCreatingPartial(modelBuilder);
     }
