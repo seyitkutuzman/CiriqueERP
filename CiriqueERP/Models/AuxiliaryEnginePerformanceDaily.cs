@@ -28,18 +28,18 @@ namespace CiriqueERP.Models
         public ICollection<CylinderExhaustGasTemp> CylinderExhaustGasTemps { get; set; } = new List<CylinderExhaustGasTemp>();
     }
 
-    public class CylinderExhaustGasTemp
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public int CylinderNo { get; set; }
-        public decimal ExhaustGasTemp { get; set; }
+public class CylinderExhaustGasTemp
+{
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+    public int CylinderNo { get; set; }
+    public decimal ExhaustGasTemp { get; set; }
 
-        public int AuxiliaryEnginePerformanceId { get; set; }
+    public int AuxiliaryEnginePerformanceId { get; set; }
 
-        [ForeignKey("AuxiliaryEnginePerformanceId")]
-        public AuxiliaryEnginePerformance? AuxiliaryEnginePerformance { get; set; } // Navigasyon özelliği opsiyonel
-    }
+    [ForeignKey("AuxiliaryEnginePerformanceId")]
+    public AuxiliaryEnginePerformance AuxiliaryEnginePerformance { get; set; } // Corrected navigation property
+}
 
 }

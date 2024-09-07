@@ -17,11 +17,11 @@ namespace CiriqueERP.Controllers
         }
 
         [HttpGet("getAuxiliary/{compNo}")]
-        public async Task<ActionResult<IEnumerable<AuxiliaryEnginePerformanceMonthly>>> GetPerformances(int compNo, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        public async Task<ActionResult<IEnumerable<AuxiliaryEnginePerformanceMonthly>>> GetPerformances(int compNo)
         {
             return await _context.AuxiliaryEnginePerformanceMonthly
                 .Include(a => a.CylinderExhaustGasTemps)
-                .Where(a => a.CompNo == compNo && a.FormDate >= startDate && a.FormDate <= endDate)
+                .Where(a => a.CompNo == compNo)
                 .ToListAsync();
         }
 
@@ -111,18 +111,6 @@ public async Task<ActionResult<AuxiliaryEnginePerformanceMonthly>> AddPerformanc
 
     return CreatedAtAction(nameof(GetPerformanceDetail), new { id = newPerformance.Id }, newPerformance);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePerformance(int id)

@@ -1,0 +1,124 @@
+<app-blank>
+    <app-section>
+        <div class="container">
+            <h2>Main Engine Performance - Daily</h2>
+            <button class="btn btn-primary" (click)="selectPerformance()">Add New</button>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Vessel</th>
+                        <th>Personnel</th>
+                        <th>Date</th>
+                        <th>Engine No</th>
+                        <th>Tasks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let performance of performances">
+                        <td>{{ performance.vesselName }}</td>
+                        <td>{{ performance.personnel }}</td>
+                        <td>{{ performance.formDate | date }}</td>
+                        <td>{{ performance.engineNo }}</td>
+                        <td>
+                            <button class="btn btn-success" (click)="selectPerformance(performance)">Edit</button>
+                            <button class="btn btn-danger" (click)="deletePerformance(performance.id)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div *ngIf="selectedPerformance && isPopupVisible" class="modal">
+                <div class="modal-content">
+                    <span class="close" (click)="closePopup()">&times;</span>
+                    <h3>Main Engine Performance</h3>
+                    <form>
+                        <!-- Vessel Dropdown -->
+                        <div class="form-group">
+                            <label for="vessel">Vessel</label>
+                            <select id="vessel" [(ngModel)]="selectedPerformance.vesselName" name="vessel" class="form-control">
+                                <option *ngFor="let vessel of ownedVessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+                            </select>
+                        </div>
+
+                        <!-- General Data -->
+                        <div class="form-group">
+                            <label for="formDate">Form Date</label>
+                            <input id="formDate" type="datetime-local" [(ngModel)]="selectedPerformance.formDate" name="formDate" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="personnel">Personnel</label>
+                            <input id="personnel" type="text" [(ngModel)]="selectedPerformance.personnel" name="personnel" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="engineNo">Engine No</label>
+                            <input id="engineNo" type="number" [(ngModel)]="selectedPerformance.engineNo" name="engineNo" class="form-control" />
+                        </div>
+
+                        <!-- Technical Data -->
+                        <h4>Technical Data</h4>
+                        <div class="form-group">
+                            <label for="averageSpeedTC">Average Speed T/C</label>
+                            <input id="averageSpeedTC" type="number" [(ngModel)]="selectedPerformance.averageSpeedTC" name="averageSpeedTC" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="fuelPressure">Fuel Pressure</label>
+                            <input id="fuelPressure" type="number" [(ngModel)]="selectedPerformance.fuelPressure" name="fuelPressure" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="meanScavAirPress">Mean Scav. Air Press. (bar)</label>
+                            <input id="meanScavAirPress" type="number" [(ngModel)]="selectedPerformance.meanScavAirPress" name="meanScavAirPress" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="engineLoad">Engine Load</label>
+                            <input id="engineLoad" type="number" [(ngModel)]="selectedPerformance.engineLoad" name="engineLoad" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="tcExhInletTemp">T/C Exh. Inlet Temp.</label>
+                            <input id="tcExhInletTemp" type="number" [(ngModel)]="selectedPerformance.tcExhInletTemp" name="tcExhInletTemp" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="tcExhOutletTemp">T/C Exh. Outlet Temp.</label>
+                            <input id="tcExhOutletTemp" type="number" [(ngModel)]="selectedPerformance.tcExhOutletTemp" name="tcExhOutletTemp" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="engineKW">Engine KW</label>
+                            <input id="engineKW" type="number" [(ngModel)]="selectedPerformance.engineKW" name="engineKW" class="form-control" />
+                        </div>
+
+                        <!-- Additional Technical Data -->
+                        <h4>Additional Technical Data</h4>
+                        <div class="form-group">
+                            <label for="coolingWaterTemp">Cyl. Cooling Water Temp.</label>
+                            <input id="coolingWaterTemp" type="number" [(ngModel)]="selectedPerformance.coolingWaterTemp" name="coolingWaterTemp" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="luboilTemp">Cyl. Luboil Temp.</label>
+                            <input id="luboilTemp" type="number" [(ngModel)]="selectedPerformance.luboilTemp" name="luboilTemp" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="coolingWaterPress">Cyl. Cooling Water Press.</label>
+                            <input id="coolingWaterPress" type="number" [(ngModel)]="selectedPerformance.coolingWaterPress" name="coolingWaterPress" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="luboilPress">Cyl. Luboil Press.</label>
+                            <input id="luboilPress" type="number" [(ngModel)]="selectedPerformance.luboilPress" name="luboilPress" class="form-control" />
+                        </div>
+
+                        <!-- Cylinder Exhaust Gas Temperatures -->
+                        <h4>Cylinder Exhaust Gas Temperatures</h4>
+                        <div class="form-group" *ngFor="let cylinder of selectedPerformance.cylinderExhaustGasTemps">
+                            <label for="exhaustGasTemp{{cylinder.cylinderNo}}">Cylinder No: {{cylinder.cylinderNo}} Exhaust Gas Temp (C)</label>
+                            <input id="exhaustGasTemp{{cylinder.cylinderNo}}" type="number" [(ngModel)]="cylinder.exhaustGasTemp" name="exhaustGasTemp{{cylinder.cylinderNo}}" class="form-control" />
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-success" (click)="savePerformance()">Save</button>
+                            <button type="button" class="btn btn-danger" (click)="closePopup()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </app-section>
+</app-blank>

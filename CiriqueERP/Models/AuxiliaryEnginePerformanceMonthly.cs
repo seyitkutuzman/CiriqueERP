@@ -37,7 +37,7 @@ namespace CiriqueERP.Models
 }
 
 
-    public class CylinderExhaustGasTempMonthly
+public class CylinderExhaustGasTempMonthly
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -48,10 +48,10 @@ namespace CiriqueERP.Models
     public decimal ExhGasTemp { get; set; }
     public decimal FPumpRackInd { get; set; }
 
-    // İlişki için gerekli olan property
-    public int? AuxiliaryEnginePerformanceId { get; set; }
-    [ForeignKey("AuxiliaryEnginePerformanceId")]
-    public AuxiliaryEnginePerformanceMonthly? AuxiliaryEnginePerformance { get; set; }
+    public int? AuxiliaryEnginePerformanceId { get; set; } // Correct foreign key name
+
+    [ForeignKey("AuxiliaryEnginePerformanceMonthlyId")]
+    public AuxiliaryEnginePerformanceMonthly AuxiliaryEnginePerformanceMonthly { get; set; } // Corrected navigation property
 }
 
 

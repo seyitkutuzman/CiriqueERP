@@ -57,8 +57,13 @@ public partial class MasterContext : DbContext
     public DbSet<DrydockJob> DrydockJobs { get; set; }
     public virtual DbSet<Job> Jobs { get; set; }
     public virtual DbSet<AuxiliaryEnginePerformance> AuxiliaryEnginePerformancesDaily { get; set; }
+    public  DbSet<CylinderExhaustGasTemp> CylinderExhaustGasTemp { get; set; }
+
     public  DbSet<AuxiliaryEnginePerformanceMonthly> AuxiliaryEnginePerformanceMonthly { get; set; }
     public  DbSet<CylinderExhaustGasTempMonthly> CylinderExhaustGasTempMonthly { get; set; }
+    public DbSet<MainEnginePerformanceDaily> MainEnginePerformanceDaily { get; set; }
+    
+    public  DbSet<CylinderExhaustGasTempMainEngine> CylinderExhaustGasTemps { get; set; }
 
 
 
@@ -637,31 +642,23 @@ public partial class MasterContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("sectionName");
         });
-        modelBuilder.Entity<AuxiliaryEnginePerformance>()
-        .HasMany(aep => aep.CylinderExhaustGasTemps)
-        .WithOne(c => c.AuxiliaryEnginePerformance)
-        .HasForeignKey(c => c.AuxiliaryEnginePerformanceId)
-        .OnDelete(DeleteBehavior.Cascade);
+modelBuilder.Entity<AuxiliaryEnginePerformance>()
+    .HasMany(aep => aep.CylinderExhaustGasTemps)
+    .WithOne(c => c.AuxiliaryEnginePerformance)
+    .HasForeignKey(c => c.AuxiliaryEnginePerformanceId)
+    .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<CylinderExhaustGasTemp>()
-        .HasOne(c => c.AuxiliaryEnginePerformance)
-        .WithMany(a => a.CylinderExhaustGasTemps)
-        .HasForeignKey(c => c.AuxiliaryEnginePerformanceId);
-
-        modelBuilder.Entity<AuxiliaryEnginePerformanceMonthly>()
-        .HasMany(aep => aep.CylinderExhaustGasTemps)
-        .WithOne(c => c.AuxiliaryEnginePerformance)
-        .HasForeignKey(c => c.AuxiliaryEnginePerformanceId)
-        .OnDelete(DeleteBehavior.Cascade);
+modelBuilder.Entity<AuxiliaryEnginePerformanceMonthly>()
+    .HasMany(aepm => aepm.CylinderExhaustGasTemps)
+    .WithOne(c => c.AuxiliaryEnginePerformanceMonthly) // Corrected reference
+    .HasForeignKey(c => c.AuxiliaryEnginePerformanceId) // Corrected foreign key
+    .OnDelete(DeleteBehavior.Cascade);
 
 
-        modelBuilder.Entity<CylinderExhaustGasTempMonthly>()
-        .HasOne(c => c.AuxiliaryEnginePerformance)
-        .WithMany(a => a.CylinderExhaustGasTemps)
-        .HasForeignKey(c => c.AuxiliaryEnginePerformanceId);
 
 
-        OnModelCreatingPartial(modelBuilder);
+
+    OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

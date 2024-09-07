@@ -39,7 +39,11 @@ export class AuxiliaryEnginePerformanceDailyComponent implements OnInit {
   }
 
   loadPerformances(): void {
-    this.enginePerformanceService.getAuxiliaryEnginePerformances().subscribe(
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const decodedToken = this.mainService.decodeToken(currentUser?.accessToken);
+    const compNo = parseInt(decodedToken?.CompNo, 10);
+
+    this.enginePerformanceService.getAuxiliaryEnginePerformances(compNo).subscribe(
       data => {
         console.log('Fetched Performances:', data); // Performans verilerini loglayın
         this.performances = data;
