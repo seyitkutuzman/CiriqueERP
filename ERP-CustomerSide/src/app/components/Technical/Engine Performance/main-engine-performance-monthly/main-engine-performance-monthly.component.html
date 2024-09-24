@@ -1,0 +1,102 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <button class="btn btn-primary" (click)="selectPerformance()">Add New Performance</button>
+  
+        <table class="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th>Vessel</th>
+              <th>Form Date</th>
+              <th>Personnel</th>
+              <th>Engine No</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let performance of performances">
+              <td>{{ performance.vesselName }}</td>
+              <td>{{ performance.formDate | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ performance.personnel }}</td>
+              <td>{{ performance.engineNo }}</td>
+              <td>
+                <button class="btn btn-warning" (click)="selectPerformance(performance)">Edit</button>
+                <button class="btn btn-danger" (click)="deletePerformance(performance.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <div *ngIf="isPopupVisible" class="popup-overlay">
+          <div class="popup">
+            <form [formGroup]="performanceForm" (ngSubmit)="savePerformance()">
+              <h3>Main Engine Performance - Monthly</h3>
+  
+              <!-- Cylinder Count Adjustment -->
+              <div class="form-group">
+                <label for="cylinderCount">Cylinder Count</label>
+                <input
+                  type="number"
+                  id="cylinderCount"
+                  [(ngModel)]="cylinderCount"
+                  (ngModelChange)="setCylinderCount(cylinderCount)"
+                  class="form-control"
+                  min="1"
+                />
+              </div>
+  
+              <!-- General Data -->
+              <div class="form-group">
+                <label>Vessel</label>
+                <select formControlName="vesselName" class="form-control">
+                  <option *ngFor="let vessel of ownedVessels" [value]="vessel.vesselName">
+                    {{ vessel.vesselName }}
+                  </option>
+                </select>
+              </div>
+  
+              <div class="form-group">
+                <label>Form Date</label>
+                <input type="date" formControlName="formDate" class="form-control" />
+              </div>
+  
+              <div class="form-group">
+                <label>Personnel</label>
+                <input type="text" formControlName="personnel" class="form-control" />
+              </div>
+  
+              <div class="form-group">
+                <label>Engine No</label>
+                <input type="number" formControlName="engineNo" class="form-control" />
+              </div>
+  
+              <!-- Technical Data Section 1 -->
+              <div class="form-group" *ngFor="let field of technicalDataFields">
+                <label>{{ field.label }}</label>
+                <input type="number" formControlName="{{ field.controlName }}" class="form-control" />
+              </div>
+  
+              <!-- Cylinder Exhaust Gas Temps -->
+              <div formArrayName="cylinderExhaustGasTemps">
+                <div
+                  *ngFor="let cyl of getCylinderExhaustGasTemps().controls; let i = index"
+                  [formGroupName]="i"
+                  class="border p-3 mb-2"
+                >
+                  <h5>Cylinder {{ i + 1 }}</h5>
+                  <div *ngFor="let cylinderField of cylinderFields" class="form-group">
+                    <label>{{ cylinderField.label }}</label>
+                    <input type="number" formControlName="{{ cylinderField.controlName }}" class="form-control" />
+                  </div>
+                </div>
+              </div>
+  
+              <button type="submit" class="btn btn-success">Save</button>
+              <button type="button" class="btn btn-secondary" (click)="closePopup()">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </app-section>
+  </app-blank>
+  

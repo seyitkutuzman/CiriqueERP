@@ -12,6 +12,7 @@
   import { DocumentType } from '../models/documentType.model';
   import { Certificate } from '../models/certificate.model';
   import { EquipmentCounter } from '../models/equipment-counter.model';
+  import { of } from 'rxjs';
 
   @Injectable({
     providedIn: 'root'
@@ -88,6 +89,16 @@
       return this.http.get<boUserModel[]>(this.apiUrl).pipe(
         catchError(this.handleError)
       );
+    }
+
+    getCurrentUserName(): Observable<string> {
+      const currentUser = this.currentUserValue;
+      if (currentUser && currentUser.accessToken) {
+        const decodedToken = this.decodeToken(currentUser.accessToken);
+        const userName = decodedToken?.name || '';
+        return of(userName);
+      }
+      return of('');
     }
 
     getVessels(): Observable<vesselModel[]> {

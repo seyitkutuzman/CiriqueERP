@@ -1,0 +1,96 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h3>Class Survey Status</h3>
+  
+        <!-- Yeni Class Survey Status Ekle Butonu -->
+        <div class="text-end mb-3">
+          <button class="btn btn-primary" (click)="openNewSurveyPopup()">New Survey</button>
+        </div>
+  
+        <!-- Class Survey Status Form -->
+        <div class="modal fade" id="classSurveyStatusModal" tabindex="-1" aria-labelledby="classSurveyStatusModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="classSurveyStatusModalLabel">{{ selectedSurvey ? 'Edit Class Survey Status' : 'New Class Survey Status' }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form [formGroup]="surveyForm">
+                  <div class="mb-3">
+                    <label for="vesselName" class="form-label">Vessel</label>
+                    <select id="vesselName" class="form-select" formControlName="vesselName" required>
+                      <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="reportedDate" class="form-label">Reported Date</label>
+                    <input type="date" id="reportedDate" class="form-control" formControlName="reportedDate" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" class="form-control" formControlName="description"></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label for="fileUpload" class="form-label">Document</label>
+                    <input type="file" id="fileUpload" (change)="onFileChange($event)" class="form-control">
+                  </div>
+                  <div class="mb-3">
+                    <label for="confirmedPersonnel" class="form-label">Confirmed Personnel</label>
+                    <input type="text" id="confirmedPersonnel" class="form-control" formControlName="confirmedPersonnel" [value]="currentUserName" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label for="confirmedDate" class="form-label">Confirmed Date</label>
+                    <input type="date" id="confirmedDate" class="form-control" formControlName="confirmedDate" readonly [value]="surveyForm.get('confirmedDate')!.value | date:'yyyy-MM-dd'">
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="onSaveSurvey()">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Class Survey Status Tablosu -->
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Vessel</th>
+              <th>Reported Date</th>
+              <th>Description</th>
+              <th>Confirmed Personnel</th>
+              <th>Confirmed Date</th>
+              <th>Document</th>
+              <th>Tasks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let survey of classSurveyStatuses">
+              <td>{{ survey.vesselName }}</td>
+              <td>{{ survey.reportedDate | date:'dd.MM.yyyy' }}</td>
+              <td>{{ survey.description }}</td>
+              <td>{{ survey.confirmedPersonnel }}</td>
+              <td>{{ survey.confirmedDate | date:'dd.MM.yyyy' }}</td>
+              <td>
+                <button *ngIf="survey.documentPath" class="btn btn-info btn-sm" (click)="onDownloadFile(survey.documentPath)">
+                  <i class="fa fa-download"></i>
+                </button>
+              </td>
+              <td>
+                <button class="btn btn-success btn-sm" (click)="openEditSurveyPopup(survey)">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="onDeleteSurvey(survey.SurveyID)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-section>
+  </app-blank>
+  

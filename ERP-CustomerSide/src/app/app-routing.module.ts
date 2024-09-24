@@ -18,6 +18,11 @@ import { JobComponent } from './components/Technical/definitions/job/job.compone
 import { AuxiliaryEnginePerformanceDailyComponent } from './components/Technical/Engine Performance/auxiliary-engine-performance-daily/auxiliary-engine-performance-daily.component';
 import { AuxiliaryEnginePerformanceMonthlyComponent } from './components/Technical/Engine Performance/auxiliary-engine-performance-monthly/auxiliary-engine-performance-monthly.component';
 import { MainEnginePerformanceDailyComponent } from './components/Technical/Engine Performance/main-engine-performance-daily/main-engine-performance-daily.component';
+import { MainEnginePerformanceMonthlyComponent } from './components/Technical/Engine Performance/main-engine-performance-monthly/main-engine-performance-monthly.component';
+import { FuelOilAnalysisComponent } from './components/Technical/fuel-oil-analysis/fuel-oil-analysis.component';
+import { ServiceReportsComponent } from './components/Technical/service-report/service-report.component';
+import { VesselDocumentsComponent } from './components/Technical/vessel-document/vessel-document.component';
+import { ClassSurveyStatusComponent } from './components/Technical/class-survey-status/class-survey-status.component';
 
 
 export const routes: Routes = [
@@ -39,6 +44,11 @@ export const routes: Routes = [
     {path: 'auxiliaryDaily', component: AuxiliaryEnginePerformanceDailyComponent},
     {path: 'auxiliaryMonthly', component: AuxiliaryEnginePerformanceMonthlyComponent},
     {path: 'mainEngineDaily', component: MainEnginePerformanceDailyComponent},
+    {path: 'mainEngineMonthly', component: MainEnginePerformanceMonthlyComponent},
+    {path: 'fuelOilAnalysis', component: FuelOilAnalysisComponent},
+    {path: 'serviceReports', component: ServiceReportsComponent},
+    {path: 'vesselDocs', component: VesselDocumentsComponent},
+    {path: 'classSurvey', component: ClassSurveyStatusComponent}
   ] },
   { path: '**', redirectTo: '' }
 ];

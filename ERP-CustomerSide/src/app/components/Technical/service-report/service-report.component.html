@@ -1,0 +1,118 @@
+<!-- service-reports.component.html -->
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h3>Service Reports</h3>
+  
+        <!-- Vessel Dropdown ve Yeni Butonu -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="vesselSelect" class="form-label">Vessel</label>
+            <select id="vesselSelect" class="form-select">
+              <option value="">Select Vessel</option>
+              <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+            </select>
+          </div>
+          <div class="col-md-6 text-end">
+            <button class="btn btn-primary mt-4" (click)="openNewServiceReportPopup()">New</button>
+          </div>
+        </div>
+  
+        <!-- Service Reports Tablosu -->
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Vessel</th>
+              <th>Vessel Component</th>
+              <th>Company</th>
+              <th>Show File</th>
+              <th>Tasks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let report of serviceReports">
+              <td>{{ report.reportDate | date:'dd.MM.yyyy' }}</td>
+              <td>{{ report.vesselName }}</td>
+              <td>{{ report.vesselComponent }}</td>
+              <td>{{ report.company }}</td>
+              <td>
+                <button class="btn btn-info btn-sm" (click)="onDownloadFile(report.documentFile)">
+                  <i class="fa fa-download"></i>
+                </button>
+              </td>
+              <td>
+                <button class="btn btn-success btn-sm" (click)="openEditServiceReportPopup(report)">
+                  <i class="fa fa-tasks"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <!-- Sayfalama (Opsiyonel) -->
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul>
+        </nav>
+      </div>
+    </app-section>
+  </app-blank>
+  
+  <!-- Yeni Ekleme ve Düzenleme Popup -->
+<div class="modal fade" id="serviceReportModal" tabindex="-1" aria-labelledby="serviceReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="serviceReportModalLabel">{{ isEditMode ? 'Edit Service Report' : 'New Service Report' }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="reportForm" (ngSubmit)="onSaveServiceReport()">
+            <div class="mb-3">
+              <label for="vesselName" class="form-label">Vessel</label>
+              <select id="vesselName" class="form-select" formControlName="vesselName" required>
+                <option value="">Select Vessel</option>
+                <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="vesselComponent" class="form-label">Vessel Component</label>
+              <input type="text" id="vesselComponent" class="form-control" formControlName="vesselComponent">
+            </div>
+            <div class="mb-3">
+              <label for="company" class="form-label">Company</label>
+              <input type="text" id="company" class="form-control" formControlName="company">
+            </div>
+            <div class="mb-3">
+              <label for="reportDate" class="form-label">Date</label>
+              <input type="date" id="reportDate" class="form-control" formControlName="reportDate" required>
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea id="description" class="form-control" formControlName="description"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="fileUpload" class="form-label">File</label>
+              <input type="file" id="fileUpload" (change)="onFileChange($event)" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="createdBy" class="form-label">Created By</label>
+              <input type="text" id="createdBy" class="form-control" formControlName="createdBy" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="onSaveServiceReport()">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  

@@ -1,0 +1,219 @@
+<app-blank>
+    <app-section>
+        <!-- Yeni Kayıt Ekle Butonu -->
+        <button type="button" class="btn btn-primary mb-3" (click)="openNewFuelOilAnalysisPopup()">New</button>
+
+        <!-- Fuel Oil Analysis Listesi -->
+        <div class="fuel-oil-analysis-list">
+            <h2>Fuel Oil Analysis</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Report Num.</th>
+                        <th>Vessel</th>
+                        <th>Date</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Show File</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let analysis of fuelOilAnalyses">
+                        <td>{{ analysis.reportNumber }}</td>
+                        <td>{{ analysis.vesselName }}</td>
+                        <td>{{ analysis.date | date }}</td>
+                        <td>{{ analysis.quantity }}</td>
+                        <td>{{ analysis.status }}</td>
+                        <td>
+                            <button class="btn btn-info btn-sm" (click)="onDownloadFile(analysis.documentFile)">Show File</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-success btn-sm" (click)="openEditFuelOilAnalysisPopup(analysis)">Edit</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Fuel Oil Analysis Details Modal -->
+        <div class="modal fade" id="fuelOilAnalysisPopup" tabindex="-1" role="dialog" aria-labelledby="popupTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="popupTitle">Fuel Oil Analysis Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form *ngIf="selectedFuelOilAnalysis">
+                            <fieldset>
+                                <legend>Fuel Oil Analysis</legend>
+                                <div class="row">
+                                    <div class="col-md-4 form-group">
+                                        <label for="vessel">Vessel</label>
+                                        <select id="vessel" [(ngModel)]="selectedFuelOilAnalysis.vesselName"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                            <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="date">Date</label>
+                                        <input type="date" id="date" [(ngModel)]="selectedFuelOilAnalysis.date"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="supplier">Supplier</label>
+                                        <input type="text" id="supplier" [(ngModel)]="selectedFuelOilAnalysis.supplier"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="port">Port</label>
+                                        <input type="text" id="port" [(ngModel)]="selectedFuelOilAnalysis.port"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="bargeTerminal">Barge / Terminal</label>
+                                        <input type="text" id="bargeTerminal"
+                                            [(ngModel)]="selectedFuelOilAnalysis.bargeTerminal"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="bunkerType">Bunker Type</label>
+                                        <select id="bunkerType" [(ngModel)]="selectedFuelOilAnalysis.bunkerType"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                            <option value="Fuel Oil">Fuel Oil</option>
+                                            <!-- Diğer bunker tipleri eklenebilir -->
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="quantity">Quantity</label>
+                                        <input type="number" id="quantity" [(ngModel)]="selectedFuelOilAnalysis.quantity"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="density">Density</label>
+                                        <input type="number" id="density" [(ngModel)]="selectedFuelOilAnalysis.density"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="viscosity">Viscosity</label>
+                                        <input type="number" id="viscosity"
+                                            [(ngModel)]="selectedFuelOilAnalysis.viscosity"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="status">Status</label>
+                                        <select id="status" [(ngModel)]="selectedFuelOilAnalysis.status"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                            <option value="Normal">Normal</option>
+                                            <option value="Abnormal">Abnormal</option>
+                                            <!-- Diğer statü seçenekleri eklenebilir -->
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="sampleSentDate">Sample Sent Date</label>
+                                        <input type="date" id="sampleSentDate"
+                                            [(ngModel)]="selectedFuelOilAnalysis.sampleSentDate"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="sampleReceivedDate">Sample Received Date</label>
+                                        <input type="date" id="sampleReceivedDate"
+                                            [(ngModel)]="selectedFuelOilAnalysis.sampleReceivedDate"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="firmName">Firm Name</label>
+                                        <input type="text" id="firmName" [(ngModel)]="selectedFuelOilAnalysis.firmName"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="samplingMethod">Sampling Method</label>
+                                        <input type="text" id="samplingMethod"
+                                            [(ngModel)]="selectedFuelOilAnalysis.samplingMethod"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="samplePointType">Sample Point Type</label>
+                                        <input type="text" id="samplePointType"
+                                            [(ngModel)]="selectedFuelOilAnalysis.samplePointType"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="sealNumberSupplier">Seal Number Supplier</label>
+                                        <input type="text" id="sealNumberSupplier"
+                                            [(ngModel)]="selectedFuelOilAnalysis.sealNumberSupplier"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="sealNumberLab">Seal Number Lab</label>
+                                        <input type="text" id="sealNumberLab"
+                                            [(ngModel)]="selectedFuelOilAnalysis.sealNumberLab"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="sealNumberVessel">Seal Number Vessel</label>
+                                        <input type="text" id="sealNumberVessel"
+                                            [(ngModel)]="selectedFuelOilAnalysis.sealNumberVessel"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="sealNumberMarpol">Seal Number Marpol</label>
+                                        <input type="text" id="sealNumberMarpol"
+                                            [(ngModel)]="selectedFuelOilAnalysis.sealNumberMarpol"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="companyComments">Company Comments</label>
+                                        <textarea id="companyComments"
+                                            [(ngModel)]="selectedFuelOilAnalysis.companyComments"
+                                            [ngModelOptions]="{standalone: true}" class="form-control"></textarea>
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="reportNumber">Report Number</label>
+                                        <input type="text" id="reportNumber"
+                                            [(ngModel)]="selectedFuelOilAnalysis.reportNumber"
+                                            [ngModelOptions]="{standalone: true}" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <label for="documentFile">Document File</label>
+                                        <input type="file" id="documentFile" (change)="onFileChange($event)"
+                                            class="form-control-file">
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" (click)="onSaveNewFuelOilAnalysis()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app-section>
+</app-blank>

@@ -1,0 +1,105 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h3>Vessel Documents</h3>
+  
+        <!-- Vessel Document Yeni Butonu -->
+        <div class="text-end mb-3">
+          <button class="btn btn-primary" (click)="openNewDocumentPopup()">New</button>
+        </div>
+  
+        <!-- Vessel Documents Tablosu -->
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Vessel</th>
+              <th>Document Type</th>
+              <th>Section</th>
+              <th>Equipment</th>
+              <th>Book Name</th>
+              <th>Show File</th>
+              <th>Tasks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let document of vesselDocuments">
+              <td>{{ document.vesselName }}</td>
+              <td>{{ document.documentType }}</td>
+              <td>{{ document.sectionName }}</td>
+              <td>{{ document.equipment }}</td>
+              <td>{{ document.bookName }}</td>
+              <td>
+                <button class="btn btn-info btn-sm" (click)="onDownloadFile(document.filePath)">
+                  <i class="fa fa-download"></i>
+                </button>
+              </td>
+              <td>
+                <button class="btn btn-success btn-sm" (click)="openEditDocumentPopup(document)">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="onDeleteDocument(document.documentID)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-section>
+  </app-blank>
+  
+  <!-- Yeni Ekleme ve Düzenleme Popup -->
+  <div class="modal fade" id="vesselDocumentModal" tabindex="-1" aria-labelledby="vesselDocumentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="vesselDocumentModalLabel">{{ isEditMode ? 'Edit Vessel Document' : 'New Vessel Document' }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="documentForm">
+            <div class="mb-3">
+              <label for="vesselName" class="form-label">Vessel</label>
+              <select id="vesselName" class="form-select" formControlName="vesselName" required>
+                <option value="">Select Vessel</option>
+                <option *ngFor="let vessel of vessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="documentType" class="form-label">Document Type</label>
+              <input type="text" id="documentType" class="form-control" formControlName="documentType" required>
+            </div>
+            <div class="mb-3">
+              <label for="sectionName" class="form-label">Section Name</label>
+              <input type="text" id="sectionName" class="form-control" formControlName="sectionName" required>
+            </div>
+            <div class="mb-3">
+              <label for="equipment" class="form-label">Equipment</label>
+              <input type="text" id="equipment" class="form-control" formControlName="equipment">
+            </div>
+            <div class="mb-3">
+              <label for="bookName" class="form-label">Book Name</label>
+              <input type="text" id="bookName" class="form-control" formControlName="bookName" required>
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea id="description" class="form-control" formControlName="description"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="fileUpload" class="form-label">File</label>
+              <input type="file" id="fileUpload" (change)="onFileChange($event)" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="createdBy" class="form-label">Created By</label>
+              <input type="text" id="createdBy" class="form-control" formControlName="createdBy" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="onSaveDocument()">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

@@ -65,7 +65,19 @@ public partial class MasterContext : DbContext
     
     public  DbSet<CylinderExhaustGasTempMainEngine> CylinderExhaustGasTemps { get; set; }
 
+    public DbSet<MainEnginePerformanceMonthly> MainEnginePerformanceMonthly { get; set; }
+    public DbSet<CylinderExhaustGasTempMainEngineMonthly> CylinderExhaustGasTempMainEngineMonthly { get; set; }
 
+    public DbSet<CertificateAndSurvey> CertificateAndSurvey { get; set; }
+    public DbSet<CertificateFile> CertificateFiles { get; set; }
+    public DbSet<CertificateGroup> CertificateGroups { get; set; }
+    public DbSet<FuelOilAnalysis> FuelOilAnalysis { get; set; } 
+
+    public DbSet<ServiceReport> ServiceReports { get; set; }
+
+    public DbSet<VesselDocument> VesselDocuments { get; set; }
+
+    public DbSet<ClassSurveyStatus> ClassSurveyStatus { get; set; }
 
 
 
@@ -642,19 +654,42 @@ public partial class MasterContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("sectionName");
         });
-modelBuilder.Entity<AuxiliaryEnginePerformance>()
+            modelBuilder.Entity<AuxiliaryEnginePerformance>()
     .HasMany(aep => aep.CylinderExhaustGasTemps)
     .WithOne(c => c.AuxiliaryEnginePerformance)
     .HasForeignKey(c => c.AuxiliaryEnginePerformanceId)
     .OnDelete(DeleteBehavior.Cascade);
 
-modelBuilder.Entity<AuxiliaryEnginePerformanceMonthly>()
+            modelBuilder.Entity<AuxiliaryEnginePerformanceMonthly>()
     .HasMany(aepm => aepm.CylinderExhaustGasTemps)
     .WithOne(c => c.AuxiliaryEnginePerformanceMonthly) // Corrected reference
     .HasForeignKey(c => c.AuxiliaryEnginePerformanceId) // Corrected foreign key
     .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<MainEnginePerformanceMonthly>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasMany(e => e.CylinderExhaustGasTemps)
+                      .WithOne(c => c.MainEnginePerformanceMonthly)
+                      .HasForeignKey(c => c.MainEnginePerformanceMonthlyId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
 
+            modelBuilder.Entity<CylinderExhaustGasTempMainEngineMonthly>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+            });
+
+
+        // İlişkilerin ve yapılandırmaların eklenmesi
+        modelBuilder.Entity<CertificateAndSurvey>()
+            .HasMany(c => c.CertificateFiles)
+            .WithOne(cf => cf.CertificateAndSurvey)
+            .HasForeignKey(cf => cf.CertificateID);
+
+        modelBuilder.Entity<CertificateGroup>()
+            .HasIndex(cg => cg.GroupName)
+            .IsUnique();
 
 
 
