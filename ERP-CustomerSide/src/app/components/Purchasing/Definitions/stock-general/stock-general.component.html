@@ -1,0 +1,156 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h2>Stock General</h2>
+  
+        <!-- Stok Listesi -->
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Stock Name</th>
+              <th>Item No</th>
+              <th>Main Group</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stock of stockGeneralList">
+              <td>{{ stock.stockName }}</td>
+              <td>{{ stock.itemNo }}</td>
+              <td>{{ stock.stockMainGroup }}</td>
+              <td>
+                <button class="btn btn-primary" (click)="openEditPopup(stock)">Edit</button>
+                <button class="btn btn-danger" (click)="deleteStock(stock.stockID)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <!-- Yeni Ekleme Butonu -->
+        <button class="btn btn-success" (click)="openNewStockPopup()">Add New Stock</button>
+      </div>
+  
+      <!-- Stock Ekleme/Düzenleme Popup -->
+      <div *ngIf="showModal" class="modal fade show" tabindex="-1" style="display: block;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{ isEditMode ? 'Edit Stock' : 'Add New Stock' }}</h5>
+              <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="stockForm" (ngSubmit)="saveStock()">
+                <div class="form-group">
+                  <label for="stockMainGroup">Stock Main Group</label>
+                  <input id="stockMainGroup" class="form-control" formControlName="stockMainGroup" required>
+                </div>
+  
+                <div class="form-group">
+                  <label for="budgetCode">Budget Code</label>
+                  <input id="budgetCode" class="form-control" formControlName="budgetCode">
+                </div>
+  
+                <div class="form-group">
+                  <label for="stockCode">Stock Code</label>
+                  <input id="stockCode" class="form-control" formControlName="stockCode">
+                </div>
+  
+                <div class="form-group">
+                  <label for="IMPACode">IMPA Code</label>
+                  <input id="IMPACode" class="form-control" formControlName="IMPACode">
+                </div>
+  
+                <div class="form-group">
+                  <label for="itemNo">Item No</label>
+                  <input id="itemNo" class="form-control" formControlName="itemNo" required>
+                </div>
+  
+                <div class="form-group">
+                  <label for="drawingNo">Drawing No</label>
+                  <input id="drawingNo" class="form-control" formControlName="drawingNo">
+                </div>
+  
+                <div class="form-group">
+                  <label for="stockName">Stock Name</label>
+                  <input id="stockName" class="form-control" formControlName="stockName" required>
+                </div>
+  
+                <div class="form-group">
+                  <label for="stockNameLocal">Stock Name (Local)</label>
+                  <input id="stockNameLocal" class="form-control" formControlName="stockNameLocal">
+                </div>
+  
+                <div class="form-group">
+                  <label for="unit">Unit</label>
+                  <input id="unit" class="form-control" formControlName="unit" required>
+                </div>
+  
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="hasExpirationDate" formControlName="hasExpirationDate">
+                  <label class="form-check-label" for="hasExpirationDate">Has Expiration Date?</label>
+                </div>
+  
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="isMSDS" formControlName="isMSDS">
+                  <label class="form-check-label" for="isMSDS">Is MSDS?</label>
+                </div>
+  
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="isCritical" formControlName="isCritical">
+                  <label class="form-check-label" for="isCritical">Is Critical?</label>
+                </div>
+  
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="hasCertificate" formControlName="hasCertificate">
+                  <label class="form-check-label" for="hasCertificate">Has Certificate?</label>
+                </div>
+  
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="optimumStock" formControlName="optimumStock">
+                  <label class="form-check-label" for="optimumStock">Optimum Stock</label>
+                </div>
+  
+                <div class="form-group">
+                  <label for="minStock">Min Stock</label>
+                  <input id="minStock" class="form-control" formControlName="minStock">
+                </div>
+  
+                <div class="form-group">
+                  <label for="maxStock">Max Stock</label>
+                  <input id="maxStock" class="form-control" formControlName="maxStock">
+                </div>
+  
+                <div class="form-group">
+                  <label for="workingStock">Working Stock</label>
+                  <input id="workingStock" class="form-control" formControlName="workingStock">
+                </div>
+  
+                <div class="form-group">
+                  <label for="comment">Comment</label>
+                  <textarea id="comment" class="form-control" formControlName="comment"></textarea>
+                </div>
+  
+                <div class="form-group">
+                  <label for="filePath">File</label>
+                  <input type="file" class="form-control" id="filePath" (change)="onFileChange($event)">
+                </div>
+  
+                <div class="form-group">
+                  <label for="imageResizeOption">Image Resize Option</label>
+                  <select id="imageResizeOption" class="form-select" formControlName="imageResizeOption">
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                  </select>
+                </div>
+  
+                <button type="submit" class="btn btn-primary">{{ isEditMode ? 'Update Stock' : 'Add Stock' }}</button>
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </app-section>
+  </app-blank>
+    

@@ -1,0 +1,101 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h2>Stock Inventory</h2>
+  
+        <!-- Stock Inventory List -->
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Stock Code</th>
+              <th>Stock Name</th>
+              <th>Vessel</th>
+              <th>Quantity</th>
+              <th>Existing Quantity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stock of stockInventoryList">
+              <td>{{ stock.stockCode }}</td>
+              <td>{{ stock.stockName }}</td>
+              <td>{{ stock.vessel }}</td>
+              <td>{{ stock.quantity }}</td>
+              <td>{{ stock.existingQuantity }}</td>
+              <td>
+                <button class="btn btn-primary" (click)="editStock(stock)">Edit</button>
+                <button class="btn btn-danger" (click)="deleteStock(stock.stockInventoryID)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <!-- New Stock Inventory Button -->
+        <button class="btn btn-success" (click)="resetForm()">Add New Stock</button>
+  
+        <!-- Stock Inventory Form -->
+        <div *ngIf="stockForm">
+          <form [formGroup]="stockForm" (ngSubmit)="saveStock()">
+            <div class="form-group">
+              <label for="stockMainGroup">Stock Main Group</label>
+              <select id="stockMainGroup" class="form-control" formControlName="stockMainGroup" required>
+                <option value="">Select Main Group</option>
+                <option value="Consumable">Consumable</option>
+                <option value="Spare Part">Spare Part</option>
+                <option value="Tool">Tool</option>
+              </select>
+            </div>
+  
+            <div class="form-group">
+              <label for="vessel">Vessel</label>
+              <input id="vessel" class="form-control" formControlName="vessel" placeholder="Vessel Name" required />
+            </div>
+  
+            <div class="form-group">
+              <label for="catalog">Catalog</label>
+              <input id="catalog" class="form-control" formControlName="catalog" placeholder="Catalog Name" required />
+            </div>
+  
+            <div class="form-group">
+              <label for="stockName">Stock Name</label>
+              <input id="stockName" class="form-control" formControlName="stockName" placeholder="Stock Name" />
+            </div>
+  
+            <div class="form-group">
+              <label for="stockCode">Stock Code</label>
+              <input id="stockCode" class="form-control" formControlName="stockCode" placeholder="Stock Code" />
+            </div>
+  
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="minStockDefined" formControlName="minStockDefined" />
+              <label class="form-check-label" for="minStockDefined">Min Stock Defined?</label>
+            </div>
+  
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="optimumStock" formControlName="optimumStock" />
+              <label class="form-check-label" for="optimumStock">Optimum Stock</label>
+            </div>
+  
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input id="quantity" type="number" class="form-control" formControlName="quantity" placeholder="Quantity" required />
+            </div>
+  
+            <div class="form-group">
+              <label for="minQuantity">Min Quantity</label>
+              <input id="minQuantity" type="number" class="form-control" formControlName="minQuantity" placeholder="Min Quantity" required />
+            </div>
+  
+            <div class="form-group">
+              <label for="existingQuantity">Existing Quantity</label>
+              <input id="existingQuantity" type="number" class="form-control" formControlName="existingQuantity" placeholder="Existing Quantity" required />
+            </div>
+  
+            <button type="submit" class="btn btn-primary">{{ stockForm.valid && stockForm.value.stockInventoryID ? 'Update Stock' : 'Add Stock' }}</button>
+            <button type="button" class="btn btn-secondary" (click)="resetForm()">Cancel</button>
+          </form>
+        </div>
+      </div>
+    </app-section>
+  </app-blank>
+  

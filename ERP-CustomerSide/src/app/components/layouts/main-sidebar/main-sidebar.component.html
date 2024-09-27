@@ -1,197 +1,175 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-  <!-- Brand Logo -->
-  <a href="/" class="brand-link">
-      <img src="/assets/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">CiriqueERP</span>
-  </a>
-
-  <!-- Sidebar -->
-  <div class="sidebar">
-      <!-- Sidebar user (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-          <div class="image">
-              <img src="/assets/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-          </div>
-          <div class="info">
-              <a href="#" class="d-block">{{userName}}</a>
-          </div>
-          <div class="button">
-              <button [routerLink]="['/login']" class="btn btn-warning logout-button" (click)="logout()">
-                  logout
-              </button>
-          </div>
-      </div>
-
-      <!-- Sidebar Menu -->
-      <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-              <li class="nav-item">
-                  <a href="#" class="nav-link">
-                      <i class="nav-icon fas fa-users"></i>
-                      <p>
-                          User Management
-                          <i class="right fas fa-angle-left"></i>
-                      </p>
-                  </a>
-                  <ul class="nav nav-treeview">
-                      <li class="nav-item">
-                          <a href="/add-delete-user" class="nav-link">
-                              <i class="fas fa-user-plus nav-icon"></i>
-                              <p>Add/Delete User</p>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="/blocked-account-management" class="nav-link">
-                              <i class="fas fa-user-lock nav-icon"></i>
-                              <p>Blocked Account Management</p>
-                          </a>
-                      </li>
-                  </ul>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link">
-                      <i class="nav-icon fas fa-tools"></i>
-                      <p>
-                          Technical
-                          <i class="right fas fa-angle-left"></i>
-                      </p>
-                  </a>
-                  <ul class="nav nav-treeview">
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="fas fa-cogs nav-icon"></i>
-                              <p>
-                                 CoC/MoW
-                                  <i class="right fas fa-angle-left"></i>
-                              </p>
-                          </a>
-                          <ul class="nav nav-treeview">
-                              <li class="nav-item">
-                                  <a [routerLink]="['/coc-mow']" class="nav-link">
-                                      <i class="fas fa-clipboard-check nav-icon"></i>
-                                      <p>Condition of Class</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a [routerLink]="['/memo']" class="nav-link">
-                                      <i class="fas fa-sticky-note nav-icon"></i>
-                                      <p>Memoranda of Owner</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a [routerLink]="['/regulatory']" class="nav-link">
-                                      <i class="fas fa-info-circle nav-icon"></i>
-                                      <p>Regulatory Information</p>
-                                  </a>
-                              </li>
-                          </ul>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="fas fa-book nav-icon"></i>
-                              <p>
-                                  Definitions
-                                  <i class="right fas fa-angle-left"></i>
-                              </p>
-                          </a>
-                          <ul class="nav nav-treeview">
-                              <li class="nav-item">
-                                  <a href="#" class="nav-link">
-                                      <i class="fas fa-file-alt nav-icon"></i>
-                                      <p>
-                                          Vessel Document
-                                          <i class="right fas fa-angle-left"></i>
-                                      </p>
-                                  </a>
-                                  <ul class="nav nav-treeview">
-                                      <li class="nav-item">
-                                          <a [routerLink]="['/docEquip']" class="nav-link">
-                                              <i class="fas fa-tools nav-icon"></i>
-                                              <p>Document Equipment</p>
-                                          </a>
-                                      </li>
-                                      <li class="nav-item">
-                                          <a [routerLink]="['/docSection']" class="nav-link">
-                                              <i class="fas fa-file-signature nav-icon"></i>
-                                              <p>Document Section Name</p>
-                                          </a>
-                                      </li>
-                                      <li class="nav-item">
-                                          <a [routerLink]="['/docType']" class="nav-link">
-                                              <i class="fas fa-file-contract nav-icon"></i>
-                                              <p>Document Type</p>
-                                          </a>
-                                      </li>
-                                  </ul>
-                              </li>
-                              <li class="nav-item">
-                                  <a [routerLink]="['/certificate']" class="nav-link">
-                                      <i class="fas fa-certificate nav-icon"></i>
-                                      <p>
-                                          Certificate and Surveys
-                                      </p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a [routerLink]="['/counter']" class="nav-link">
-                                      <i class="fas fa-tachometer-alt nav-icon"></i>
-                                      <p>
-                                          Equipment Counter
-                                      </p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a [routerLink]="['/jobs']" class="nav-link">
-                                      <i class="fas fa-tasks nav-icon"></i>
-                                      <p>
-                                          PM Jobs
-                                      </p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a [routerLink]="['/vesselComponent']" class="nav-link">
-                                      <i class="fas fa-sitemap nav-icon"></i>
-                                      <p>
-                                          Vessel Component
-                                      </p>
-                                  </a>
-                              </li>   
-                          </ul>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="fas fa-anchor nav-icon"></i>
-                              <p>
-                                  Drydock
-                                  <i class="right fas fa-angle-left"></i>
-                              </p>
-                          </a>
-                          <ul class="nav nav-treeview">
-                              <li class="nav-item">
-                                  <a [routerLink]="['/drydock-planning']" class="nav-link">
-                                      <i class="fas fa-calendar-alt nav-icon"></i>
-                                      <p>
-                                          Drydock Planning
-                                      </p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a [routerLink]="['/drydock-job']" class="nav-link">
-                                      <i class="fas fa-clipboard-list nav-icon"></i>
-                                      <p>
-                                          Drydock Job Definitions
-                                      </p>
-                                  </a>
-                              </li>
-                          </ul>   
-                          <li class="nav-item">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+        <img src="/assets/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">CiriqueERP</span>
+    </a>
+  
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="/assets/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">{{userName}}</a>
+            </div>
+            <div class="button">
+                <button [routerLink]="['/login']" class="btn btn-warning logout-button" (click)="logout()">
+                    logout
+                </button>
+            </div>
+        </div>
+  
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+  
+                <!-- User Management Menu -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            User Management
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a [routerLink]="['/add-delete-user']" class="nav-link">
+                                <i class="fas fa-user-plus nav-icon"></i>
+                                <p>Add/Delete User</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a [routerLink]="['/blocked-account-management']" class="nav-link">
+                                <i class="fas fa-user-lock nav-icon"></i>
+                                <p>Blocked Account Management</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+  
+                <!-- Technical Menu -->
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="nav-icon fas fa-tools"></i>
+                        <p>
+                            Technical
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-cogs nav-icon"></i>
+                                <p>CoC/MoW<i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a [routerLink]="['/coc-mow']" class="nav-link">
+                                        <i class="fas fa-clipboard-check nav-icon"></i>
+                                        <p>Condition of Class</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a [routerLink]="['/memo']" class="nav-link">
+                                        <i class="fas fa-sticky-note nav-icon"></i>
+                                        <p>Memoranda of Owner</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a [routerLink]="['/regulatory']" class="nav-link">
+                                        <i class="fas fa-info-circle nav-icon"></i>
+                                        <p>Regulatory Information</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="fas fa-book nav-icon"></i>
-                                <p>
-                                    Engine Performance
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
+                                <p>Definitions<i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="fas fa-file-alt nav-icon"></i>
+                                        <p>Vessel Document<i class="right fas fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a [routerLink]="['/docEquip']" class="nav-link">
+                                                <i class="fas fa-tools nav-icon"></i>
+                                                <p>Document Equipment</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a [routerLink]="['/docSection']" class="nav-link">
+                                                <i class="fas fa-file-signature nav-icon"></i>
+                                                <p>Document Section Name</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a [routerLink]="['/docType']" class="nav-link">
+                                                <i class="fas fa-file-contract nav-icon"></i>
+                                                <p>Document Type</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a [routerLink]="['/certificate']" class="nav-link">
+                                        <i class="fas fa-certificate nav-icon"></i>
+                                        <p>Certificate and Surveys</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a [routerLink]="['/counter']" class="nav-link">
+                                        <i class="fas fa-tachometer-alt nav-icon"></i>
+                                        <p>Equipment Counter</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a [routerLink]="['/jobs']" class="nav-link">
+                                        <i class="fas fa-tasks nav-icon"></i>
+                                        <p>PM Jobs</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a [routerLink]="['/vesselComponent']" class="nav-link">
+                                        <i class="fas fa-sitemap nav-icon"></i>
+                                        <p>Vessel Component</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-anchor nav-icon"></i>
+                                <p>Drydock<i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a [routerLink]="['/drydock-planning']" class="nav-link">
+                                        <i class="fas fa-calendar-alt nav-icon"></i>
+                                        <p>Drydock Planning</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a [routerLink]="['/drydock-job']" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Drydock Job Definitions</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-book nav-icon"></i>
+                                <p>Engine Performance<i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
@@ -219,7 +197,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li> 
+                        </li>
                         <li class="nav-item">
                             <a [routerLink]="['/certificateSurvey']" class="nav-link">
                                 <i class="fas fa-certificate nav-icon"></i>
@@ -229,19 +207,19 @@
                         <li class="nav-item">
                             <a [routerLink]="['/fuelOilAnalysis']" class="nav-link">
                                 <i class="fas fa-certificate nav-icon"></i>
-                                <p> Fuel Oil Analysis</p>
+                                <p>Fuel Oil Analysis</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a [routerLink]="['/serviceReports']" class="nav-link">
                                 <i class="fas fa-certificate nav-icon"></i>
-                                <p> Service Reports</p>
+                                <p>Service Reports</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a [routerLink]="['/vesselDocs']" class="nav-link">
                                 <i class="fas fa-certificate nav-icon"></i>
-                                <p> Vessel Documents</p>
+                                <p>Vessel Documents</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -250,9 +228,75 @@
                                 <p>Class Survey Status</p>
                             </a>
                         </li>
-                  </ul>
-              </li>
-          </ul>
-      </nav>
-  </div>
-</aside>
+                    </ul>
+                </li>
+  
+                <!-- Purchasing Menu -->
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p>Purchasing<i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-box-open nav-icon"></i>
+                                <p>Definitions<i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a [routerLink]="['/stock']" class="nav-link">
+                                        <i class="fas fa-file-invoice nav-icon"></i>
+                                        <p>Stock</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-truck nav-icon"></i>
+                                <p>Stock Operations<i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a [routerLink]="['/stockInv']" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Stock Inventory</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a [routerLink]="['/stockInOut']" class="nav-link">
+                                        <i class="fas fa-file-contract nav-icon"></i>
+                                        <p>Stock In Out</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-clipboard-check nav-icon"></i>
+                                <p>Reports<i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a [routerLink]="['/purchase-reports']" class="nav-link">
+                                        <i class="fas fa-chart-line nav-icon"></i>
+                                        <p>Purchase Reports</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a [routerLink]="['/supplier-performance']" class="nav-link">
+                                        <i class="fas fa-star nav-icon"></i>
+                                        <p>Supplier Performance</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+  </aside>
+  

@@ -79,6 +79,11 @@ public partial class MasterContext : DbContext
 
     public DbSet<ClassSurveyStatus> ClassSurveyStatus { get; set; }
 
+    public DbSet<StockGeneral> StockGeneral { get; set; }  
+
+    public DbSet<StockInventory> StockInventory { get; set; } 
+
+    public DbSet<StockInOut> StockInOut { get; set; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

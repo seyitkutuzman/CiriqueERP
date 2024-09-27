@@ -23,6 +23,9 @@ import { FuelOilAnalysisComponent } from './components/Technical/fuel-oil-analys
 import { ServiceReportsComponent } from './components/Technical/service-report/service-report.component';
 import { VesselDocumentsComponent } from './components/Technical/vessel-document/vessel-document.component';
 import { ClassSurveyStatusComponent } from './components/Technical/class-survey-status/class-survey-status.component';
+import { StockGeneralComponent } from './components/Purchasing/Definitions/stock-general/stock-general.component';
+import { StockInventoryComponent } from './components/Purchasing/Stock Operations/stock-inventory/stock-inventory.component';
+import { StockInOutComponent } from './components/Purchasing/Stock Operations/stock-in-out/stock-in-out.component';
 
 
 export const routes: Routes = [
@@ -48,7 +51,10 @@ export const routes: Routes = [
     {path: 'fuelOilAnalysis', component: FuelOilAnalysisComponent},
     {path: 'serviceReports', component: ServiceReportsComponent},
     {path: 'vesselDocs', component: VesselDocumentsComponent},
-    {path: 'classSurvey', component: ClassSurveyStatusComponent}
+    {path: 'classSurvey', component: ClassSurveyStatusComponent},
+    {path:'stock', component: StockGeneralComponent},
+    {path:'stockInv', component: StockInventoryComponent},
+    {path: 'stockInOut', component:StockInOutComponent}
   ] },
   { path: '**', redirectTo: '' }
 ];
