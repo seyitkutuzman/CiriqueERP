@@ -38,6 +38,10 @@
     }
 
     
+    getCurrentCompNo(): number {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      return currentUser ? Number(localStorage.getItem('compNo')) || 0 : 0;
+    }
 
     login(compNo: string, userCode: string, userPass: string): Observable<any> {
       const loginData = { compNo: compNo, userNo: userCode, userPass: userPass };

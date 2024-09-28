@@ -1,0 +1,116 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h2>Order List</h2>
+  
+        <!-- Order Search and Add Form -->
+        <form [formGroup]="orderForm" (ngSubmit)="addOrUpdateOrder()">
+          <div class="form-group">
+            <label for="vessel">Vessel</label>
+            <select id="vessel" class="form-control" formControlName="vessel" required>
+              <option value="">Select Vessel</option>
+              <option value="OFFICE">OFFICE</option>
+              <option *ngFor="let vessel of ownedVessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+            </select>
+          </div>
+  
+          <div class="form-group">
+            <label for="budgetCode">Budget Code</label>
+            <input id="budgetCode" class="form-control" formControlName="budgetCode" placeholder="Budget Code">
+          </div>
+          
+          <div class="form-group">
+            <label for="currency">Currency</label>
+            <input id="currency" class="form-control" formControlName="currency" placeholder="Currency" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" class="form-control" formControlName="status" required>
+              <option value="">Select Status</option>
+              <option value="Requested">Requested</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+          
+  
+          <div class="form-group">
+            <label for="firm">Firm</label>
+            <input id="firm" class="form-control" formControlName="firm" placeholder="Firm" required>
+          </div>
+  
+          <div class="form-group">
+            <label for="department">Department</label>
+            <input id="department" class="form-control" formControlName="department" placeholder="Department" required>
+          </div>
+  
+          <div class="form-group">
+            <label for="directOrderNo">Direct Order No</label>
+            <input id="directOrderNo" class="form-control" formControlName="directOrderNo" placeholder="Direct Order No">
+          </div>
+  
+          <div class="form-group">
+            <label for="referenceNo">Reference No</label>
+            <input id="referenceNo" class="form-control" formControlName="referenceNo" placeholder="Reference No">
+          </div>
+  
+          <div class="form-group">
+            <label for="dateRange">Date Range</label>
+            <input id="dateRange" class="form-control" type="date" formControlName="dateFrom">
+            <input id="dateRange" class="form-control" type="date" formControlName="dateTo">
+          </div>
+  
+          <div class="form-group">
+            <label for="personnel">Personnel</label>
+            <input id="personnel" class="form-control" formControlName="personnel" placeholder="Personnel" required>
+          </div>
+  
+          <div class="form-group">
+            <label for="signedPersonnel">Signed Personnel</label>
+            <input id="signedPersonnel" class="form-control" formControlName="signedPersonnel" placeholder="Signed Personnel">
+          </div>
+  
+          <div class="form-group">
+            <button type="submit" class="btn btn-success">{{ isEditMode ? 'Update Order' : 'Add Order' }}</button>
+            <button type="button" class="btn btn-secondary" (click)="resetForm()">Clear</button>
+            <button type="button" class="btn btn-primary" (click)="searchOrders()">Search Orders</button>
+          </div>
+        </form>
+  
+        <!-- Order List Table -->
+        <table class="table table-bordered mt-4">
+          <thead>
+            <tr>
+              <th>Vessel</th>
+              <th>Firm</th>
+              <th>Invoice No</th>
+              <th>Reference No</th>
+              <th>Invoice Date</th>
+              <th>Status</th>
+              <th>Sub Total</th>
+              <th>Currency</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orderList">
+              <td>{{ order.vessel }}</td>
+              <td>{{ order.firm }}</td>
+              <td>{{ order.directOrderNo }}</td>
+              <td>{{ order.referenceNo }}</td>
+              <td>{{ order.orderDate | date }}</td>
+              <td>{{ order.status }}</td>
+              <td>{{ order.subTotal | currency }}</td>
+              <td>{{ order.currency }}</td>
+              <td>
+                <button class="btn btn-primary" (click)="editOrder(order)">Edit</button>
+                <button class="btn btn-danger" (click)="deleteOrder(order.orderId)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-section>
+  </app-blank>
+  

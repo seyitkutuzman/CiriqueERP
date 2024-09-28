@@ -275,19 +275,25 @@
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="fas fa-clipboard-check nav-icon"></i>
-                                <p>Reports<i class="right fas fa-angle-left"></i></p>
+                                <p>Direct Orders<i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a [routerLink]="['/purchase-reports']" class="nav-link">
+                                    <a [routerLink]="['/orderApp']" class="nav-link">
                                         <i class="fas fa-chart-line nav-icon"></i>
-                                        <p>Purchase Reports</p>
+                                        <p>Direct Order Approvement</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a [routerLink]="['/supplier-performance']" class="nav-link">
+                                    <a [routerLink]="['/orderList']" class="nav-link">
                                         <i class="fas fa-star nav-icon"></i>
-                                        <p>Supplier Performance</p>
+                                        <p>Order List</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a [routerLink]="['/order']" class="nav-link">
+                                        <i class="fas fa-star nav-icon"></i>
+                                        <p>Order</p>
                                     </a>
                                 </li>
                             </ul>

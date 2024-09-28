@@ -1,0 +1,199 @@
+<app-blank>
+    <app-section>
+      <div class="container">
+        <h2>Direct Order List</h2>
+  
+        <!-- Sipariş Arama Formu -->
+        <form [formGroup]="orderForm" (ngSubmit)="searchOrders()">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="vessel">Vessel</label>
+                <select id="vessel" class="form-control" formControlName="vessel" required>
+                  <option value="">Select Vessel</option>
+                  <option value="OFFICE">OFFICE</option>
+                  <option *ngFor="let vessel of ownedVessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+                </select>
+              </div>
+  
+              <div class="form-group">
+                <label for="budgetCode">Budget Code</label>
+                <input id="budgetCode" class="form-control" formControlName="budgetCode" placeholder="Budget Code">
+              </div>
+  
+              <div class="form-group">
+                <label for="firm">Firm</label>
+                <input id="firm" class="form-control" formControlName="firm" placeholder="Firm" required>
+              </div>
+  
+              <div class="form-group">
+                <label for="department">Department</label>
+                <input id="department" class="form-control" formControlName="department" placeholder="Department" required>
+              </div>
+            </div>
+  
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="directOrderNo">Direct Order No</label>
+                <input id="directOrderNo" class="form-control" formControlName="directOrderNo" placeholder="Direct Order No">
+              </div>
+  
+              <div class="form-group">
+                <label for="referenceNo">Reference No</label>
+                <input id="referenceNo" class="form-control" formControlName="referenceNo" placeholder="Reference No">
+              </div>
+  
+              <div class="form-group">
+                <label for="personnel">Personnel</label>
+                <input id="personnel" class="form-control" formControlName="personnel" readonly placeholder="Personnel">
+              </div>
+              
+              <div class="form-group">
+                <label for="currency">Currency</label>
+                <input id="currency" class="form-control" formControlName="currency" placeholder="Currency" required>
+              </div>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Search Orders</button>
+          </div>
+        </form>
+  
+        <!-- Sipariş Tablosu -->
+        <table class="table table-bordered mt-4">
+          <thead>
+            <tr>
+              <th>Vessel</th>
+              <th>Firm</th>
+              <th>Direct Order No</th>
+              <th>Reference No</th>
+              <th>Personnel</th>
+              <th>Status</th>
+              <th>Currency</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orderList">
+              <td>{{ order.vessel }}</td>
+              <td>{{ order.firm }}</td>
+              <td>{{ order.directOrderNo }}</td>
+              <td>{{ order.referenceNo }}</td>
+              <td>{{ order.personnel }}</td>
+              <td>{{ order.status }}</td>
+              <td>{{ order.currency }}</td>
+              <td>
+                <button class="btn btn-success" (click)="openOrderPopup(orderModal, order)">Edit</button>
+                <button class="btn btn-danger" (click)="deleteOrder(order.orderID)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <!-- Yeni Sipariş Ekle Butonu -->
+        <button class="btn btn-success" (click)="openOrderPopup(orderModal)">Add New Order</button>
+      </div>
+    </app-section>
+  </app-blank>
+  
+  <!-- Popup Modal -->
+  <ng-template #orderModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">{{ isEditMode ? 'Edit Order' : 'Add New Order' }}</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="orderForm" (ngSubmit)="saveOrder()">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="personnel">Req. Personnel</label>
+              <input id="personnel" class="form-control" formControlName="personnel" readonly placeholder="Personnel">
+            </div>
+  
+            <div class="form-group">
+              <label for="firm">Firm</label>
+              <input id="firm" class="form-control" formControlName="firm" placeholder="Firm" required>
+            </div>
+  
+            <div class="form-group">
+              <label for="budgetCode">Budget Code</label>
+              <input id="budgetCode" class="form-control" formControlName="budgetCode" placeholder="Budget Code">
+            </div>
+  
+            <div class="form-group">
+              <label for="currency">Currency</label>
+              <select id="currency" class="form-control" formControlName="currency" required>
+                <option value="">Choose</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="TRY">TRY</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="paymentType">Payment Type</label>
+              <select id="paymentType" class="form-control" formControlName="paymentType">
+                <option value="">Choose</option>
+                <option value="Cash">Cash</option>
+                <option value="Credit">Credit</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="periodStart">Period Start</label>
+              <input id="periodStart" class="form-control" type="date" formControlName="periodStart">
+            </div>
+
+            <div class="form-group">
+              <label for="periodEnd">Period End</label>
+              <input id="periodEnd" class="form-control" type="date" formControlName="periodEnd">
+            </div>
+
+            <div class="form-group">
+              <label for="comment">Comment</label>
+              <textarea id="comment" class="form-control" formControlName="comment" placeholder="Enter comment"></textarea>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="vessel">Vessel</label>
+              <select id="vessel" class="form-control" formControlName="vessel" required>
+                <option value="OFFICE">OFFICE</option>
+                <option *ngFor="let vessel of ownedVessels" [value]="vessel.vesselName">{{ vessel.vesselName }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="referenceNo">Reference No</label>
+              <input id="referenceNo" class="form-control" formControlName="referenceNo" placeholder="Reference No">
+            </div>
+
+            <div class="form-group">
+              <label for="orderDate">Order Date</label>
+              <input id="orderDate" class="form-control" type="date" formControlName="orderDate">
+            </div>
+
+            <div class="form-group">
+              <label for="amount">Amount</label>
+              <input id="amount" class="form-control" type="number" formControlName="amount" placeholder="Amount">
+            </div>
+
+            <div class="form-group">
+              <label for="file">File</label>
+              <input id="file" class="form-control" type="file" formControlName="filePath">
+            </div>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">{{ isEditMode ? 'Update Order' : 'Add Order' }}</button>
+          <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>

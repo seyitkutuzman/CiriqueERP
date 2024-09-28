@@ -85,6 +85,11 @@ public partial class MasterContext : DbContext
 
     public DbSet<StockInOut> StockInOut { get; set; }
 
+    public DbSet<OrderList> OrderList { get; set; }  
+    public DbSet<DirectOrder> DirectOrders { get; set; }
+    public DbSet<OrderDetail> OrderDetails { get; set; }
+    public DbSet<PersonnelSign> PersonnelSigns { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
@@ -696,6 +701,15 @@ public partial class MasterContext : DbContext
             .HasIndex(cg => cg.GroupName)
             .IsUnique();
 
+        modelBuilder.Entity<DirectOrder>()
+            .HasMany(o => o.OrderDetails)
+            .WithOne(d => d.DirectOrder)
+            .HasForeignKey(d => d.DirectOrderID);
+
+        modelBuilder.Entity<DirectOrder>()
+            .HasMany(o => o.PersonnelSigns)
+            .WithOne(p => p.DirectOrder)
+            .HasForeignKey(p => p.DirectOrderID);
 
 
     OnModelCreatingPartial(modelBuilder);

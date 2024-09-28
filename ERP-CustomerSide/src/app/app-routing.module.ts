@@ -26,6 +26,9 @@ import { ClassSurveyStatusComponent } from './components/Technical/class-survey-
 import { StockGeneralComponent } from './components/Purchasing/Definitions/stock-general/stock-general.component';
 import { StockInventoryComponent } from './components/Purchasing/Stock Operations/stock-inventory/stock-inventory.component';
 import { StockInOutComponent } from './components/Purchasing/Stock Operations/stock-in-out/stock-in-out.component';
+import { OrderListComponent } from './components/Purchasing/Direct Order/order-list/order-list.component';
+import { DirectOrderComponent } from './components/Purchasing/Direct Order/direct-order/direct-order.component';
+import { OrderComponent } from './components/Purchasing/Direct Order/order/order.component';
 
 
 export const routes: Routes = [
@@ -54,7 +57,10 @@ export const routes: Routes = [
     {path: 'classSurvey', component: ClassSurveyStatusComponent},
     {path:'stock', component: StockGeneralComponent},
     {path:'stockInv', component: StockInventoryComponent},
-    {path: 'stockInOut', component:StockInOutComponent}
+    {path: 'stockInOut', component:StockInOutComponent},
+    {path:'orderList', component:OrderListComponent},
+    {path: 'orderApp', component:DirectOrderComponent},
+    {path: 'order', component:OrderComponent}
   ] },
   { path: '**', redirectTo: '' }
 ];
